@@ -64,19 +64,18 @@ $(function() {
     new Chart($('#chartjsArea'), {
       type: 'line',
       data: {
-        labels: [1500,1600,1700,1750,1800,1850,1900,1950,1999,2050],
-        datasets: [{ 
-            data: [86,114,106,106,107,111,133,221,783,2478],
-            label: "Africa",
-            borderColor: "#7ee5e5",
-            backgroundColor: "#c2fdfd",
-            fill: true
-          }, { 
-            data: [282,350,411,502,635,809,947,1402,3700,5267],
-            label: "Asia",
+        // lable must be an array of time series data
+        labels: [
+          "00:03:00","00:06:00","00:09:00","00:12:00","00:15:00","00:18:00","00:21:00","00:24:00","00:27:00","00:30:00","00:33:00","00:36:00","00:39:00","00:42:00","00:45:00","00:48:00","00:51:00","00:54:00","00:57:00","01:00:00"],
+        datasets: [ { 
+            data: [10,6,2,6,10,14,18,22,26,30,34,38,42,46,50,54,58,62,66,70],
+            label: "Traffic flow",
             borderColor: "#f77eb9",
             backgroundColor: "#ffbedd",
-            fill: true
+            fill: true,
+            // LINE LITTLE BIT CURVE
+            lineTension: 0.3,
+
           }
         ]
       }

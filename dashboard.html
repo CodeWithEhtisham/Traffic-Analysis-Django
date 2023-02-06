@@ -158,94 +158,16 @@
 
 
                 <div class="row">
-                    <!-- Location -->
-                    <div class="col-lg-5 col-xl-12 grid-margin stretch-card">
+                    <!-- area chart -->
+                    <div class="col-xl-6 grid-margin stretch-card">
                         <div class="card">
-                            <div class="card-body">
-                                <h6 class="card-title">Reports / History</h6>
-                                <!-- Line Chart -->
-                                <div id="reportsChart"></div>
-
-                                <script>
-                                    document.addEventListener("DOMContentLoaded", () => {
-                                        new ApexCharts(document.querySelector("#reportsChart"), {
-                                            series: [{
-                                                name: 'Sales',
-                                                data: [31, 40, 28, 51, 42, 82, 56],
-                                            }, {
-                                                name: 'Revenue',
-                                                data: [11, 32, 45, 32, 34, 52, 41]
-                                            }, {
-                                                name: 'Customers',
-                                                data: [15, 11, 32, 18, 9, 24, 11]
-                                            }],
-                                            chart: {
-                                                height: 350,
-                                                type: 'area',
-                                                toolbar: {
-                                                    show: false
-                                                },
-                                            },
-                                            markers: {
-                                                size: 4
-                                            },
-                                            colors: ['#4154f1', '#2eca6a', '#ff771d'],
-                                            fill: {
-                                                type: "gradient",
-                                                gradient: {
-                                                    shadeIntensity: 1,
-                                                    opacityFrom: 0.3,
-                                                    opacityTo: 0.4,
-                                                    stops: [0, 90, 100]
-                                                }
-                                            },
-                                            dataLabels: {
-                                                enabled: false
-                                            },
-                                            stroke: {
-                                                curve: 'smooth',
-                                                width: 2
-                                            },
-                                            xaxis: {
-                                                type: 'datetime',
-                                                categories: ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z", "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
-                                            },
-                                            tooltip: {
-                                                x: {
-                                                    format: 'dd/MM/yy HH:mm'
-                                                },
-                                            }
-                                        }).render();
-                                    });
-                                </script>
-                                <!-- End Line Chart -->
-                            </div>
-
-                            <div class="card-footer">
-                                <div class="row m-2">
-                                    <div class="col-6 d-flex justify-content-end">
-                                        <div>
-                                            <label
-                                                class="d-flex align-items-center justify-content-end tx-24 text-uppercase font-weight-medium">Total
-                                                storage
-                                                <span class="p-1 ml-1 rounded-circle bg-primary-muted"></span></label>
-                                            <h5 class="font-weight-bold mb-0 text-right">8TB</h5>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div>
-                                            <label
-                                                class="d-flex align-items-center tx-24 text-uppercase font-weight-medium"><span
-                                                    class="p-1 mr-1 rounded-circle bg-primary"></span> Used
-                                                storage</label>
-                                            <h5 class="font-weight-bold mb-0">6TB</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button class="btn btn-primary btn-block">View</button>
-                            </div>
+                          <div class="card-body">
+                            <h6 class="card-title">Area chart</h6>
+                            <canvas id="chartjsArea"></canvas>
+                          </div>
                         </div>
-                    </div>
+                      </div>
+                      <!-- end area chart -->
 
                 </div>
                 <div class="row">
@@ -569,6 +491,7 @@
     <script src="assets/js/template.js"></script>
     <script src="assets/js/dashboard.js"></script>
     <script src="assets/js/datepicker.js"></script>
+    <script src="assets/js/chartjs.js"></script>
 </body>
 
 </html>
