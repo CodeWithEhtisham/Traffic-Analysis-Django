@@ -21,7 +21,9 @@
     <!-- End layout styles -->
     <link rel="shortcut icon" href="assets/images/favicon.png" />
 
-    <script src="assets/js/map.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ol@v7.2.2/dist/ol.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.2.2/ol.css">
+
     
 
 
@@ -88,7 +90,7 @@
 
                         <li class="nav-item dropdown nav-profile">
                             <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <img src="https://via.placeholder.com/30x30" alt="profile">
                             </a>
                             <div class="dropdown-menu" aria-labelledby="profileDropdown">
@@ -176,7 +178,7 @@
                                                 class="d-flex align-items-center justify-content-end tx-24 text-uppercase font-weight-bold">yesterday
                                                 Total Traffic
                                                 <span class="p-1 ml-1 rounded-circle bg-primary-muted"></span></label>
-                                            <h5 class="font-weight-bold p-1 ml-5 " style="font-size: large;">500</h5>
+                                                <h5 class="font-weight-bold p-1 ml-5 " style="font-size: large;">500</h5>
                                         </div>
                                     </div>
                                     <div class="col-2 d-flex justify-content-end vr">
@@ -249,11 +251,11 @@
 
                     <!-- <div class="col-12 "> -->
                         <!-- add google map using boostrap quetta location -->
-                        <div id="map"></div>
-
-                    <!-- </div> -->
-                    <!-- <div class="col-1 d-flex "></div> -->
-                </div> <!-- row -->
+                        
+                        <!-- </div> -->
+                        <!-- <div class="col-1 d-flex "></div> -->
+                    </div> <!-- row -->
+                    <div id="map"></div>
 
             </div>
 
@@ -280,10 +282,11 @@
     <script src="assets/js/dashboard.js"></script>
     <script src="assets/js/datepicker.js"></script>
     
-    <script
+    <script src="assets/js/map.js"></script>
+    <!-- <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&v=weekly"
       defer
-    ></script>
+    ></script> -->
     <!-- end custom js for this page -->
 </body>
 
