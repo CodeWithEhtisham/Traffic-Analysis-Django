@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="assets/vendors/flag-icon-css/css/flag-icon.min.css">
     <link rel="stylesheet" href="assets/css/demo_1/style.css">
     <link rel="shortcut icon" href="assets/images/favicon.png" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.1/echarts.min.js" integrity="sha512-OTbGFYPLe3jhy4bUwbB8nls0TFgz10kn0TLkmyA+l3FyivDs31zsXCjOis7YGDtE2Jsy0+fzW+3/OVoPVujPmQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <body>
@@ -130,16 +131,18 @@
                         <h4 class="mb-3 mb-md-0">Dashboard</h4>
                     </div>
                     <div class="d-flex align-items-center flex-wrap text-nowrap">
-                        <div class="input-group date datepicker dashboard-date mr-2 mb-2 mb-md-0 d-md-none d-xl-flex" id="FromDate">
+                        <div class="input-group date datepicker dashboard-date mr-2 mb-2 mb-md-0 d-md-none d-xl-flex"
+                            id="FromDate">
                             <span class="input-group-addon bg-transparent">From</span>
                             <input type="text" class="form-control">
                         </div>
-                        
-                        <div class="input-group date datepicker dashboard-date mr-2 mb-2 mb-md-0 d-md-none d-xl-flex" id="ToDate">
+
+                        <div class="input-group date datepicker dashboard-date mr-2 mb-2 mb-md-0 d-md-none d-xl-flex"
+                            id="ToDate">
                             <span class="input-group-addon bg-transparent">To</span>
                             <input type="text" class="form-control">
                         </div>
-                        
+
                         <button type="button" class="btn btn-outline-info btn-icon-text mr-2 d-none d-md-block">
                             <i class="btn-icon-prepend" data-feather="activity"></i>
                             History
@@ -161,308 +164,138 @@
                     <!-- area chart -->
                     <div class="col-xl-6 grid-margin stretch-card">
                         <div class="card">
-                          <div class="card-body">
-                            <h6 class="card-title">Area chart</h6>
-                            <canvas id="chartjsArea"></canvas>
-                          </div>
+                            <div class="card-body">
+                                <h6 class="card-title">Area chart</h6>
+                                <canvas id="chartjsArea"></canvas>
+                            </div>
                         </div>
-                      </div>
-                      <!-- end area chart -->
-
-                </div>
-                <div class="row">
-                    <!-- Location -->
-                    <div class="col-lg-5 col-xl-6 grid-margin stretch-card">
+                    </div>
+                    <!-- end area chart -->
+                    <!-- bar chart -->
+                    <div class="col-xl-6 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
-                                <h6 class="card-title">Reports / History</h6>
-                                <div id="morrisLine"
-                                    style="position: relative; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><svg
-                                        height="342" version="1.1" width="476" xmlns="http://www.w3.org/2000/svg"
-                                        xmlns:xlink="http://www.w3.org/1999/xlink"
-                                        style="overflow: hidden; position: relative; top: -0.96875px;">
-                                        <desc style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">Created with
-                                            Raphaël 2.3.0</desc>
-                                        <defs style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></defs><text
-                                            x="26.173828125" y="303" text-anchor="end" font-family="sans-serif"
-                                            font-size="12px" stroke="none" fill="#888888"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;"
-                                            font-weight="normal">
-                                            <tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">0
-                                            </tspan>
-                                        </text>
-                                        <path fill="none" stroke="#4d8af0" d="M38.673828125,303H442.5"
-                                            stroke-opacity="0.2" stroke-width="0.5"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text
-                                            x="26.173828125" y="233.5" text-anchor="end" font-family="sans-serif"
-                                            font-size="12px" stroke="none" fill="#888888"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;"
-                                            font-weight="normal">
-                                            <tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">5
-                                            </tspan>
-                                        </text>
-                                        <path fill="none" stroke="#4d8af0" d="M38.673828125,233.5H442.5"
-                                            stroke-opacity="0.2" stroke-width="0.5"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text
-                                            x="26.173828125" y="164" text-anchor="end" font-family="sans-serif"
-                                            font-size="12px" stroke="none" fill="#888888"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;"
-                                            font-weight="normal">
-                                            <tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">10
-                                            </tspan>
-                                        </text>
-                                        <path fill="none" stroke="#4d8af0" d="M38.673828125,164H442.5"
-                                            stroke-opacity="0.2" stroke-width="0.5"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text
-                                            x="26.173828125" y="94.5" text-anchor="end" font-family="sans-serif"
-                                            font-size="12px" stroke="none" fill="#888888"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;"
-                                            font-weight="normal">
-                                            <tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">15
-                                            </tspan>
-                                        </text>
-                                        <path fill="none" stroke="#4d8af0" d="M38.673828125,94.5H442.5"
-                                            stroke-opacity="0.2" stroke-width="0.5"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text
-                                            x="26.173828125" y="25" text-anchor="end" font-family="sans-serif"
-                                            font-size="12px" stroke="none" fill="#888888"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;"
-                                            font-weight="normal">
-                                            <tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">20
-                                            </tspan>
-                                        </text>
-                                        <path fill="none" stroke="#4d8af0" d="M38.673828125,25H442.5"
-                                            stroke-opacity="0.2" stroke-width="0.5"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text
-                                            x="442.5" y="315.5" text-anchor="middle" font-family="sans-serif"
-                                            font-size="12px" stroke="none" fill="#888888"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;"
-                                            font-weight="normal" transform="matrix(1,0,0,1,0,7)">
-                                            <tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2012
-                                            </tspan>
-                                        </text><text x="341.6125580189083" y="315.5" text-anchor="middle"
-                                            font-family="sans-serif" font-size="12px" stroke="none" fill="#888888"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;"
-                                            font-weight="normal" transform="matrix(1,0,0,1,0,7)">
-                                            <tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2011
-                                            </tspan>
-                                        </text><text x="240.72511603781658" y="315.5" text-anchor="middle"
-                                            font-family="sans-serif" font-size="12px" stroke="none" fill="#888888"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;"
-                                            font-weight="normal" transform="matrix(1,0,0,1,0,7)">
-                                            <tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2010
-                                            </tspan>
-                                        </text><text x="139.83767405672484" y="315.5" text-anchor="middle"
-                                            font-family="sans-serif" font-size="12px" stroke="none" fill="#888888"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;"
-                                            font-weight="normal" transform="matrix(1,0,0,1,0,7)">
-                                            <tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2009
-                                            </tspan>
-                                        </text><text x="38.673828125" y="315.5" text-anchor="middle"
-                                            font-family="sans-serif" font-size="12px" stroke="none" fill="#888888"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;"
-                                            font-weight="normal" transform="matrix(1,0,0,1,0,7)">
-                                            <tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2008
-                                            </tspan>
-                                        </text>
-                                        <path fill="none" stroke="#f77eb9"
-                                            d="M38.673828125,275.2C63.96478960793121,250.875,114.54671257379363,183.11963064295483,139.83767405672484,177.89999999999998C165.05953455199779,172.69463064295485,215.50325554254363,238.7125,240.72511603781658,233.5C265.9469765330895,228.2875,316.39069752363537,136.2,341.6125580189083,136.2C366.83441851418127,136.2,417.27813950472705,209.175,442.5,233.5"
-                                            stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
-                                        </path>
-                                        <circle cx="38.673828125" cy="275.2" r="4" fill="#f77eb9" stroke="#ffffff"
-                                            stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
-                                        </circle>
-                                        <circle cx="139.83767405672484" cy="177.89999999999998" r="4" fill="#f77eb9"
-                                            stroke="#ffffff" stroke-width="1"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle>
-                                        <circle cx="240.72511603781658" cy="233.5" r="4" fill="#f77eb9" stroke="#ffffff"
-                                            stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
-                                        </circle>
-                                        <circle cx="341.6125580189083" cy="136.2" r="4" fill="#f77eb9" stroke="#ffffff"
-                                            stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
-                                        </circle>
-                                        <circle cx="442.5" cy="233.5" r="7" fill="#f77eb9" stroke="#ffffff"
-                                            stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
-                                        </circle>
-                                    </svg>
-                                    <div class="morris-hover morris-default-style" style="left: 409.469px; top: 164px;">
-                                        <div class="morris-hover-row-label">2012</div>
-                                        <div class="morris-hover-point" style="color: #f77eb9">
-                                            value:
-                                            5
-                                        </div>
-                                    </div>
-                                </div>
+                                <h6 class="card-title">Bar chart</h6>
+                                <div id="apexBar"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- bar chart End -->
+
+                </div>
+                <!-- first row end -->
+
+                <!-- second row start -->
+                <div class="row">
+                    <!-- plot chart with dynamic font-size -->
+                    <div class="col-lg-4 col-xl-4 grid-margin stretch-card">
+                        <div class="card">
+                            <h4 class="p-3 text-center">Car</h4>
+                            <div class="card-body">
+                                <div id="echartLine" style="height: 300px;width: 400px;"></div>
                             </div>
 
                             <div class="card-footer">
                                 <div class="row m-2">
-                                    <div class="col-6 d-flex justify-content-end">
+                                    <div class="col-5 d-flex justify-content-end">
                                         <div>
                                             <label
-                                                class="d-flex align-items-center justify-content-end tx-24 text-uppercase font-weight-medium">Total
-                                                storage
+                                                class="d-flex align-items-center justify-content-end tx-24 text-uppercase font-weight-bold">yesterday
+                                                Total Traffic
                                                 <span class="p-1 ml-1 rounded-circle bg-primary-muted"></span></label>
-                                            <h5 class="font-weight-bold mb-0 text-right">8TB</h5>
+                                                <h5 class="font-weight-bold p-1 ml-5 " style="font-size: large;">500</h5>
                                         </div>
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-2 d-flex justify-content-end vr">
+
+
+                                    </div>
+                                    <div class="col-5">
                                         <div>
                                             <label
-                                                class="d-flex align-items-center tx-24 text-uppercase font-weight-medium"><span
-                                                    class="p-1 mr-1 rounded-circle bg-primary"></span> Used
-                                                storage</label>
-                                            <h5 class="font-weight-bold mb-0">6TB</h5>
+                                                class="d-flex align-items-center tx-32 text-uppercase font-weight-bold"><span
+                                                    class="p-1 mr-1 rounded-circle bg-primary"></span>Today Total
+                                                Traffic</label>
+                                            <!-- </label> -->
+                                            <!-- add right margin -->
+                                            <h5 class="font-weight-bold p-1 ml-5 " style="font-size: large;">100</h5>
                                         </div>
                                     </div>
                                 </div>
-                                <button class="btn btn-primary btn-block">View</button>
                             </div>
                         </div>
                     </div>
+                    <!-- plot chart with dynamic font-size -->
+                    <div class="col-lg-4 col-xl-4 grid-margin stretch-card">
+                        <div class="card">
+                            <h4 class="p-3 text-center">Rickshaw</h4>
+                            <div class="card-body">
+                                <div id="echartLine2" style="height: 300px;width: 400px;"></div>
+                            </div>
 
-                    <div class="col-xl-6 col-md-6">
-                        <div class="card o-hidden">
-                            <div class="card-block bg-c-pink text-white">
-                                <div class="chartjs-size-monitor">
-                                    <div class="chartjs-size-monitor-expand">
-                                        <div class=""></div>
+                            <div class="card-footer">
+                                <div class="row m-2">
+                                    <div class="col-5 d-flex justify-content-end">
+                                        <div>
+                                            <label
+                                                class="d-flex align-items-center justify-content-end tx-24 text-uppercase font-weight-bold">yesterday
+                                                Total Traffic
+                                                <span class="p-1 ml-1 rounded-circle bg-primary-muted"></span></label>
+                                                <h5 class="font-weight-bold p-1 ml-5 " style="font-size: large;">500</h5>
+                                        </div>
                                     </div>
-                                    <div class="chartjs-size-monitor-shrink">
-                                        <div class=""></div>
+                                    <div class="col-2 d-flex justify-content-end vr">
+
+
                                     </div>
-                                </div>
-                                <h6>Sales Per Day <span class="f-right"><i
-                                            class="feather icon-activity m-r-15"></i>3%</span>
-                                </h6>
-                                <!--  -->
-                                <div id="morrisLine"
-                                    style="position: relative; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><svg
-                                        height="342" version="1.1" width="476" xmlns="http://www.w3.org/2000/svg"
-                                        xmlns:xlink="http://www.w3.org/1999/xlink"
-                                        style="overflow: hidden; position: relative; top: -0.96875px;">
-                                        <desc style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">Created with
-                                            Raphaël 2.3.0</desc>
-                                        <defs style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></defs><text
-                                            x="26.173828125" y="303" text-anchor="end" font-family="sans-serif"
-                                            font-size="12px" stroke="none" fill="#888888"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;"
-                                            font-weight="normal">
-                                            <tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">0
-                                            </tspan>
-                                        </text>
-                                        <path fill="none" stroke="#4d8af0" d="M38.673828125,303H442.5"
-                                            stroke-opacity="0.2" stroke-width="0.5"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text
-                                            x="26.173828125" y="233.5" text-anchor="end" font-family="sans-serif"
-                                            font-size="12px" stroke="none" fill="#888888"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;"
-                                            font-weight="normal">
-                                            <tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">5
-                                            </tspan>
-                                        </text>
-                                        <path fill="none" stroke="#4d8af0" d="M38.673828125,233.5H442.5"
-                                            stroke-opacity="0.2" stroke-width="0.5"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text
-                                            x="26.173828125" y="164" text-anchor="end" font-family="sans-serif"
-                                            font-size="12px" stroke="none" fill="#888888"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;"
-                                            font-weight="normal">
-                                            <tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">10
-                                            </tspan>
-                                        </text>
-                                        <path fill="none" stroke="#4d8af0" d="M38.673828125,164H442.5"
-                                            stroke-opacity="0.2" stroke-width="0.5"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text
-                                            x="26.173828125" y="94.5" text-anchor="end" font-family="sans-serif"
-                                            font-size="12px" stroke="none" fill="#888888"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;"
-                                            font-weight="normal">
-                                            <tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">15
-                                            </tspan>
-                                        </text>
-                                        <path fill="none" stroke="#4d8af0" d="M38.673828125,94.5H442.5"
-                                            stroke-opacity="0.2" stroke-width="0.5"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text
-                                            x="26.173828125" y="25" text-anchor="end" font-family="sans-serif"
-                                            font-size="12px" stroke="none" fill="#888888"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;"
-                                            font-weight="normal">
-                                            <tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">20
-                                            </tspan>
-                                        </text>
-                                        <path fill="none" stroke="#4d8af0" d="M38.673828125,25H442.5"
-                                            stroke-opacity="0.2" stroke-width="0.5"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text
-                                            x="442.5" y="315.5" text-anchor="middle" font-family="sans-serif"
-                                            font-size="12px" stroke="none" fill="#888888"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;"
-                                            font-weight="normal" transform="matrix(1,0,0,1,0,7)">
-                                            <tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2012
-                                            </tspan>
-                                        </text><text x="341.6125580189083" y="315.5" text-anchor="middle"
-                                            font-family="sans-serif" font-size="12px" stroke="none" fill="#888888"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;"
-                                            font-weight="normal" transform="matrix(1,0,0,1,0,7)">
-                                            <tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2011
-                                            </tspan>
-                                        </text><text x="240.72511603781658" y="315.5" text-anchor="middle"
-                                            font-family="sans-serif" font-size="12px" stroke="none" fill="#888888"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;"
-                                            font-weight="normal" transform="matrix(1,0,0,1,0,7)">
-                                            <tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2010
-                                            </tspan>
-                                        </text><text x="139.83767405672484" y="315.5" text-anchor="middle"
-                                            font-family="sans-serif" font-size="12px" stroke="none" fill="#888888"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;"
-                                            font-weight="normal" transform="matrix(1,0,0,1,0,7)">
-                                            <tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2009
-                                            </tspan>
-                                        </text><text x="38.673828125" y="315.5" text-anchor="middle"
-                                            font-family="sans-serif" font-size="12px" stroke="none" fill="#888888"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;"
-                                            font-weight="normal" transform="matrix(1,0,0,1,0,7)">
-                                            <tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2008
-                                            </tspan>
-                                        </text>
-                                        <path fill="none" stroke="#f77eb9"
-                                            d="M38.673828125,275.2C63.96478960793121,250.875,114.54671257379363,183.11963064295483,139.83767405672484,177.89999999999998C165.05953455199779,172.69463064295485,215.50325554254363,238.7125,240.72511603781658,233.5C265.9469765330895,228.2875,316.39069752363537,136.2,341.6125580189083,136.2C366.83441851418127,136.2,417.27813950472705,209.175,442.5,233.5"
-                                            stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
-                                        </path>
-                                        <circle cx="38.673828125" cy="275.2" r="4" fill="#f77eb9" stroke="#ffffff"
-                                            stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
-                                        </circle>
-                                        <circle cx="139.83767405672484" cy="177.89999999999998" r="4" fill="#f77eb9"
-                                            stroke="#ffffff" stroke-width="1"
-                                            style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle>
-                                        <circle cx="240.72511603781658" cy="233.5" r="4" fill="#f77eb9" stroke="#ffffff"
-                                            stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
-                                        </circle>
-                                        <circle cx="341.6125580189083" cy="136.2" r="4" fill="#f77eb9" stroke="#ffffff"
-                                            stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
-                                        </circle>
-                                        <circle cx="442.5" cy="233.5" r="7" fill="#f77eb9" stroke="#ffffff"
-                                            stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
-                                        </circle>
-                                    </svg>
-                                    <div class="morris-hover morris-default-style" style="left: 409.469px; top: 164px;">
-                                        <div class="morris-hover-row-label">2012</div>
-                                        <div class="morris-hover-point" style="color: #f77eb9">
-                                            value:
-                                            5
+                                    <div class="col-5">
+                                        <div>
+                                            <label
+                                                class="d-flex align-items-center tx-32 text-uppercase font-weight-bold"><span
+                                                    class="p-1 mr-1 rounded-circle bg-primary"></span>Today Total
+                                                Traffic</label>
+                                            <!-- </label> -->
+                                            <!-- add right margin -->
+                                            <h5 class="font-weight-bold p-1 ml-5 " style="font-size: large;">100</h5>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-footer text-center">
-                                <div class="row">
-                                    <div class="col-6 b-r-default">
-                                        <h4>$4230</h4>
-                                        <p class="text-muted m-b-0">Total Revenue</p>
+                        </div>
+                    </div>
+                    <!-- plot chart with dynamic font-size -->
+                    <div class="col-lg-4 col-xl-4 grid-margin stretch-card">
+                        <div class="card">
+                            <h4 class="p-3 text-center">Bike</h4>
+                            <div class="card-body">
+                                <div id="echartLine1" style="height: 300px;width: 400px;"></div>
+                            </div>
+
+                            <div class="card-footer">
+                                <div class="row m-2">
+                                    <div class="col-5 d-flex justify-content-end">
+                                        <div>
+                                            <label
+                                                class="d-flex align-items-center justify-content-end tx-24 text-uppercase font-weight-bold">yesterday
+                                                Total Traffic
+                                                <span class="p-1 ml-1 rounded-circle bg-primary-muted"></span></label>
+                                                <h5 class="font-weight-bold p-1 ml-5 " style="font-size: large;">500</h5>
+                                        </div>
                                     </div>
-                                    <div class="col-6">
-                                        <h4>321</h4>
-                                        <p class="text-muted m-b-0">Today Sales</p>
+                                    <div class="col-2 d-flex justify-content-end vr">
+
+
+                                    </div>
+                                    <div class="col-5">
+                                        <div>
+                                            <label
+                                                class="d-flex align-items-center tx-32 text-uppercase font-weight-bold"><span
+                                                    class="p-1 mr-1 rounded-circle bg-primary"></span>Today Total
+                                                Traffic</label>
+                                            <!-- </label> -->
+                                            <!-- add right margin -->
+                                            <h5 class="font-weight-bold p-1 ml-5 " style="font-size: large;">100</h5>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -470,6 +303,22 @@
                     </div>
 
                 </div>
+
+
+                <div class="row">
+                    <!-- bar chart -->
+                    <div class="col-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title">Bar chart</h6>
+                                <div id="echartbar" style="height: 400px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- bar chart End -->
+
+                </div>
+
 
 
 
@@ -488,10 +337,16 @@
     <script src="assets/vendors/apexcharts/apexcharts.min.js"></script>
     <script src="assets/vendors/progressbar.js/progressbar.min.js"></script>
     <script src="assets/vendors/feather-icons/feather.min.js"></script>
+    <!-- <script src="assets/vendors/morris.js/morris.min.js"></script> -->
+    <!-- <script src="assets/vendors/raphael/raphael.min.js"></script> -->
     <script src="assets/js/template.js"></script>
     <script src="assets/js/dashboard.js"></script>
     <script src="assets/js/datepicker.js"></script>
     <script src="assets/js/chartjs.js"></script>
+    <script src="assets/js/apexcharts.js"></script>
+    <script src="assets/js/echart.js"></script>
+    <!-- <script src="assets/js/morris.js"></script> -->
+    
 </body>
 
 </html>
