@@ -131,22 +131,11 @@
                         <h4 class="mb-3 mb-md-0">Dashboard</h4>
                     </div>
                     <div class="d-flex align-items-center flex-wrap text-nowrap">
-                        <div class="input-group date datepicker dashboard-date mr-2 mb-2 mb-md-0 d-md-none d-xl-flex"
-                            id="FromDate">
-                            <span class="input-group-addon bg-transparent">From</span>
-                            <input type="text" class="form-control">
-                        </div>
 
-                        <div class="input-group date datepicker dashboard-date mr-2 mb-2 mb-md-0 d-md-none d-xl-flex"
-                            id="ToDate">
-                            <span class="input-group-addon bg-transparent">To</span>
-                            <input type="text" class="form-control">
-                        </div>
-
-                        <button type="button" class="btn btn-outline-info btn-icon-text mr-2 d-none d-md-block">
+                        <a type="button" class="btn btn-outline-info btn-icon-text mr-2 d-none d-md-block" href="history.html">
                             <i class="btn-icon-prepend" data-feather="activity"></i>
                             History
-                        </button>
+                        </a>
                         <button type="button" class="btn btn-outline-primary btn-icon-text mr-2 mb-2 mb-md-0">
                             <i class="btn-icon-prepend" data-feather="video"></i>
                             Video Analysis
@@ -165,8 +154,9 @@
                     <div class="col-xl-6 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
-                                <h6 class="card-title">Area chart</h6>
-                                <canvas id="chartjsArea"></canvas>
+                                <h6 class="card-title">Streaming Analysis
+                                </h6>
+                                <canvas id="chartjsAreaa"></canvas>
                             </div>
                         </div>
                     </div>
@@ -175,8 +165,8 @@
                     <div class="col-xl-6 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
-                                <h6 class="card-title">Bar chart</h6>
-                                <div id="apexBar"></div>
+                                <h6 class="card-title">Streaming</h6>
+                                <div id="apexBara"></div>
                             </div>
                         </div>
                     </div>
@@ -303,7 +293,30 @@
                     </div>
 
                 </div>
+                <div class="row">
+                    <!-- area chart -->
+                    <div class="col-xl-6 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title">Area chart</h6>
+                                <canvas id="chartjsArea"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end area chart -->
+                    <!-- bar chart -->
+                    <div class="col-xl-6 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title">Bar chart</h6>
+                                <div id="apexBar"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- bar chart End -->
 
+                </div>
+                <!-- first row end -->
 
                 <div class="row">
                     <!-- bar chart -->
@@ -318,6 +331,7 @@
                     <!-- bar chart End -->
 
                 </div>
+                
 
 
 
