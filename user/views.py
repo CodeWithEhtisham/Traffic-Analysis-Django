@@ -34,4 +34,4 @@ class Register(View):
             password = form.cleaned_data['password']
             print(username,email,password)
             user = CustomUser.objects.create(user=User.objects.create(username=username,email=email,password=password))
-            reverse_lazy('login')
+            return render(request, 'authentication/login.html')
