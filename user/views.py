@@ -18,15 +18,9 @@ class Login(View):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             user = User.objects.filter(username=username,password=password)
-            # authnticate user
-            user = authenticate(request,username=username,password=password)
-            print(user)
-            if user is not None:
-                login(request,user)
-                # go to register page
-                return reverse_lazy('register')
-            else:
-                return HttpResponse('login failed')
+            # user authenticate check 
+            if user.exists():
+                return render(request,'dashboard/index.html')
         return render(request,'authentication/login.html',{'form':form})
 
 class Register(View):
@@ -40,7 +34,4 @@ class Register(View):
             password = form.cleaned_data['password']
             print(username,email,password)
             user = CustomUser.objects.create(user=User.objects.create(username=username,email=email,password=password))
-            if user:
-                return HttpResponse('login')
-            else:
-                return HttpResponse('register failed')
+            reverse_lazy('login')
