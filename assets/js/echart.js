@@ -1,52 +1,112 @@
-var chartDom = document.getElementById('echartLine');
-var chartDom1 = document.getElementById('echartLine1');
-var chartDom2 = document.getElementById('echartLine2');
-var myChart = echarts.init(chartDom);
-var myChart1 = echarts.init(chartDom1);
-var myChart2 = echarts.init(chartDom2);
-var option;
+var ctx = document.getElementById('multiline').getContext('2d');
 
-const colors = ['#5470C6', '#EE6666'];
-option = {
-  color: colors,
-  tooltip: {
-    trigger: 'none',
-    axisPointer: {
-      type: 'cross'
-    }
-  },
-  legend: {},
-  grid: {
-    top: 70,
-    bottom: 50
-  },
-  xAxis: [
-    {
-      type: 'category',
-      axisTick: {
-        alignWithLabel: true
-      },
-      axisLine: {
-        onZero: false,
-        lineStyle: {
-          color: colors[1]
-        }
-      },
-      axisPointer: {
-        label: {
-          formatter: function (params) {
-            return (
-              'Precipitation  ' +
-              params.value +
-              (params.seriesData.length ? '：' + params.seriesData[0].data : '')
-            );
-          }
-        }
-      },
-      // prettier-ignore
-      data: ['9:00:00', '10:00:00', '11:00:00', '12:00:00']
+var chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        datasets: [{
+            label: 'Car',
+            data: [10, 20, 12, 43, 45, 34, 32, 60],
+            borderColor: 'rgba(255, 99, 132, 0.5)',
+            // backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            fill: false
+        }, {
+            label: 'Bus',
+            data: [1, 2, 1, 4, 4, 3, 3, 6],
+            borderColor: 'rgba(54, 162, 235, 0.5)',
+            // backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            fill: false
+        }, {
+            label: 'Truck',
+            data: [1, 4, 6, 2, 10, 12, 8, 8],
+            borderColor: 'rgba(255, 206, 86, 0.5)',
+            // backgroundColor: 'rgba(255, 206, 86, 0.2)',
+            fill: false
+        }, {
+            label: 'Bike',
+            data: [30, 40, 27, 43, 45, 40, 62, 20],
+            borderColor: 'rgba(75, 192, 192, 0.5)',
+            // backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            fill: false
+        }, {
+            label: 'Rickshaw',
+            data: [10, 15, 53, 24, 44, 42, 31, 50],
+            borderColor: 'rgba(153, 102, 255, 0.5)',
+            // backgroundColor: 'rgba(153, 102, 255, 0.2)',
+            fill: false
+        }, {
+            label: 'Van',
+            data: [30, 2, 33, 53, 5, 33, 36, 40],
+            borderColor: 'rgba(255, 159, 64, 0.5)',
+            // backgroundColor: 'rgba(255, 159, 64, 0.2)',
+            fill: false
+        }]
     },
-    {
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }],
+            xAxes: [{
+                type: 'category',
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug']
+            }]
+        }
+    }
+});
+
+
+
+// var chartDom = document.getElementById('echartLine');
+// var chartDom1 = document.getElementById('echartLine1');
+// var chartDom2 = document.getElementById('echartLine2');
+// var myChart = echarts.init(chartDom);
+// var myChart1 = echarts.init(chartDom1);
+// var myChart2 = echarts.init(chartDom2);
+// var option;
+
+// const colors = ['#5470C6', '#EE6666'];
+// option = {
+//   color: colors,
+//   tooltip: {
+//     trigger: 'none',
+//     axisPointer: {
+//       type: 'cross'
+//     }
+//   },
+//   legend: {},
+//   grid: {
+//     top: 70,
+//     bottom: 50
+//   },
+//   xAxis: [
+//     {
+//       type: 'category',
+//       axisTick: {
+//         alignWithLabel: true
+//       },
+//       axisLine: {
+//         onZero: false,
+//         lineStyle: {
+//           color: colors[1]
+//         }
+//       },
+//       axisPointer: {
+//         label: {
+//           formatter: function (params) {
+//             return (
+//               'Precipitation  ' +
+//               params.value +
+//               (params.seriesData.length ? '：' + params.seriesData[0].data : '')
+//             );
+//           }
+//         }
+//       },
+//       // prettier-ignore
+//       data: ['9:00:00', '10:00:00', '11:00:00', '12:00:00']
+//     },
+//     {
     //   type: 'category',
     //   axisTick: {
     //     alignWithLabel: true
@@ -69,39 +129,39 @@ option = {
     //     }
     //   },
       // prettier-ignore
-      data: ['9:00:00', '10:00:00', '11:00:00', '12:00:00']
-    }
-  ],
-  yAxis: [
-    {
-      type: 'value'
-    }
-  ],
-  series: [
-    {
-      name: 'Yesterday',
-      type: 'line',
-      xAxisIndex: 1,
-      smooth: true,
-      emphasis: {
-        focus: 'series'
-      },
-      data: [2.6, 5.9, 9.0, 26.4]
-    },
-    {
-      name: 'Today',
-      type: 'line',
-      smooth: true,
-      emphasis: {
-        focus: 'series'
-      },
-      data: [3.9, 5.9, 11.1, 18.7]
-    }
-  ]
-};
-option && myChart.setOption(option);
-option && myChart1.setOption(option);
-option && myChart2.setOption(option);
+//       data: ['9:00:00', '10:00:00', '11:00:00', '12:00:00']
+//     }
+//   ],
+//   yAxis: [
+//     {
+//       type: 'value'
+//     }
+//   ],
+//   series: [
+//     {
+//       name: 'Yesterday',
+//       type: 'line',
+//       xAxisIndex: 1,
+//       smooth: true,
+//       emphasis: {
+//         focus: 'series'
+//       },
+//       data: [2.6, 5.9, 9.0, 26.4]
+//     },
+//     {
+//       name: 'Today',
+//       type: 'line',
+//       smooth: true,
+//       emphasis: {
+//         focus: 'series'
+//       },
+//       data: [3.9, 5.9, 11.1, 18.7]
+//     }
+//   ]
+// };
+// option && myChart.setOption(option);
+// option && myChart1.setOption(option);
+// option && myChart2.setOption(option);
 
 
 
