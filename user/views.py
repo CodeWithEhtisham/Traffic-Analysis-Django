@@ -12,6 +12,7 @@ from django.contrib.auth.models import User
 class Login(View):
     def get(self,request):
         return render(request,'authentication/login.html')
+    
     def post(self,request):
         form = LoginForm(request.POST)
         if form.is_valid():

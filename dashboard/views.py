@@ -11,6 +11,7 @@ class Index(TemplateView):
     def get(self,request):
         return render(request,'dashboard/index.html')
 
+
 class Dashboard(TemplateView):
     def get(self,request):
         return render(request,'dashboard/dashboard.html')
