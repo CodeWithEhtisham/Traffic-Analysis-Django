@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 # Create your views here.
 class Login(View):
     def get(self,request):
-        return render(request,'authentication/login.html')
+        return render(request,'login.html')
     def post(self,request):
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -20,12 +20,12 @@ class Login(View):
             user = User.objects.filter(username=username,password=password)
             # user authenticate check 
             if user.exists():
-                return render(request,'dashboard/index.html')
-        return render(request,'authentication/login.html',{'form':form})
+                return render(request,'index.html')
+        return render(request,'login.html',{'form':form})
 
 class Register(View):
     def get(self,request):
-        return render(request,'authentication/register.html')
+        return render(request,'register.html')
     def post(self,request):
         form = Registerform(request.POST)
         if form.is_valid():
@@ -34,4 +34,4 @@ class Register(View):
             password = form.cleaned_data['password']
             print(username,email,password)
             user = CustomUser.objects.create(user=User.objects.create(username=username,email=email,password=password))
-            return render(request, 'authentication/login.html')
+            return render(request, 'login.html')
