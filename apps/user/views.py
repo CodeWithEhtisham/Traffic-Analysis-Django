@@ -35,3 +35,7 @@ class Register(View):
             print(username,email,password)
             user = CustomUser.objects.create(user=User.objects.create(username=username,email=email,password=password))
             return render(request, 'login.html')
+        
+class Logout(View):
+    def get(self,request):
+        return render(request,'login.html')
