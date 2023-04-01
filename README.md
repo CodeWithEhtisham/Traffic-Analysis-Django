@@ -22,6 +22,8 @@ Folder structure:
 - `static` folder: contains the static files, such as CSS and JS files.
 - `templates` folder: contains the HTML templates used to render the views.
 
+Models download link:
+- https://drive.google.com/drive/folders/1h45KMzz4zJEiXW2PGuPi-3NFyQXajNUQ?usp=sharing
 <!-- Contributing:
 1. Fork the repository on GitHub.
 2. Create a new branch with a descriptive name: `git checkout -b my-new-feature`
@@ -32,3 +34,4 @@ Folder structure:
 Credits:
 - Author: Your Name
 - License: This project is licensed under the MIT License. -->
+
