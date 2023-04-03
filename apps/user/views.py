@@ -1,40 +1,59 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpRequest,HttpResponse
 from django.views import View
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, CreateView
 from .models import CustomUser
-from .forms import LoginForm,Registerform
 from django.contrib.auth import authenticate,login,logout
 from django.urls import reverse_lazy
 from django.contrib.auth.models import User
+from django.core.files.storage import default_storage
+from django.contrib import messages
+from .forms import UserRegisterationForm
 
 # Create your views here.
-class Login(View):
-    def get(self,request):
-        return render(request,'login.html')
-    def post(self,request):
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user = User.objects.filter(username=username,password=password)
-            # user authenticate check 
-            if user.exists():
-                return render(request,'index.html')
-        return render(request,'login.html',{'form':form})
 
-class Register(View):
-    def get(self,request):
-        return render(request,'register.html')
-    def post(self,request):
-        form = Registerform(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            user = CustomUser.objects.create(user=User.objects.create(username=username,email=email,password=password))
-            return render(request, 'login.html')
-        
-class Logout(View):
-    def get(self,request):
-        return render(request,'login.html')
+def user_login(request):
+	if request.method == 'POST':
+		email = request.POST.get('email')
+		password = request.POST.get('password')
+
+		user = authenticate(request, email=email, password=password)
+		if user:
+			if user is not None and user.is_active and user.is_staff:
+				login(request, user)
+
+				return redirect('users:login')
+			else:
+				HttpResponse('You are Not Authorized User')
+			
+		else:
+			error = 'Invalid Email or Password'
+			return render(request, 'login.html', {'error': error})
+	
+	
+	return render(request, 'login.html',)
+
+
+def user_logout(request):
+	logout(request)
+	return render(request, 'login.html')
+
+
+class UserRegister(CreateView):
+	model = CustomUser
+	form_class = UserRegisterationForm
+	success_url = reverse_lazy('users:register')
+	template_name = 'register.html'
+
+	def form_valid(self, form):
+		staff = form.save()
+		# staff.set_password(form.cleaned_data['password'])
+		# staff.save()
+		image = form.cleaned_data['user_img']
+		path = default_storage.save(''.format(image.name), image)
+		staff.image_path = path
+		staff.save()
+		response = super().form_valid(form)
+		messages.success(self.request, 'User Have Been Registerd Successfull You will be Contacted Soon.')
+		return redirect(self.success_url)
+

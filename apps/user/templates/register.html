@@ -33,22 +33,29 @@
                 <div class="col-md-4 pr-md-0">
                   <div class="auth-left-wrapper" style="background-image: url({% static 'images/map.png' %})">
                     
-
                   </div>
                 </div>
                 <div class="col-md-8 pl-md-0">
+                  {% if messages %}
+                      <ul class="messages">
+                          {% for message in messages %}
+                              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                          {% endfor %}
+                      </ul>
+                  {% endif %}
+
                   <div class="auth-form-wrapper px-4 py-5">
                     <a href="#" class="noble-ui-logo d-block mb-2">Smart<span>Traffic</span></a>
                     <h5 class="text-muted font-weight-normal mb-4">Create an account.</h5>
-                    <form class="forms-sample" method="post">
+                    <form class="forms-sample" action="{% url 'register' %}" method="post" enctype="multipart/form-data">
                       {% csrf_token %}
                       <div class="form-group">
                         <label for="user">First Name</label>
-                        <input type="text" class="form-control" name="username" autocomplete="Username" placeholder="Username">
+                        <input type="text" class="form-control" name="user_name" autocomplete="Username" placeholder="Username" required>
                       </div>
                       <div class="form-group">
                         <label for="lastname">Last Name</label>
-                        <input type="text" class="form-control" name="lastname" autocomplete="lastname" placeholder="Last Name">
+                        <input type="text" class="form-control" name="last_name" autocomplete="lastname" placeholder="Last Name" required>
                       </div>
                       <div class="form-group">
                         <label for="cnic">CNIC</label>
@@ -69,14 +76,18 @@
                       </div>
                       <div class="form-group">
                         <label for="password1">Password</label>
-                        <input type="password" id="password1" class="form-control" name="password1" autocomplete="current-password" placeholder="********" required>
+                        <input type="password" id="password1" class="form-control" name="password1" placeholder="********" required>
                       </div>
                       <div class="form-group">
                         <label for="password2">Confirm Password</label>
-                        <input type="password" id="password2" class="form-control" name="password2" autocomplete="current-password" placeholder="********" required>
+                        <input type="password" id="password2" class="form-control" name="password2" placeholder="********" required>
                       </div>
                       
-
+                      <div class="form-group img-container">
+                        <label for="img">Upload Image</label>
+                        <input type="file" id="img" class="form-control" name="user_img" accept="image/*" required>
+                      </div>
+                      
                       <!-- <div class="form-check form-check-flat form-check-primary">
                         <label class="form-check-label">
                           <input type="checkbox" class="form-check-input">
