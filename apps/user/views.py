@@ -32,6 +32,5 @@ class Register(View):
             username = form.cleaned_data['username']
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
-            print(username,email,password)
             user = CustomUser.objects.create(user=User.objects.create(username=username,email=email,password=password))
             return render(request, 'login.html')
