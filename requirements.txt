@@ -1,8 +1,8 @@
-
-
-
-
-
-
+numpy
+onnxruntime
+opencv-python-headless
+pycuda
+tensorrt
+torch
 django
 django-jazzmin
