@@ -11,7 +11,7 @@ class CustomUserAdmin(UserAdmin):
     list_filter = ('cnic', 'date_joined', )
     
     fieldsets = (
-        (None, {"fields": ("email", "password")}),
+        (None, {"fields": ('user_name', 'cnic', "email", "password")}),
         ("Permissions", {"fields": ("is_staff", "is_active", "groups", "user_permissions")}),
     )
     

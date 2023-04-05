@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, AbstractUser
 from django.utils.translation import gettext_lazy as _
 from .managers import CustomUserManager
 from django.utils import timezone
@@ -29,10 +29,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.user_name
 
     def has_perm(self, perm, obj=None):
-        return False
+        return True
     
     def has_module_perms(self, app_label):
-        return False
+        return True
     
     class Meta:
         verbose_name_plural = '1.User&Accounts'
