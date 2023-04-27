@@ -155,6 +155,6 @@ def detect_objects(session, image_path):
 
 
 if __name__ == '__main__':
-    model_path = 'yolov8l.onnx'
+    model_path = 'best.onnx'
     image_path = 'photo6.jpg'
     detect_objects(load_model(model_path), image_path)

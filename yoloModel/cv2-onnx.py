@@ -116,21 +116,21 @@ CLASESS_YOLO = [
 	'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'blender', 'book', 'clock', 'vase',
 	'scissors', 'teddy bear', 'hair drier', 'toothbrush'
 ]
-
+print(cv2.__version__)
 # app = FastAPI()
 detection = Detection(
-	model_path='yolov8l.onnx', 
+	model_path='best.onnx', 
 	classes=CLASESS_YOLO)
 
 # @app.post('/detection')
 # def post_detection(file: bytes = File(...)):
-image = Image.open('E:\gil\Traffic Analysis Django\yoloModel\output.jpg').convert("RGB")
-image = np.array(image)
-image = image[:,:,::-1].copy()
-results = detection(
-    image
-)
-print(results)
+# image = Image.open('E:\gil\Traffic Analysis Django\yoloModel\output.jpg').convert("RGB")
+# image = np.array(image)
+# image = image[:,:,::-1].copy()
+# results = detection(
+#     image
+# )
+# print(results)
 # 	return results
 
 # if __name__ == '__main__':
