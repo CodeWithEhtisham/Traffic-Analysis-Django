@@ -10,6 +10,7 @@ import numpy as np
 import threading
 import socket
 import struct
+import pickle
 # Define a global variable to hold the most recent frame received from the client
 latest_frame = None
 def receive_frames():
@@ -32,13 +33,35 @@ def receive_frames():
         with conn:
             print('Connected by', addr)
             while True:
+                # Receive the tags size from the client
+                tags_size_data = conn.recv(4)
+                if not tags_size_data:
+                    break
+                
+                # Unpack the tags size and receive the tags data
+                tags_size = struct.unpack('!I', tags_size_data)[0]
+                tags_data = b''
+                while len(tags_data) < tags_size:
+                    data = conn.recv(tags_size - len(tags_data))
+                    if not data:
+                        break
+                    tags_data += data
+                
+                # Check if the received data matches the expected size
+                if len(tags_data) != tags_size:
+                    print('Received incomplete tags data')
+                    continue
+                
+                # Deserialize the tags data into a dictionary
+                tags = pickle.loads(tags_data)
+
                 # Receive the frame size from the client
-                size_data = conn.recv(4)
-                if not size_data:
+                frame_size_data = conn.recv(4)
+                if not frame_size_data:
                     break
                 
                 # Unpack the frame size and receive the encoded frame
-                frame_size = struct.unpack('!I', size_data)[0]
+                frame_size = struct.unpack('!I', frame_size_data)[0]
                 encoded_data = b''
                 while len(encoded_data) < frame_size:
                     data = conn.recv(frame_size - len(encoded_data))
@@ -48,16 +71,20 @@ def receive_frames():
                 
                 # Check if the received data matches the expected size
                 if len(encoded_data) != frame_size:
-                    print('Received incomplete data')
+                    print('Received incomplete frame data')
                     continue
                 
                 # Decode the frame and update the global variable
                 latest_frame = cv2.imdecode(np.frombuffer(encoded_data, np.uint8), cv2.IMREAD_COLOR)
 
+                # Do something with the tags and frame (if needed)
+                print(tags)
                 # cv2.imshow('frame', latest_frame)
+                
     #             if cv2.waitKey(1) & 0xFF == ord('q'):
     #                 break
     # cv2.destroyAllWindows()
+
 
 from django.http import StreamingHttpResponse
 import cv2
