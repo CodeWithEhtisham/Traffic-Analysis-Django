@@ -49,7 +49,7 @@ import struct
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client_socket.connect(('localhost', 12345))
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture('b.dav')
 
 while True:
     # Capture frame-by-frame

@@ -11,6 +11,12 @@ import threading
 import socket
 import struct
 import pickle
+from django.http import HttpResponse
+from .socket_handlers import sio
+
+# def socketio_js(request):
+#     return HttpResponse(open('/path/to/socket.io.js').read(), content_type='application/javascript')
+
 # Define a global variable to hold the most recent frame received from the client
 latest_frame = None
 def receive_frames():
@@ -79,6 +85,7 @@ def receive_frames():
 
                 # Do something with the tags and frame (if needed)
                 print(tags)
+                sio.emit('frame', {'frame': latest_frame})
                 # cv2.imshow('frame', latest_frame)
                 
     #             if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -86,23 +93,7 @@ def receive_frames():
     # cv2.destroyAllWindows()
 
 
-from django.http import StreamingHttpResponse
-import cv2
-import numpy as np
 
-def video_stream(request):
-
-    # Iterate over frames and send them as HTTP response
-    def generate():
-        while True:
-            global latest_frame
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + latest_frame.tobytes() + b'\r\n')
-
-    # Create HTTP response and set content type to multipart/x-mixed-replace
-    response = StreamingHttpResponse(generate(), content_type='multipart/x-mixed-replace; boundary=frame')
-
-    return response
 
 
 # Start a background thread to receive frames from the client
