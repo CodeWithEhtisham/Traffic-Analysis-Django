@@ -26,9 +26,11 @@ django.setup()
 
 # sio = socketio.Server(async_mode='threading')
 
-from apps.analysis.socket_handlers import sio
-app = socketio.WSGIApp(sio)
+# from apps.analysis.socket_handlers import sio
+# app = socketio.WSGIApp(sio)
 
 # sio.WSGIApp(socket_handlers.sio)
+# thread = threading.Thread(target=run_socketio_server)
+# thread.start()
 
 application = get_wsgi_application()

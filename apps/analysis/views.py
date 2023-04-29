@@ -12,7 +12,33 @@ import socket
 import struct
 import pickle
 from django.http import HttpResponse
-from .socket_handlers import sio
+from eventlet import wsgi
+import eventlet
+# from .socket_handlers import sio
+import threading
+import socketio
+
+sio = socketio.Server(async_mode='threading',cors_allowed_origins='*')
+
+@sio.event
+def connect(sid, environ):
+    print('Client connected:', sid)
+
+@sio.event
+def disconnect(sid):
+    print('Client disconnected:', sid)
+
+@sio.event
+def my_event(sid, data):
+    print('Received data from client:', data)
+    sio.emit('my_response', {'response': 'OK'}, room=sid)
+
+def run_socketio_server():
+    app = socketio.WSGIApp(sio)
+    wsgi.server(eventlet.listen(('localhost', 7000)), app)
+
+thread = threading.Thread(target=run_socketio_server)
+thread.start()
 
 # def socketio_js(request):
 #     return HttpResponse(open('/path/to/socket.io.js').read(), content_type='application/javascript')
@@ -85,7 +111,7 @@ def receive_frames():
 
                 # Do something with the tags and frame (if needed)
                 print(tags)
-                sio.emit('frame', {'frame': latest_frame})
+                sio.emit('frame', {'frame': tags})
                 # cv2.imshow('frame', latest_frame)
                 
     #             if cv2.waitKey(1) & 0xFF == ord('q'):
