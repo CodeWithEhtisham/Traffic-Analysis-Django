@@ -18,9 +18,15 @@ import eventlet
 import threading
 import socketio
 import base64
+
+import cv2
+from ultralytics import YOLO
+
+# Load the YOLOv8 model
+model = YOLO('yolov8m.pt')
 sio = socketio.Server(async_mode='threading', cors_allowed_origins='*')
 
-
+print(model,'######################')
 @sio.event
 def connect(sid, environ):
     print('Client connected:', sid)
@@ -118,7 +124,7 @@ def receive_frames():
                 # latest_frame = cv2.imdecode(np.frombuffer(encoded_data, np.uint8), cv2.IMREAD_COLOR)
 
                 # Do something with the tags and frame (if needed)
-                print(tags)
+                # print(tags)
                 sio.emit('frame', decoded_data)
                 # cv2.imshow('frame', latest_frame)
 
