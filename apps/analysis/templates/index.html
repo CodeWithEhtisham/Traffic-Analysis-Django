@@ -178,7 +178,7 @@
                                             src="https://codingyaar.com/wp-content/uploads/video-in-bootstrap-card.mp4"
                                             type="video/mp4" width="100%" height="100%">
                                     </video> -->
-                                        
+                                    <img src="static/images/map.PNG" alt="stream2" style="height: 400px; width: 100%;" id="image" >
                                       
                                 </div>
                             </div>
@@ -214,19 +214,20 @@
                         </div>
                     </div>
                     <!-- Location -->
-                    <div class="col-lg-5 col-xl-6 grid-margin stretch-card">
+                    <div class="col-lg-5 col-xl-6 grid-margin stretch-card ">
                         <div class="card">
-                            <div class="card-body p-0">
+                            <div class="card-body p-0 ">
                                 <h4 class="p-2 p-3 text-center">Airport Road</h4>
                                 <!-- video -->
-                                <div>
-                                    <!-- <video id="video" width="100%" height="100%" controls autoplay>
-                                        
+                                <div  >
+                                    <video id="video" width="100%" height="100%" controls autoplay>
+
                                         <source
                                             src="https://codingyaar.com/wp-content/uploads/video-in-bootstrap-card.mp4"
                                             type="video/mp4" width="100%" height="100%">
-                                    </video> -->
-                                    <canvas id="canvas"></canvas>
+                                    </video> 
+                                    <!-- <img src="static/images/map.PNG" alt="stream2" style="height: 400px;" id="image" > -->
+
                                 </div>
                             </div>
 
@@ -242,7 +243,6 @@
                                         </div>
                                     </div>
                                     <div class="col-2 d-flex justify-content-end vr">
-
 
                                     </div>
                                     <div class="col-5">
@@ -312,9 +312,25 @@
             console.log('disconnected');
         });
 
-        socket.on('frame', function (tag) {
-            console.log(tag);
-        });
+
+socket.on('frame', function (data) {
+    document.getElementById('image').src ="data:image/png;base64,"+data ;
+    // Convert the encoded image data to a Blob object
+    // var blob = new Blob([data.frame], {type: 'image/jpeg'});
+
+    // // Create a URL for the Blob object
+    // var url = URL.createObjectURL(blob);
+
+    // // Get the image tag element by its ID
+    // var img = document.getElementById('image');
+
+    // // Set the src attribute of the image tag to the URL of the Blob object
+    // img.src = url;
+
+    // // Release the URL when it is no longer needed
+    // URL.revokeObjectURL(url);
+});
+
 
         // socket.on('frame', function (data) {
         //     var canvas = document.getElementById('canvas');

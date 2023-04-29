@@ -45,7 +45,7 @@ import numpy as np
 import socket
 import pickle
 import struct
-
+import base64
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client_socket.connect(('localhost', 12345))
 
@@ -66,7 +66,8 @@ while True:
     tags_data = pickle.dumps(tags)
 
     # Encode frame as jpeg
-    encoded_frame = cv2.imencode('.jpg', frame)[1].tobytes()
+#     encoded_frame = cv2.imencode('.jpg', frame)[1].tobytes()
+    encoded_frame =  base64.b64encode(cv2.imencode('.jpg', frame,[cv2.IMWRITE_JPEG_QUALITY, 60])[1]).decode()
 
     # Get length of encoded frame and tags
     frame_size = struct.pack('!I', len(encoded_frame))
@@ -82,7 +83,7 @@ while True:
     client_socket.sendall(frame_size)
 
     # Send encoded frame to server
-    client_socket.sendall(encoded_frame)
+    client_socket.sendall(encoded_frame.encode())
 
     # Wait for response from server
     # data = client_socket.recv(1024)

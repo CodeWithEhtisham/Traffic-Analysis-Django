@@ -17,7 +17,7 @@ import eventlet
 # from .socket_handlers import sio
 import threading
 import socketio
-
+import base64
 sio = socketio.Server(async_mode='threading',cors_allowed_origins='*')
 
 @sio.event
@@ -105,13 +105,16 @@ def receive_frames():
                 if len(encoded_data) != frame_size:
                     print('Received incomplete frame data')
                     continue
-                
+                decoded_data = encoded_data.decode()
+                image=base64.b64decode(decoded_data)
+                image = np.frombuffer(image, dtype=np.uint8)
+                latest_frame = cv2.imdecode(image, flags=1)
                 # Decode the frame and update the global variable
-                latest_frame = cv2.imdecode(np.frombuffer(encoded_data, np.uint8), cv2.IMREAD_COLOR)
+                # latest_frame = cv2.imdecode(np.frombuffer(encoded_data, np.uint8), cv2.IMREAD_COLOR)
 
                 # Do something with the tags and frame (if needed)
                 print(tags)
-                sio.emit('frame', {'frame': tags})
+                sio.emit('frame', decoded_data)
                 # cv2.imshow('frame', latest_frame)
                 
     #             if cv2.waitKey(1) & 0xFF == ord('q'):
