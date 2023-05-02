@@ -21,6 +21,15 @@ import base64
 
 import cv2
 from ultralytics import YOLO
+import asyncio
+from .models import Stream, Image, Object
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from datetime import datetime, timedelta
+
+# Define a global variable to hold the most recent frame received from the client
+latest_frame = None
+stream_data = None
 
 # Load the YOLOv8 model
 model = YOLO('yolov8m.pt')
@@ -42,21 +51,11 @@ def my_event(sid, data):
     print('Received data from client:', data)
     sio.emit('my_response', {'response': 'OK'}, room=sid)
 
-
 def run_socketio_server():
     global model
     model = YOLO('yolov8m.pt')
     app = socketio.WSGIApp(sio)
     wsgi.server(eventlet.listen(('localhost', 7000)), app)
-
-
-
-# def socketio_js(request):
-#     return HttpResponse(open('/path/to/socket.io.js').read(), content_type='application/javascript')
-
-# Define a global variable to hold the most recent frame received from the client
-latest_frame = None
-stream_data = None
 
 def receive_frames():
     global latest_frame
@@ -136,16 +135,11 @@ def receive_frames():
     #                 break
     # cv2.destroyAllWindows()
 
-
 # Start a background thread to receive frames from the client
-import asyncio
-import time
 async def predict(frame):
     global model
-    print('predicting',model)
     return model(frame)
 
-from .models import Stream, Image, Object
 def insert_data(resutls, frame,stream_metadata):
     if Stream.objects.filter(site_name=stream_metadata['site']).exists():
         stream = Stream.objects.get(site_name=stream_metadata['site'])
@@ -191,7 +185,6 @@ def insert_data(resutls, frame,stream_metadata):
         #     h=result.xywh[3]
         # ).save()
 
-
 async def prediction():
     global latest_frame
     global stream_data
@@ -215,33 +208,46 @@ def callback_detection():
     asyncio.set_event_loop(loop)
     loop.run_until_complete(prediction())
     loop.close()
-# thread = threading.Thread(target=callback)
-# thread.daemon = True
-# thread.start()
-# loop.run_forever()
-# loop.close()
-    
 
 class Index(TemplateView):
     def get(self, request):
         return render(request, 'index.html')
 
-
 class Dashboard(TemplateView):
     def get(self, request):
         return render(request, 'dashboard.html')
-
 
 class History(TemplateView):
     def get(self, request):
         return render(request, 'history.html')
 
-
 class VideoAnalysis(TemplateView):
     def get(self, request):
         return render(request, 'video_analysis.html')
 
-
 class LiveStream(TemplateView):
     def get(self, request):
         return render(request, 'live_stream.html')
+
+
+
+@api_view(['GET'])
+def get_vehicle_counts(request):
+    try:
+        # number of rows inserted yesterday from object table
+        yesterday = datetime.now() - timedelta(days=1)
+        yesterday_count = Object.objects.filter(image__timestamp__date=yesterday.date()).count()
+
+        # number of rows inserted today from object table
+        today = datetime.now()
+        today_count = Object.objects.filter(image__timestamp__date=today.date()).count()
+
+        # return as json object 
+        return Response({
+            'yesterday': yesterday_count,
+            'today': today_count
+        })
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        })

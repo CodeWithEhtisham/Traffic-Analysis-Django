@@ -7,7 +7,7 @@ opencv-python-headless
 django
 django-jazzmin
 ultralytics
-
+djangorestframework
 
 
 dnspython==1.16.0

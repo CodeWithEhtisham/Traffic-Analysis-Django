@@ -193,7 +193,7 @@
                                                 class="d-flex align-items-center justify-content-end tx-24 text-uppercase font-weight-bold">yesterday
                                                 Total Traffic
                                                 <span class="p-1 ml-1 rounded-circle bg-primary-muted"></span></label>
-                                            <h5 class="font-weight-bold p-1 ml-5 " style="font-size: large;">500</h5>
+                                            <h5 class="font-weight-bold p-1 ml-5 " style="font-size: large;" id="yesterday_count">500</h5>
                                         </div>
                                     </div>
                                     <div class="col-2 d-flex justify-content-end vr">
@@ -208,7 +208,7 @@
                                                 Traffic</label>
                                             <!-- </label> -->
                                             <!-- add right margin -->
-                                            <h5 class="font-weight-bold p-1 ml-5 " style="font-size: large;">100</h5>
+                                            <h5 class="font-weight-bold p-1 ml-5 " style="font-size: large;" id="today_count">100</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -318,6 +318,23 @@
         socket.on('frame', function (data) {
             document.getElementById('image').src = "data:image/png;base64," + data;
         });
+
+        // ajax apis for getting data
+        setInterval(function () {
+            $.ajax({
+                method: "GET",
+                url: "/apis/get_vehicle_counts",
+                success: function (data) {
+                    console.log(data);
+                    document.getElementById('today_count').innerHTML = data.today;
+                    document.getElementById('yesterday_count').innerHTML = data.yesterday;
+                },
+                error: function () {
+                    console.log("error on get_vehicle_counts");
+                }
+            });
+        }, 10000); // 30 seconds in milliseconds
+
 
     </script>
 </body>

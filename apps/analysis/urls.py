@@ -1,6 +1,7 @@
 from django.urls import path
 
 from .views import Index,Dashboard,History,VideoAnalysis,LiveStream
+from .views import get_vehicle_counts
 # from django.conf.urls.static import static
 # from django.conf import settings
 # import socketio_handler
@@ -11,10 +12,9 @@ urlpatterns = [
     path('history',History.as_view() , name='history'),
     path('video_analysis',VideoAnalysis.as_view() , name='video_analysis'),
     path('live_stream',LiveStream.as_view() , name='live_stream'),
-    # path('socket.io/', socketio_handler, name='socketio_handler'),
-    # path('socket.io.js', socketio_js, name='socketio_js'),
-    # path('video/', video_stream, name='video_stream'),
-#     path('', Register.as_view(), name='register'),
+    
+    # apis urls
+    path('apis/get_vehicle_counts',get_vehicle_counts , name='get_vehicle_counts'),
 ]
 
 # urlpatterns += static('/socket.io/', document_root=os.path.join(settings.BASE_DIR, 'node_modules', 'socket.io-client', 'dist'))
