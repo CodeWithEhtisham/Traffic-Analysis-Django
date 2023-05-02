@@ -144,43 +144,59 @@ async def predict(frame):
     global model
     print('predicting',model)
     return model(frame)
+
 from .models import Stream, Image, Object
-def insert_data(resutls, frame,stream):
-    if Stream.object.filter(site_name=stream['site']).exists():
-        stream = Stream.object.get(site_name=stream['site']).get()
+def insert_data(resutls, frame,stream_metadata):
+    if Stream.objects.filter(site_name=stream_metadata['site']).exists():
+        stream = Stream.objects.get(site_name=stream_metadata['site'])
     else:
-        Stream.object.create(
-            site_name=stream['site'],
+        Stream.objects.create(
+            site_name=stream_metadata['site'],
             stream_id='1',
             stream_url='http://localhost:7000',
 
         ).save()
-        stream = Stream.object.get(site_name=stream['site']).get()
+        stream = Stream.objects.get(site_name=stream_metadata['site'])
     # save image into directory and save image path into database
-    frame.save(f'./media/{stream.site_name}/{stream.stream_id}/{stream.stream_id}_.jpg')
-    
-    Image.object.create(
+    # frame.save(f'./media/{stream.site_name}/{stream.stream_id}/{stream.stream_id}_.jpg')
+    cv2.imwrite(f'./media/{stream.site_name}/{stream.stream_id}/{stream.stream_id}_.jpg', frame)
+    print('image saved#######################33',stream_metadata['timestamp'],'#######################33')
+    Image.objects.create(
         stream=stream,
-        image=f'./media/{stream.site_name}/{stream.stream_id}/{stream.stream_id}_.jpg'
+        timestamp=stream_metadata['timestamp'],
+        image_path=f'./media/{stream.site_name}/{stream.stream_id}/{stream.stream_id}_.jpg'
     ).save()
-    image = Image.object.get(stream=stream).get()
-    for result in resutls:
-        Object.object.create(
-            image=image,
-            label=result.cls,
-            confidence=result.conf,
-            x=result.xywh[0],
-            y=result.xywh[1],
-            w=result.xywh[2],
-            h=result.xywh[3]
-        ).save()
+    image = Image.objects.filter(stream=stream).first()
+    for box in resutls:
+        boxes=box.boxes
+        for cls,conf,xywh in zip(boxes.cls,boxes.conf,boxes.xywh):
+            Object.objects.create(
+                image=image,
+                label=int(cls.item()),
+                confidence=conf,
+                x=xywh[0],
+                y=xywh[1],
+                w=xywh[2],
+                h=xywh[3]
+            ).save()
+        
+        
+        # Object.objects.create(
+        #     image=image,
+        #     label=result.cls,
+        #     confidence=result.conf,
+        #     x=result.xywh[0],
+        #     y=result.xywh[1],
+        #     w=result.xywh[2],
+        #     h=result.xywh[3]
+        # ).save()
 
 
 async def prediction():
     global latest_frame
     global stream_data
     while True:
-        print('Waiting for frame...',latest_frame)
+        # print('Waiting for frame...')
 
         if latest_frame is not None:
             # Wait for model prediction to complete

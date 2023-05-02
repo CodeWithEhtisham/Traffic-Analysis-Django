@@ -46,6 +46,7 @@ import socket
 import pickle
 import struct
 import base64
+from datetime import datetime
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client_socket.connect(('localhost', 12345))
 
@@ -58,8 +59,9 @@ while True:
 
     # Define tags
     tags = {'fps': cap.get(cv2.CAP_PROP_FPS),
-            'width': cap.get(cv2.CAP_PROP_FRAME_WIDTH),
-            'height': cap.get(cv2.CAP_PROP_FRAME_HEIGHT),
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S') ,
+            # 'width': cap.get(cv2.CAP_PROP_FRAME_WIDTH),
+            # 'height': cap.get(cv2.CAP_PROP_FRAME_HEIGHT),
             'site': 'air port road'}
 
     # Serialize tags as byte stream
