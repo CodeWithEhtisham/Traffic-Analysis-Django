@@ -23,7 +23,7 @@ import cv2
 from ultralytics import YOLO
 
 # Load the YOLOv8 model
-model = None
+model = YOLO('yolov8m.pt')
 sio = socketio.Server(async_mode='threading', cors_allowed_origins='*')
 
 print(model,'######################')
@@ -56,10 +56,11 @@ def run_socketio_server():
 
 # Define a global variable to hold the most recent frame received from the client
 latest_frame = None
-
+stream_data = None
 
 def receive_frames():
     global latest_frame
+    global stream_data
 
     # Create a socket object
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -122,6 +123,7 @@ def receive_frames():
                 image = base64.b64decode(decoded_data)
                 image = np.frombuffer(image, dtype=np.uint8)
                 latest_frame = cv2.imdecode(image, flags=1)
+                stream_data = tags
                 # Decode the frame and update the global variable
                 # latest_frame = cv2.imdecode(np.frombuffer(encoded_data, np.uint8), cv2.IMREAD_COLOR)
 
@@ -138,24 +140,54 @@ def receive_frames():
 # Start a background thread to receive frames from the client
 import asyncio
 import time
-async def predict(model, frame):
+async def predict(frame):
+    global model
+    print('predicting',model)
     return model(frame)
+from .models import Stream, Image, Object
+def insert_data(resutls, frame,stream):
+    if Stream.object.filter(site_name=stream['site']).exists():
+        stream = Stream.object.get(site_name=stream['site']).get()
+    else:
+        Stream.object.create(
+            site_name=stream['site'],
+            stream_id='1',
+            stream_url='http://localhost:7000',
+
+        ).save()
+        stream = Stream.object.get(site_name=stream['site']).get()
+    # save image into directory and save image path into database
+    frame.save(f'./media/{stream.site_name}/{stream.stream_id}/{stream.stream_id}_.jpg')
+    
+    Image.object.create(
+        stream=stream,
+        image=f'./media/{stream.site_name}/{stream.stream_id}/{stream.stream_id}_.jpg'
+    ).save()
+    image = Image.object.get(stream=stream).get()
+    for result in resutls:
+        Object.object.create(
+            image=image,
+            label=result.cls,
+            confidence=result.conf,
+            x=result.xywh[0],
+            y=result.xywh[1],
+            w=result.xywh[2],
+            h=result.xywh[3]
+        ).save()
+
 
 async def prediction():
     global latest_frame
-    global model
+    global stream_data
     while True:
+        print('Waiting for frame...',latest_frame)
+
         if latest_frame is not None:
             # Wait for model prediction to complete
-            results = await predict(model, latest_frame)
+            results = await predict(latest_frame)
 
             # Process the prediction results here
-            for result in results:
-                boxes = result.boxes  # Boxes object for bbox outputs
-                print(boxes.cls)
-                print(boxes.conf)
-                print(boxes.xywh)
-
+            threading.Thread(target=insert_data, args=(results, latest_frame,stream_data)).start()
             # Reset the latest_frame to None after processing
             # latest_frame = None
 
