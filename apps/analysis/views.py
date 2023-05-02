@@ -23,7 +23,7 @@ import cv2
 from ultralytics import YOLO
 
 # Load the YOLOv8 model
-model = YOLO('yolov8m.pt')
+model = None
 sio = socketio.Server(async_mode='threading', cors_allowed_origins='*')
 
 print(model,'######################')
@@ -44,6 +44,8 @@ def my_event(sid, data):
 
 
 def run_socketio_server():
+    global model
+    model = YOLO('yolov8m.pt')
     app = socketio.WSGIApp(sio)
     wsgi.server(eventlet.listen(('localhost', 7000)), app)
 
@@ -136,15 +138,33 @@ def receive_frames():
 # Start a background thread to receive frames from the client
 import asyncio
 import time
+async def predict(model, frame):
+    return model(frame)
+
 async def prediction():
+    global latest_frame
+    global model
     while True:
-        print('prediction')
-        await asyncio.sleep(3)
+        if latest_frame is not None:
+            # Wait for model prediction to complete
+            results = await predict(model, latest_frame)
+
+            # Process the prediction results here
+            for result in results:
+                boxes = result.boxes  # Boxes object for bbox outputs
+                print(boxes.cls)
+                print(boxes.conf)
+                print(boxes.xywh)
+
+            # Reset the latest_frame to None after processing
+            # latest_frame = None
+
+        # Sleep for a short period of time to avoid CPU-intensive looping
+        await asyncio.sleep(0.01)
 
 def callback_detection():
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-
     loop.run_until_complete(prediction())
     loop.close()
 # thread = threading.Thread(target=callback)
