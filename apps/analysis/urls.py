@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import Index,Dashboard,History,VideoAnalysis,LiveStream
-from .views import get_vehicle_counts
+from .views import get_vehicle_counts,get_objects, get_images
 # from django.conf.urls.static import static
 # from django.conf import settings
 # import socketio_handler
@@ -14,6 +14,8 @@ urlpatterns = [
     path('live_stream',LiveStream.as_view() , name='live_stream'),
     
     # apis urls
+    path('apis/get_objects',get_objects , name='get_objects'),
+    path('apis/get_images',get_images , name='get_images'),
     path('apis/get_vehicle_counts',get_vehicle_counts , name='get_vehicle_counts'),
 ]
 

@@ -251,3 +251,29 @@ def get_vehicle_counts(request):
         return Response({
             'error': str(e)
         })
+
+
+from .serializer import ObjectSerializer, ImageSerializer, StreamSerializer
+
+@api_view(['GET'])
+def get_objects(request):
+    try:
+        objects = Object.objects.all()
+        serializer = ObjectSerializer(objects, many=True)
+        return Response(serializer.data)
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        })
+    
+
+@api_view(['GET'])
+def get_images(request):
+    try:
+        images = Image.objects.all()
+        serializer = ImageSerializer(images, many=True)
+        return Response(serializer.data)
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        })
