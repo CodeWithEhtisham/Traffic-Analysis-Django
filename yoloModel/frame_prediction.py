@@ -2,7 +2,7 @@ import cv2
 from ultralytics import YOLO
 
 # Load the YOLOv8 model
-model = YOLO('yolov8m.pt')
+model = YOLO('best.pt')
 
 frame=cv2.imread('photo6.jpg')
 

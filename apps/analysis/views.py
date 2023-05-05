@@ -53,7 +53,7 @@ def my_event(sid, data):
 
 def run_socketio_server():
     global model
-    model = YOLO('yolov8m.pt')
+    model = YOLO('best.pt')
     app = socketio.WSGIApp(sio)
     wsgi.server(eventlet.listen(('localhost', 7000)), app)
 
