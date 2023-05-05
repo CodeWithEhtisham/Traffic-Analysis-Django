@@ -15,7 +15,9 @@
     <link rel="stylesheet" href="static/css/demo_1/style.css">
     <link rel="shortcut icon" href="static/images/favicon.png" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.1/echarts.min.js" integrity="sha512-OTbGFYPLe3jhy4bUwbB8nls0TFgz10kn0TLkmyA+l3FyivDs31zsXCjOis7YGDtE2Jsy0+fzW+3/OVoPVujPmQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.1/echarts.min.js"
+        integrity="sha512-OTbGFYPLe3jhy4bUwbB8nls0TFgz10kn0TLkmyA+l3FyivDs31zsXCjOis7YGDtE2Jsy0+fzW+3/OVoPVujPmQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <body>
@@ -134,15 +136,18 @@
                     </div>
                     <div class="d-flex align-items-center flex-wrap text-nowrap">
 
-                        <a type="button" class="btn btn-outline-info btn-icon-text mr-2 d-none d-md-block" href="{% url 'history' %}">
+                        <a type="button" class="btn btn-outline-info btn-icon-text mr-2 d-none d-md-block"
+                            href="{% url 'history' %}">
                             <i class="btn-icon-prepend" data-feather="activity"></i>
                             History
                         </a>
-                        <a type="button" class="btn btn-outline-primary btn-icon-text mr-2 mb-2 mb-md-0" href="{% url 'video_analysis' %}">
+                        <a type="button" class="btn btn-outline-primary btn-icon-text mr-2 mb-2 mb-md-0"
+                            href="{% url 'video_analysis' %}">
                             <i class="btn-icon-prepend" data-feather="video"></i>
                             Video Analysis
                         </a>
-                        <a type="button" class="btn btn-primary btn-icon-text mb-2 mb-md-0" href="{% url 'live_stream' %}">
+                        <a type="button" class="btn btn-primary btn-icon-text mb-2 mb-md-0"
+                            href="{% url 'live_stream' %}">
                             <i class="btn-icon-prepend" data-feather="bar-chart"></i>
                             Live Stream Analysis
                         </a>
@@ -179,7 +184,7 @@
 
                 <!-- second row start -->
                 <div class="row">
-                    
+
                     <!-- plot chart with dynamic font-size -->
                     <div class="col-xl-12 grid-margin stretch-card">
                         <div class="card">
@@ -229,7 +234,7 @@
                     <!-- bar chart End -->
 
                 </div>
-                
+
 
 
 
@@ -257,8 +262,40 @@
     <script src="static/js/chartjs.js"></script>
     <script src="static/js/apexcharts.js"></script>
     <script src="static/js/echart.js"></script>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+
     <!-- <script src="static/js/morris.js"></script> -->
-    
+    <script>
+        const socket = io.connect('http://127.0.0.1:7000');
+        socket.on('connect', function () {
+            console.log('connected');
+        });
+
+        socket.on('disconnect', function () {
+            console.log('disconnected');
+        });
+
+
+        socket.on('frame', function (data) {
+            document.getElementById('image').src = "data:image/png;base64," + data;
+        });
+
+        // ajax apis for getting data
+        setInterval(function () {
+            $.ajax({
+                method: "GET",
+                url: "/apis/get_objects",
+                success: function (data) {
+                    console.log(data);},
+                error: function () {
+                    console.log("error on get_objects");
+                }
+            });
+        }, 10000); // 30 seconds in milliseconds
+
+
+    </script>
+
 </body>
 
 </html>
