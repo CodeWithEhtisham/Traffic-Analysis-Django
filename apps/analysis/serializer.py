@@ -14,7 +14,7 @@ class ImageSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ObjectSerializer(serializers.ModelSerializer):
-    image = ImageSerializer(read_only=True)
+    # image = ImageSerializer(read_only=True)
     class Meta:
         model = Object
         fields = '__all__'
@@ -25,7 +25,7 @@ class ObjectSerializer2(serializers.ModelSerializer):
         fields = '__all__'
 
 class ImageWithObjectsSerializer(serializers.ModelSerializer):
-    objects = ObjectSerializer(many=True, read_only=True)
+    objects = ObjectSerializer(many=True, read_only=True,source='object_set')
     
     class Meta:
         model = Image

@@ -32,7 +32,7 @@ latest_frame = None
 stream_data = None
 
 # Load the YOLOv8 model
-model = YOLO('yolov8m.pt')
+model = YOLO('best.pt')
 sio = socketio.Server(async_mode='threading', cors_allowed_origins='*')
 
 print(model,'######################')
@@ -284,7 +284,7 @@ def get_images(request):
 @api_view(['GET'])
 def get_image_objects(request):
     try:
-        images_with_objects = Image.objects.all().prefetch_related('object_set')
+        images_with_objects = Image.objects.prefetch_related('object_set').filter(id=1)
         serializer = ImageWithObjectsSerializer(images_with_objects, many=True)
         return Response(serializer.data)
     except Exception as e:
