@@ -253,12 +253,12 @@ def get_vehicle_counts(request):
         })
 
 
-from .serializer import ObjectSerializer, ImageSerializer, StreamSerializer
-
+from .serializer import ObjectSerializer, ImageSerializer, StreamSerializer,ImageWithObjectsSerializer
+from django.db.models import Prefetch
 @api_view(['GET'])
 def get_objects(request):
     try:
-        objects = Object.objects.all()
+        objects = Object.objects.all().order_by('-id')[0:10]
         serializer = ObjectSerializer(objects, many=True)
         return Response(serializer.data)
     except Exception as e:
@@ -270,8 +270,22 @@ def get_objects(request):
 @api_view(['GET'])
 def get_images(request):
     try:
+        # images = Image.objects.prefetch_related(Prefetch('object_set', queryset=Object.objects.all()))
+        # print(images[0])
         images = Image.objects.all()
         serializer = ImageSerializer(images, many=True)
+        return Response(serializer.data)
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        })
+    
+
+@api_view(['GET'])
+def get_image_objects(request):
+    try:
+        images_with_objects = Image.objects.all().prefetch_related('object_set')
+        serializer = ImageWithObjectsSerializer(images_with_objects, many=True)
         return Response(serializer.data)
     except Exception as e:
         return Response({

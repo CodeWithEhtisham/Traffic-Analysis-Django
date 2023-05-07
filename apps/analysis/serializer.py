@@ -23,3 +23,10 @@ class ObjectSerializer2(serializers.ModelSerializer):
     class Meta:
         model = Object
         fields = '__all__'
+
+class ImageWithObjectsSerializer(serializers.ModelSerializer):
+    objects = ObjectSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = Image
+        fields = '__all__'

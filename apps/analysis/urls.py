@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import Index,Dashboard,History,VideoAnalysis,LiveStream
-from .views import get_vehicle_counts,get_objects, get_images
+from .views import get_vehicle_counts,get_objects, get_images,get_image_objects
 # from django.conf.urls.static import static
 # from django.conf import settings
 # import socketio_handler
@@ -17,6 +17,7 @@ urlpatterns = [
     path('apis/get_objects',get_objects , name='get_objects'),
     path('apis/get_images',get_images , name='get_images'),
     path('apis/get_vehicle_counts',get_vehicle_counts , name='get_vehicle_counts'),
+    path('apis/get_image_objects',get_image_objects , name='get_image_objects'),
 ]
 
 # urlpatterns += static('/socket.io/', document_root=os.path.join(settings.BASE_DIR, 'node_modules', 'socket.io-client', 'dist'))
