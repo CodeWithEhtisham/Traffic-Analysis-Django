@@ -11,9 +11,13 @@ cap = cv2.VideoCapture(video_path)
 # Define the codec and create VideoWriter object
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Choose the video codec
 out = cv2.VideoWriter('output.mp4', fourcc, 25.0, (0, 0))
-
+import time 
+start = time.time()
+i =0
 # Loop through the video frames
 while cap.isOpened():
+    print(i)
+    i+=1
     # Read a frame from the video
     success, frame = cap.read()
 
@@ -28,7 +32,7 @@ while cap.isOpened():
         out.write(annotated_frame)
 
         # Display the annotated frame
-        cv2.imshow("YOLOv8 Inference", annotated_frame)
+        # cv2.imshow("YOLOv8 Inference", annotated_frame)
 
         # Break the loop if 'q' is pressed
         if cv2.waitKey(1) & 0xFF == ord("q"):
@@ -36,7 +40,7 @@ while cap.isOpened():
     else:
         # Break the loop if the end of the video is reached
         break
-
+print(f"Time taken: {time.time()-start}")
 # Release the video capture object, the VideoWriter object, and close the display window
 cap.release()
 out.release()

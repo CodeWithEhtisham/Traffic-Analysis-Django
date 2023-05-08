@@ -259,9 +259,10 @@
     <script src="static/js/template.js"></script>
     <script src="static/js/dashboard.js"></script>
     <script src="static/js/datepicker.js"></script>
-    <script src="static/js/chartjs.js"></script>
-    <script src="static/js/apexcharts.js"></script>
-    <script src="static/js/echart.js"></script>
+    <script src="static/js/dynamic-plots.js"></script>
+    <!-- <script src="static/js/chartjs.js"></script> -->
+    <!-- <script src="static/js/apexcharts.js"></script> -->
+    <!-- <script src="static/js/echart.js"></script> -->
     <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
 
     <!-- <script src="static/js/morris.js"></script> -->
@@ -281,17 +282,17 @@
         });
 
         // ajax apis for getting data
-        setInterval(function () {
-            $.ajax({
-                method: "GET",
-                url: "/apis/get_image_objects",
-                success: function (data) {
-                    console.log(data);},
-                error: function () {
-                    console.log("error on get_objects");
-                }
-            });
-        }, 10000); // 30 seconds in milliseconds
+        // setInterval(function () {
+        //     $.ajax({
+        //         method: "GET",
+        //         url: "/apis/get_image_objects",
+        //         success: function (data) {
+        //             console.log(data);},
+        //         error: function () {
+        //             console.log("error on get_objects");
+        //         }
+        //     });
+        // }, 10000); // 30 seconds in milliseconds
 
 
     </script>

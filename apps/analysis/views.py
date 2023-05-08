@@ -30,6 +30,7 @@ from datetime import datetime, timedelta
 # Define a global variable to hold the most recent frame received from the client
 latest_frame = None
 stream_data = None
+labels = ['car','bus','van','truck','bike','rickshaw']
 
 # Load the YOLOv8 model
 model = YOLO('best.pt')
@@ -153,20 +154,20 @@ def insert_data(resutls, frame,stream_metadata):
         stream = Stream.objects.get(site_name=stream_metadata['site'])
     # save image into directory and save image path into database
     # frame.save(f'./media/{stream.site_name}/{stream.stream_id}/{stream.stream_id}_.jpg')
-    cv2.imwrite(f'./media/{stream.site_name}/{stream.stream_id}/{stream.stream_id}_.jpg', frame)
+    cv2.imwrite(f'./media/{stream.site_name}/{stream.stream_id}/{stream_metadata["timestamp"]}_.jpg', frame)
     print('image saved#######################33',stream_metadata['timestamp'],'#######################33')
     Image.objects.create(
         stream=stream,
         timestamp=stream_metadata['timestamp'],
-        image_path=f'./media/{stream.site_name}/{stream.stream_id}/{stream.stream_id}_.jpg'
+        image_path=f'./media/{stream.site_name}/{stream.stream_id}/{stream_metadata["timestamp"]}.jpg'
     ).save()
-    image = Image.objects.filter(stream=stream).first()
+    image = Image.objects.filter(stream=stream).last()
     for box in resutls:
         boxes=box.boxes
         for cls,conf,xywh in zip(boxes.cls,boxes.conf,boxes.xywh):
             Object.objects.create(
                 image=image,
-                label=int(cls.item()),
+                label=labels[int(cls.item())],
                 confidence=conf,
                 x=xywh[0],
                 y=xywh[1],
@@ -280,11 +281,11 @@ def get_images(request):
             'error': str(e)
         })
     
-
+from django.db.models import F
 @api_view(['GET'])
 def get_image_objects(request):
     try:
-        images_with_objects = Image.objects.prefetch_related('object_set').filter(id=1)
+        images_with_objects = Image.objects.prefetch_related('object_set').all().order_by('-id')[0:20][::-1]
         serializer = ImageWithObjectsSerializer(images_with_objects, many=True)
         return Response(serializer.data)
     except Exception as e:
