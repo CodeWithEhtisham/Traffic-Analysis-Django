@@ -50,7 +50,7 @@ var chart = new Chart(ctx, {
             }],
             xAxes: [{
                 type: 'category',
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug']
+                labels: []
             }]
         }
     }
@@ -67,11 +67,12 @@ setInterval(function () {
             var bikeData = [];
             var rickshawData = [];
             var vanData = [];
+            var dateLabels = [];
             
             // console.log(data);
             data.forEach(item => {
-                // var date = new Date(item.timestamp);
-                // dateLabels.push(date.toLocaleDateString());
+                var date = new Date(item.timestamp);
+                dateLabels.push(date.toLocaleTimeString());
                 item.objects.forEach(obj => {
                     // console.log(obj);
                     switch (obj.label) {
@@ -104,7 +105,8 @@ setInterval(function () {
             chart.data.datasets[3].data = bikeData;
             chart.data.datasets[4].data = rickshawData;
             chart.data.datasets[5].data = vanData;
-            // chart.data.labels = dateLabels;
+            console.log(dateLabels);
+            chart.options.scales.xAxes[0].labels = dateLabels;
 
             // Redraw the chart
             chart.update();
