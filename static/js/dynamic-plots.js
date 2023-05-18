@@ -56,77 +56,6 @@ var chart = new Chart(ctx, {
     }
 });
 
-setInterval(function () {
-    $.ajax({
-        method: "GET",
-        url: "/apis/get_image_objects",
-        success: function (data) {
-            var carData = [];
-            var busData = [];
-            var truckData = [];
-            var bikeData = [];
-            var rickshawData = [];
-            var vanData = [];
-            var dateLabels = [];
-            
-            // console.log(data);
-            data.forEach(item => {
-                var date = new Date(item.timestamp);
-                dateLabels.push(date.toLocaleTimeString());
-                item.objects.forEach(obj => {
-                    // console.log(obj);
-                    switch (obj.label) {
-                        case 'car':
-                            carData.push(obj.confidence);
-                            break;
-                        case 'bus':
-                            busData.push(obj.confidence);
-                            break;
-                        case 'truck':
-                            truckData.push(obj.confidence);
-                            break;
-                        case 'bike':
-                            bikeData.push(obj.confidence);
-                            break;
-                        case 'rickshaw':
-                            rickshawData.push(obj.confidence);
-                            break;
-                        case 'van':
-                            vanData.push(obj.confidence);
-                            break;
-                    }
-                });
-            });
-
-            // Update the chart data
-            chart.data.datasets[0].data = carData;
-            chart.data.datasets[1].data = busData;
-            chart.data.datasets[2].data = truckData;
-            chart.data.datasets[3].data = bikeData;
-            chart.data.datasets[4].data = rickshawData;
-            chart.data.datasets[5].data = vanData;
-            console.log(dateLabels);
-            chart.options.scales.xAxes[0].labels = dateLabels;
-
-            // Redraw the chart
-            chart.update();
-        },
-        error: function () {
-            console.log("error on get_objects");
-        }
-    });
-}, 10000); // 30 seconds in milliseconds
-
-// setInterval(function () {
-//     fetch('/apis/get_image_objects')
-//     .then(response => response.json())
-//     .then(data => {
-//         // Extract the data for each dataset
-
-//     })
-//     .catch(error => console.error(error));
-// }, 10000); 
-
 var app = {};
 
 var chartDom = document.getElementById('echartbar');
@@ -323,33 +252,31 @@ option = {
 
 option && myChart.setOption(option);
 
+var options = {
+    chart: {
+        type: 'bar',
+        height: '320',
+        parentHeightOffset: 0
+    },
+    colors: ["#f77eb9"],
+    grid: {
+        borderColor: "rgba(77, 138, 240, .1)",
+        padding: {
+            bottom: -6
+        }
+    },
+    series: [{
+        name: 'sales',
+        data: [200, 150, 10, 4, 5, 200]
+    }],
+    xaxis: {
+        // type: 'datetime',
+        categories: ['Car', "Rickshaw", "Bus", "Van", "Truck", "Motorcycle"]
+    }
+}
+var apexBarChart = new ApexCharts(document.querySelector("#apexBar"), options);
 $(function () {
     'use strict';
-
-    var options = {
-        chart: {
-            type: 'bar',
-            height: '320',
-            parentHeightOffset: 0
-        },
-        colors: ["#f77eb9"],
-        grid: {
-            borderColor: "rgba(77, 138, 240, .1)",
-            padding: {
-                bottom: -6
-            }
-        },
-        series: [{
-            name: 'sales',
-            data: [200, 150, 10, 4, 5, 200]
-        }],
-        xaxis: {
-            // type: 'datetime',
-            categories: ['Car', "Rickshaw", "Bus", "Van", "Truck", "Motorcycle"]
-        }
-    }
-
-    var apexBarChart = new ApexCharts(document.querySelector("#apexBar"), options);
 
     apexBarChart.render();
 
@@ -377,3 +304,64 @@ $(function () {
 
 });
 
+
+setInterval(function () {
+    $.ajax({
+        method: "GET",
+        url: "/apis/get_image_objects",
+        success: function (data) {
+            // Line Chart Data
+            var lineCarData = [];
+            var lineBusData = [];
+            var lineTruckData = [];
+            var lineBikeData = [];
+            var lineRickshawData = [];
+            var lineVanData = [];
+            var lineDateLabels = [];
+
+
+
+            data.forEach(item => {
+                var date = new Date(item.timestamp);
+                lineDateLabels.push(date.toLocaleTimeString());
+                item.objects.forEach(obj => {
+                    switch (obj.label) {
+                        case 'car':
+                            lineCarData.push(obj.confidence);
+                            break;
+                        case 'bus':
+                            lineBusData.push(obj.confidence);
+                            break;
+                        case 'truck':
+                            lineTruckData.push(obj.confidence);
+                            break;
+                        case 'bike':
+                            lineBikeData.push(obj.confidence);
+                            break;
+                        case 'rickshaw':
+                            lineRickshawData.push(obj.confidence);
+                            break;
+                        case 'van':
+                            lineVanData.push(obj.confidence);
+                            break;
+                    }
+                });
+            });
+
+            // Update Line Chart Data
+            chart.data.datasets[0].data = lineCarData;
+            chart.data.datasets[1].data = lineBusData;
+            chart.data.datasets[2].data = lineTruckData;
+            chart.data.datasets[3].data = lineBikeData;
+            chart.data.datasets[4].data = lineRickshawData;
+            chart.data.datasets[5].data = lineVanData;
+            chart.options.scales.xAxes[0].labels = lineDateLabels;
+            chart.update();
+            apexBarChart.updateSeries([{ data: [lineCarData.length,lineBusData.length,lineTruckData.length,lineBikeData.length,lineRickshawData.length,lineVanData.length]}])
+            apexBarChart.update()
+        },
+        error: function () {
+            console.log("Error on getting data");
+        }
+    });
+}, 10000); // 10 seconds in milliseconds
