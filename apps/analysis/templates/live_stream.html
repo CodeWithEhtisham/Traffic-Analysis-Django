@@ -1,24 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>NobleUI Responsive Bootstrap 4 Dashboard Template</title>
-	<!-- core:css -->
-	<link rel="stylesheet" href="static/vendors/core/core.css">
-	<!-- endinject -->
-  <!-- plugin css for this page -->
-	<!-- end plugin css for this page -->
-	<!-- inject:css -->
-	<link rel="stylesheet" href="static/fonts/feather-font/css/iconfont.css">
-	<link rel="stylesheet" href="static/vendors/flag-icon-css/css/flag-icon.min.css">
-	<!-- endinject -->
-  <!-- Layout styles -->  
-	<link rel="stylesheet" href="static/css/demo_1/style.css">
-  <!-- End layout styles -->
-  <link rel="shortcut icon" href="static/images/favicon.png" />
-</head>
+{% extends 'base.html'%}
+{% load static %}
+{% block content%}
+
 <body>
 	<div class="main-wrapper">
 		<div class="page-wrapper full-page">
@@ -50,4 +33,4 @@
   <!-- custom js for this page -->
 	<!-- end custom js for this page -->
 </body>
-</html>
+{%endblock%}

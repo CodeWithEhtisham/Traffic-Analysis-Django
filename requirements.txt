@@ -1,9 +1,9 @@
 numpy
-onnxruntime
+#onnxruntime
 opencv-python-headless
-# pycuda
-# tensorrt
-# torch
+#pycuda
+#tensorrt
+#torch
 django
 django-jazzmin
 ultralytics
@@ -11,12 +11,12 @@ djangorestframework
 
 
 dnspython==1.16.0
-enum-compat==0.0.3
+#enum-compat==0.0.3
 eventlet==0.25.2
 greenlet==0.4.16
-monotonic==1.5
+#monotonic==1.5
 python-engineio
 python-socketio
-pytz==2020.1
-six==1.15.0
+#pytz==2020.1
+#six==1.15.0
 gunicorn
