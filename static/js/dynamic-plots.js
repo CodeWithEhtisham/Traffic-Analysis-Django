@@ -275,34 +275,54 @@ var options = {
     }
 }
 var apexBarChart = new ApexCharts(document.querySelector("#apexBar"), options);
-$(function () {
-    'use strict';
+apexBarChart.render();
 
-    apexBarChart.render();
-
-    if ($('#chartjsArea').length) {
-        new Chart($('#chartjsArea'), {
-            type: 'line',
-            data: {
-                // lable must be an array of time series data
-                labels: [
-                    "00:03:00", "00:06:00", "00:09:00", "00:12:00", "00:15:00", "00:18:00", "00:21:00", "00:24:00", "00:27:00", "00:30:00", "00:33:00", "00:36:00", "00:39:00", "00:42:00", "00:45:00", "00:48:00", "00:51:00", "00:54:00", "00:57:00", "01:00:00"],
-                datasets: [{
-                    data: [10, 6, 2, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 58, 62, 66, 70],
-                    label: "Traffic flow",
-                    borderColor: "#f77eb9",
-                    backgroundColor: "#ffbedd",
-                    fill: true,
-                    // LINE LITTLE BIT CURVE
-                    lineTension: 0.3,
-
+var chartarea = new Chart($('#chartjsArea'), {
+    type: 'line',
+    data: {
+        labels: [], // Initialize with empty labels
+        datasets: [
+            // Define your datasets here
+        ]
+    },
+    options: {
+        scales: {
+            xAxes: [{
+                ticks: {
+                    beginAtZero: true
                 }
-                ]
-            }
-        });
+            }]
+        }
     }
-
 });
+// $(function () {
+//     'use strict';
+
+//     apexBarChart.render();
+
+//     if ($('#chartjsArea').length) {
+//         new Chart($('#chartjsArea'), {
+//             type: 'line',
+//             data: {
+//                 // lable must be an array of time series data
+//                 labels: [
+//                     "00:03:00", "00:06:00", "00:09:00", "00:12:00", "00:15:00", "00:18:00", "00:21:00", "00:24:00", "00:27:00", "00:30:00", "00:33:00", "00:36:00", "00:39:00", "00:42:00", "00:45:00", "00:48:00", "00:51:00", "00:54:00", "00:57:00", "01:00:00"],
+//                 datasets: [{
+//                     data: [10, 6, 2, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 58, 62, 66, 70],
+//                     label: "Traffic flow",
+//                     borderColor: "#f77eb9",
+//                     backgroundColor: "#ffbedd",
+//                     fill: true,
+//                     // LINE LITTLE BIT CURVE
+//                     lineTension: 0.3,
+
+//                 }
+//                 ]
+//             }
+//         });
+//     }
+
+// });
 
 
 setInterval(function () {
@@ -310,6 +330,7 @@ setInterval(function () {
         method: "GET",
         url: "/apis/get_image_objects",
         success: function (data) {
+            console.log(data[0])
             // Line Chart Data
             var lineCarData = [];
             var lineBusData = [];
@@ -318,13 +339,19 @@ setInterval(function () {
             var lineRickshawData = [];
             var lineVanData = [];
             var lineDateLabels = [];
+            var lineData = [];
+            var lineTimestamp = [];
 
 
 
             data.forEach(item => {
                 var date = new Date(item.timestamp);
-                lineDateLabels.push(date.toLocaleTimeString());
+                let time = date.toLocaleTimeString();
+                lineDateLabels.push(time);
+                lineTimestamp.push(time);
+                var count = 0;
                 item.objects.forEach(obj => {
+                    // console.log('acd',count);
                     switch (obj.label) {
                         case 'car':
                             lineCarData.push(obj.confidence);
@@ -345,8 +372,12 @@ setInterval(function () {
                             lineVanData.push(obj.confidence);
                             break;
                     }
+                    // total count
+                    count += 1;
                 });
+                lineData.push(count);
             });
+
 
             // Update Line Chart Data
             chart.data.datasets[0].data = lineCarData;
@@ -357,11 +388,33 @@ setInterval(function () {
             chart.data.datasets[5].data = lineVanData;
             chart.options.scales.xAxes[0].labels = lineDateLabels;
             chart.update();
-            apexBarChart.updateSeries([{ data: [lineCarData.length,lineBusData.length,lineTruckData.length,lineBikeData.length,lineRickshawData.length,lineVanData.length]}])
+            apexBarChart.updateSeries([{ data: [lineCarData.length,lineRickshawData.length,lineBusData.length,lineVanData.length,lineTruckData.length,lineBikeData.length]}])
             apexBarChart.update()
+
+            // fixed line data into 50 length
+            if (lineCarData.length > 50) {
+                // get last 50 data
+                lineData = lineData.slice(Math.max(lineData.length - 50, 1));
+                lineTimestamp = lineTimestamp.slice(Math.max(lineTimestamp.length - 50, 1));
+            }
+
+            // update chartjsArea data
+            chartarea.data.labels = lineTimestamp;
+            chartarea.data.datasets = [{
+                data: lineData,
+                label: "Traffic flow",
+                borderColor: "#f77eb9",
+                backgroundColor: "#ffbedd",
+                fill: true,
+                // LINE LITTLE BIT CURVE
+                lineTension: 0.3,
+            }];
+            chartarea.update();
+
+
         },
         error: function () {
             console.log("Error on getting data");
         }
     });
-}, 10000); // 10 seconds in milliseconds
+}, 5000); // 10 seconds in milliseconds
