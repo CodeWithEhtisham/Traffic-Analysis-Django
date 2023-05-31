@@ -1,6 +1,6 @@
 var ctx = document.getElementById('multiline').getContext('2d');
 
-var chart = new Chart(ctx, {
+var multiline_chart = new Chart(ctx, {
     type: 'line',
     data: {
         datasets: [{
@@ -45,7 +45,12 @@ var chart = new Chart(ctx, {
         scales: {
             yAxes: [{
                 ticks: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    // yxes sholud be number only not float
+                    // precision: 0 
+
+
+                    
                 }
             }],
             xAxes: [{
@@ -295,58 +300,29 @@ var chartarea = new Chart($('#chartjsArea'), {
         }
     }
 });
-// $(function () {
-//     'use strict';
 
-//     apexBarChart.render();
 
-//     if ($('#chartjsArea').length) {
-//         new Chart($('#chartjsArea'), {
-//             type: 'line',
-//             data: {
-//                 // lable must be an array of time series data
-//                 labels: [
-//                     "00:03:00", "00:06:00", "00:09:00", "00:12:00", "00:15:00", "00:18:00", "00:21:00", "00:24:00", "00:27:00", "00:30:00", "00:33:00", "00:36:00", "00:39:00", "00:42:00", "00:45:00", "00:48:00", "00:51:00", "00:54:00", "00:57:00", "01:00:00"],
-//                 datasets: [{
-//                     data: [10, 6, 2, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 58, 62, 66, 70],
-//                     label: "Traffic flow",
-//                     borderColor: "#f77eb9",
-//                     backgroundColor: "#ffbedd",
-//                     fill: true,
-//                     // LINE LITTLE BIT CURVE
-//                     lineTension: 0.3,
-
-//                 }
-//                 ]
-//             }
-//         });
-//     }
-
-// });
-
+var lineCarData = [];
+var lineBusData = [];
+var lineTruckData = [];
+var lineBikeData = [];
+var lineRickshawData = [];
+var lineVanData = [];
+var lineDateLabels = [];
+var lineData = [];
+var lineTimestamp = [];
 
 setInterval(function () {
     $.ajax({
         method: "GET",
         url: "/apis/get_image_objects",
         success: function (data) {
-            console.log(data[0])
+            // console.log(data[0])
             // Line Chart Data
-            var lineCarData = [];
-            var lineBusData = [];
-            var lineTruckData = [];
-            var lineBikeData = [];
-            var lineRickshawData = [];
-            var lineVanData = [];
-            var lineDateLabels = [];
-            var lineData = [];
-            var lineTimestamp = [];
-
-
-
+            let Car=0;let Bike=0;let Rickshaw=0;let Bus=0;let Van=0;let Truck=0;let time=0;
             data.forEach(item => {
                 var date = new Date(item.timestamp);
-                let time = date.toLocaleTimeString();
+                time = date.toLocaleTimeString();
                 lineDateLabels.push(time);
                 lineTimestamp.push(time);
                 var count = 0;
@@ -354,22 +330,22 @@ setInterval(function () {
                     // console.log('acd',count);
                     switch (obj.label) {
                         case 'car':
-                            lineCarData.push(obj.confidence);
+                            Car+=1;
                             break;
                         case 'bus':
-                            lineBusData.push(obj.confidence);
+                            Bus+=1;
                             break;
                         case 'truck':
-                            lineTruckData.push(obj.confidence);
+                            Truck+=1;
                             break;
                         case 'bike':
-                            lineBikeData.push(obj.confidence);
+                            Bike+=1;
                             break;
                         case 'rickshaw':
-                            lineRickshawData.push(obj.confidence);
+                            Rickshaw+=1;
                             break;
                         case 'van':
-                            lineVanData.push(obj.confidence);
+                            Van+=1;
                             break;
                     }
                     // total count
@@ -380,14 +356,16 @@ setInterval(function () {
 
 
             // Update Line Chart Data
-            chart.data.datasets[0].data = lineCarData;
-            chart.data.datasets[1].data = lineBusData;
-            chart.data.datasets[2].data = lineTruckData;
-            chart.data.datasets[3].data = lineBikeData;
-            chart.data.datasets[4].data = lineRickshawData;
-            chart.data.datasets[5].data = lineVanData;
-            chart.options.scales.xAxes[0].labels = lineDateLabels;
-            chart.update();
+            console.log(Car);
+            multiline_chart.data.datasets[0].data.push(Car);
+            multiline_chart.data.datasets[1].data.push(Rickshaw);
+            multiline_chart.data.datasets[2].data.push(Bus);
+            multiline_chart.data.datasets[3].data.push(Van);
+            multiline_chart.data.datasets[4].data.push(Truck);
+            multiline_chart.data.datasets[5].data.push(Bike);
+
+            multiline_chart.options.scales.xAxes[0].labels.push(time);
+            multiline_chart.update();
             apexBarChart.updateSeries([{ data: [lineCarData.length,lineRickshawData.length,lineBusData.length,lineVanData.length,lineTruckData.length,lineBikeData.length]}])
             apexBarChart.update()
 

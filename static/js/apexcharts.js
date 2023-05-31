@@ -66,32 +66,32 @@ $(function() {
   // Apex Line chart end
 
   // Apex Bar chart start
-  var options = {
-    chart: {
-      type: 'bar',
-      height: '320',
-      parentHeightOffset: 0
-    },
-    colors: ["#f77eb9"],    
-    grid: {
-      borderColor: "rgba(77, 138, 240, .1)",
-      padding: {
-        bottom: -6
-      }
-    },
-    series: [{
-      name: 'sales',
-      data: [200,150,10,4,5,200]
-    }],
-    xaxis: {
-      // type: 'datetime',
-      categories: ['Car',"Rickshaw","Bus","Van","Truck","Motorcycle"]
-    }
-  }
+  // var options = {
+  //   chart: {
+  //     type: 'bar',
+  //     height: '320',
+  //     parentHeightOffset: 0
+  //   },
+  //   colors: ["#f77eb9"],    
+  //   grid: {
+  //     borderColor: "rgba(77, 138, 240, .1)",
+  //     padding: {
+  //       bottom: -6
+  //     }
+  //   },
+  //   series: [{
+  //     name: 'sales',
+  //     data: [200,150,10,4,5,200]
+  //   }],
+  //   xaxis: {
+  //     // type: 'datetime',
+  //     categories: ['Car',"Rickshaw","Bus","Van","Truck","Motorcycle"]
+  //   }
+  // }
   
-  var apexBarChart = new ApexCharts(document.querySelector("#apexBar"), options);
+  // var apexBarChart = new ApexCharts(document.querySelector("#apexBar"), options);
   
-  apexBarChart.render();
+  // apexBarChart.render();
   // Apex Bar chart end
 
   // Apex Area chart start
