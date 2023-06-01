@@ -197,6 +197,8 @@ async def prediction():
             results = await predict(latest_frame)
 
             # Process the prediction results here
+            print(results[0])
+            sio.emit('prediction_result', results[0].names)
             threading.Thread(target=insert_data, args=(results, latest_frame,stream_data)).start()
             # Reset the latest_frame to None after processing
             # latest_frame = None

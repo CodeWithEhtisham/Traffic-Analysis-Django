@@ -256,27 +256,15 @@
     <script src="static/vendors/feather-icons/feather.min.js"></script><script src="static/js/template.js"></script>
     <script src="static/js/dashboard.js"></script>
     <script src="static/js/datepicker.js"></script>
-    <script src="static/js/dynamic-plots.js"></script>
     <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+    <script src="static/js/dynamic-plots.js"></script>
 
     <!-- <script src="static/js/morris.js"></script> -->
-    <script>
-        const socket = io.connect('http://127.0.0.1:7000');
-        socket.on('connect', function () {
-            console.log('connected');
-        });
-
-        socket.on('disconnect', function () {
-            console.log('disconnected');
-        });
+    <!-- <script>
+        
 
 
-        socket.on('frame', function (data) {
-            document.getElementById('image').src = "data:image/png;base64," + data;
-        });
-
-
-    </script>
+    </script> -->
 
 </body>
 
