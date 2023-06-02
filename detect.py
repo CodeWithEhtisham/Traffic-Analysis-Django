@@ -5,7 +5,7 @@ from ultralytics import YOLO
 import argparse
 
 ap = argparse.ArgumentParser()
-ap.add_argument("-v", "--video", required=True,
+ap.add_argument("-v", "--frame", required=True,
 	help="path to input frame")
 ap.add_argument("-y", "--yolo", required=True,
  	help="base path to YOLO directory")
@@ -70,7 +70,7 @@ class_list = data.split("\n")
 COLORS = np.random.randint(0, 255, size=(len(class_list), 3),
     dtype="uint8")
 
-cap=cv2.VideoCapture(args["video"])
+cap=cv2.VideoCapture(args["frame"])
 
 
 while True:  
