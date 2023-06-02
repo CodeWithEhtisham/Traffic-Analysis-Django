@@ -11,7 +11,7 @@ ap.add_argument("-y", "--yolo", required=True,
  	help="base path to YOLO directory")
 ap.add_argument("-n", "--names",
  	help="base path to YOLO directory", default='torchweight/names.txt')
-ap.add_argument("-c", "--confidence", type=float, default=0.2,
+ap.add_argument("-c", "--conf", type=float, default=0.2,
  	help="minimum probability to filter weak detections")
 args = vars(ap.parse_args())
 
@@ -108,7 +108,7 @@ while True:
         confidence=float(row[4])
         obj = int(row[5])
         classes = class_list[obj]
-        if confidence > args['confidence']:    
+        if confidence > args['conf']:    
             (x, y) = (int(row[0]), int(row[1]))
             (w, h) = (int(row[2]), int(row[3]))
             center = (x + w) / 2, (y + h) / 2
