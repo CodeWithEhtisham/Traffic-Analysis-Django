@@ -1,0 +1,6 @@
+car
+bus
+van
+truck
+bike
+rickshaw
