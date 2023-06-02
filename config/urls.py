@@ -27,6 +27,10 @@ urlpatterns = [
     path('', include('apps.analysis.urls')),
 
 ]
+<<<<<<< HEAD
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)
+=======
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+>>>>>>> 0c617537db299ad2ce2d5921795e8e49d1f7192b

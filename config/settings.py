@@ -178,7 +178,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+<<<<<<< HEAD
     'apps.customUser',
+=======
+    'rest_framework',
+    'apps.user',
+>>>>>>> 0c617537db299ad2ce2d5921795e8e49d1f7192b
     'apps.analysis',
 ]
 
