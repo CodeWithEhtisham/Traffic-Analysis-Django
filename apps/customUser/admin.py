@@ -7,11 +7,12 @@ class CustomUserAdmin(UserAdmin):
     add_form = UserRegisterationForm
     form = UserRegisterationChangeForm
     model = CustomUser
-    list_display = ('user_name', 'cnic', 'email', 'is_active', 'is_staff', 'date_joined', 'last_login')
+    list_display = ('user_name', 'cnic', 'phone', 'email',
+                    'is_active', 'is_staff', 'date_joined', 'last_login')
     list_filter = ('cnic', 'date_joined', )
     
     fieldsets = (
-        (None, {"fields": ('user_name', 'cnic', "email", "password")}),
+        (None, {"fields": ("user_name", "last_name", "cnic", "phone","address", "email", "user_img" ,"password")}),
         ("Permissions", {"fields": ("is_staff", "is_active", "groups", "user_permissions")}),
     )
     

@@ -22,7 +22,7 @@ def user_login(request):
 			if user is not None and user.is_active and user.is_staff:
 				login(request, user)
 
-				return redirect('users:login')
+				return redirect('index')
 			else:
 				HttpResponse('You are Not Authorized User')
 			
