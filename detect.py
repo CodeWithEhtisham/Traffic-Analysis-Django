@@ -13,6 +13,7 @@ ap.add_argument("-n", "--names",
  	help="base path to YOLO directory", default='torchweight/names.txt')
 ap.add_argument("-c", "--conf", type=float, default=0.2,
  	help="minimum probability to filter weak detections")
+
 args = vars(ap.parse_args())
 
 def drawLine(event, x, y, flags, param):
@@ -72,6 +73,25 @@ COLORS = np.random.randint(0, 255, size=(len(class_list), 3),
 
 cap=cv2.VideoCapture(args["frame"])
 
+
+def updateCount(i,classes,confidence,row):
+    global vTypeCount, vTypeCountOut, laneSides
+    # vTypeCount[class_list.index(classes)] += 1 if i == 0 else vTypeCountOut[class_list.index(classes)] += 1
+    if i == 0:
+        vTypeCount[class_list.index(classes)] += 1
+    else:
+        vTypeCountOut[class_list.index(classes)] += 1
+
+    VCount["IN" if i == 0 else "OUT"][classes]\
+        .append({'count':vTypeCount[class_list.index(classes)] if i == 0 else vTypeCountOut[class_list.index(classes)],
+        'conf':f'{confidence:.2f}',
+        'x':row[0].numpy().astype(float),
+        'y':row[1].numpy().astype(float),
+        'w':row[2].numpy().astype(float),
+        'h':row[3].numpy().astype(float)
+        })
+    laneSides["IN" if i == 0 else "OUT"] += 1
+    VCount["IN" if i == 0 else "OUT"]["total_count_in"] = laneSides["IN" if i == 0 else "OUT"]
 
 while True:  
       
@@ -170,147 +190,9 @@ while True:
                             detectedVehicleIDs.append(vehicleId)
                             cv2.line(frame, (dl[0], dl[1]), (dl[2], dl[3]), (90, 224, 63), 6)
                             lanesCount[i] += 1
-                            try: 
-                                if i == 0:
-                                    if classes == 'car':
-                                        vTypeCount[0] +=1
-                                        VCount['IN']['car']\
-                                            .append({'count':vTypeCount[0],
-                                            'conf':f'{confidence:.2f}',
-                                            'x':row[0].numpy().astype(float),
-                                            'y':row[1].numpy().astype(float),
-                                            'w':row[2].numpy().astype(float),
-                                            'h':row[3].numpy().astype(float)
-                                            })
-                                    
-                                    elif classes == 'bus':
-                                        vTypeCount[1] +=1
-                                        VCount['IN']['bus']\
-                                            .append({'count':vTypeCount[1],
-                                            'conf':f'{confidence:.2f}',
-                                            'x':row[0].numpy().astype(float),
-                                            'y':row[1].numpy().astype(float),
-                                            'w':row[2].numpy().astype(float),
-                                            'h':row[3].numpy().astype(float)
-                                            })
-                                    
-                                    elif classes == 'van':
-                                        vTypeCount[2] +=1
-                                        VCount['IN']['van']\
-                                            .append({'count':vTypeCount[2],
-                                            'conf':f'{confidence:.2f}',
-                                            'x':row[0].numpy().astype(float),
-                                            'y':row[1].numpy().astype(float),
-                                            'w':row[2].numpy().astype(float),
-                                            'h':row[3].numpy().astype(float)
-                                            })
-                                    
-                                    elif classes == 'truck':
-                                        vTypeCount[3] +=1
-                                        VCount['IN']['truck']\
-                                            .append({'count':vTypeCount[3],
-                                            'conf':f'{confidence:.2f}',
-                                            'x':row[0].numpy().astype(float),
-                                            'y':row[1].numpy().astype(float),
-                                            'w':row[2].numpy().astype(float),
-                                            'h':row[3].numpy().astype(float)
-                                            })
-                                    
-                                    elif classes == 'bike':
-                                        vTypeCount[4] +=1
-                                        VCount['IN']['bike']\
-                                            .append({'count':vTypeCount[4],
-                                            'conf':f'{confidence:.2f}',
-                                            'x':row[0].numpy().astype(float),
-                                            'y':row[1].numpy().astype(float),
-                                            'w':row[2].numpy().astype(float),
-                                            'h':row[3].numpy().astype(float)
-                                            })
-                                    
-                                    else:
-                                        vTypeCount[5] +=1
-                                        VCount['IN']['rickshaw']\
-                                            .append({'count':vTypeCount[5],
-                                            'conf':f'{confidence:.2f}',
-                                            'x':row[0].numpy().astype(float),
-                                            'y':row[1].numpy().astype(float),
-                                            'w':row[2].numpy().astype(float),
-                                            'h':row[3].numpy().astype(float)
-                                            })
-                                    
-                                    laneSides["IN"] +=1
-                                    VCount['IN']['total_count_in'] = laneSides['IN']
+                            try:
 
-                                if i == 1:
-                                    if classes == 'car':
-                                        vTypeCountOut[0] +=1
-                                        VCount['OUT']['car']\
-                                            .append({'count':vTypeCountOut[0],
-                                            'conf':f'{confidence:.2f}',
-                                            'x':row[0].numpy().astype(float),
-                                            'y':row[1].numpy().astype(float),
-                                            'w':row[2].numpy().astype(float),
-                                            'h':row[3].numpy().astype(float)
-                                            })
-                                    
-                                    elif classes == 'bus':
-                                        vTypeCountOut[1] +=1
-                                        VCount['OUT']['bus']\
-                                            .append({'count':vTypeCountOut[1],
-                                            'conf':f'{confidence:.2f}',
-                                            'x':row[0].numpy().astype(float),
-                                            'y':row[1].numpy().astype(float),
-                                            'w':row[2].numpy().astype(float),
-                                            'h':row[3].numpy().astype(float)
-                                            })
-                                    
-                                    elif classes == 'van':
-                                        vTypeCountOut[2] +=1
-                                        VCount['OUT']['van']\
-                                            .append({'count':vTypeCountOut[2],
-                                            'conf':f'{confidence:.2f}',
-                                            'x':row[0].numpy().astype(float),
-                                            'y':row[1].numpy().astype(float),
-                                            'w':row[2].numpy().astype(float),
-                                            'h':row[3].numpy().astype(float)
-                                            })
-                                    
-                                    elif classes == 'truck':
-                                        vTypeCountOut[3] +=1
-                                        VCount['OUT']['truck']\
-                                            .append({'count':vTypeCountOut[3],
-                                            'conf':f'{confidence:.2f}',
-                                            'x':row[0].numpy().astype(float),
-                                            'y':row[1].numpy().astype(float),
-                                            'w':row[2].numpy().astype(float),
-                                            'h':row[3].numpy().astype(float)
-                                            })
-                                    
-                                    elif classes == 'bike':
-                                        vTypeCountOut[4] +=1
-                                        VCount['OUT']['bike']\
-                                            .append({'count':vTypeCountOut[4],
-                                            'conf':f'{confidence:.2f}',
-                                            'x':row[0].numpy().astype(float),
-                                            'y':row[1].numpy().astype(float),
-                                            'w':row[2].numpy().astype(float),
-                                            'h':row[3].numpy().astype(float)
-                                            })
-                                    
-                                    else:
-                                        vTypeCountOut[5] +=1
-                                        VCount['OUT']['rickshaw']\
-                                            .append({'count':vTypeCountOut[5],
-                                            'conf':f'{confidence:.2f}',
-                                            'x':row[0].numpy().astype(float),
-                                            'y':row[1].numpy().astype(float),
-                                            'w':row[2].numpy().astype(float),
-                                            'h':row[3].numpy().astype(float)
-                                            })
-                                    
-                                    laneSides["OUT"] +=1
-                                    VCount['OUT']['total_count_out'] = laneSides['OUT']
-
+                                updateCount(i,classes,confidence,row)
                                 print(VCount)
                             except Exception as e:
                                 print()
