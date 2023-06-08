@@ -14,7 +14,7 @@ def on_disconnect():
     print('Disconnected from the server')
 
 # Connect to the server
-sio.connect('http://localhost:7000')
+sio.connect('http://localhost:8000')
 
 
 import cv2
@@ -52,7 +52,7 @@ def drawLine(event, x, y, flags, param):
             if abs(np.cross(p2 - p1, p3 - p1) / np.linalg.norm(p2 - p1)) < 10 and smallerX - 10 < x < largerX + 10:
                 detectionLines.remove(i)
 
-cap = cv2.VideoCapture('b.dav')
+cap = cv2.VideoCapture('Produce.mp4')
 frame_count = 0
 while True:
     ret, frame = cap.read()
@@ -78,7 +78,7 @@ while True:
                 cv2.imshow("Draw Lines", frame2)
                 print(laneSides)
                 data={
-                    "site_name": "Air port road",
+                    "site_name": "baleli",
                     "frame_number": frame_count,
                     "lane_sides": laneSides,
                     "detection_lines": detectionLines,
@@ -95,14 +95,14 @@ while True:
             #     cv2.line(frame, (dl[0], dl[1]), (dl[2], dl[3]), (255, 203, 48), 6)
             frame_count += 1
             data = {
-                "site_name": "Air port road",
+                "site_name": "baleli",
                 "frame_number": frame_count,
                 # "lane_sides": laneSides,
                 # "detection_lines": detectionLines,
                 "frame": base64.b64encode(cv2.imencode('.jpg', frame,[cv2.IMWRITE_JPEG_QUALITY, 60])[1]).decode()
             }
             sio.emit('received_frame', data)
-        print(laneSides)
+        print(frame_count)
 
         # Exit loop if 'q' is pressed
         if cv2.waitKey(1) & 0xFF == ord('q'):

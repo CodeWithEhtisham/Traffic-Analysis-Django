@@ -179,11 +179,14 @@ args={
 
 import socketio
 import eventlet
+from eventlet import wsgi
+import base64
+import threading
 
 # Create a Socket.IO server
-sio = socketio.Server()
+sio = socketio.Server(async_mode='threading', cors_allowed_origins='*')
 model=Model().loadModel(args)
-vehicle_detection=None
+record_dict={}
 
 
 # Define an event handler for the 'connect' event
@@ -194,30 +197,35 @@ def on_connect(sid, environ):
 # Define an event handler for the 'data' event
 @sio.on('frist_frame')
 def on_received_first_frame(sid, data):
-    global vehicle_detection,model
-    # print('Received data:', data['site_name'],data['frame_number'])
-    # response=f"i received your data client id = {sid}, site_name = {data['site_name']} "
-    # print(response)
-    vehicle_detection=VehicleDetection(model,data['lane_sides'],data['detection_lines'])
-    print(vehicle_detection.laneSides)
-    # sio.send(response,room=sid)
-    # Process the data or perform any desired operations
-import base64
+    global record_dict,model
+
+    if data['site_name'] not in record_dict:
+        record_dict[data['site_name']]=VehicleDetection(model,data['lane_sides'],data['detection_lines'])
+
 @sio.on("received_frame")
 def on_received_frame(sid,data):
-    global vehicle_detection
+    global record_dict
     # print("received frame",data['site_name'])
     image=base64.b64decode(data['frame'])
     jpg_as_np = np.frombuffer(image, dtype=np.uint8)
     jpg_as_np = cv2.imdecode(jpg_as_np, flags=1)
-    vehicle_detection.prediction(jpg_as_np)
+    try:
+        print("received frame",data['site_name'])
+        print(record_dict)
+        record_dict[data['site_name']].prediction(jpg_as_np)
+    except Exception as e:
+        print(e)
+    # thread = threading.Thread(target=record_dict[data['site_name']].prediction, args=(jpg_as_np,))
+    # thread.start()
+    print("received frame",data['site_name'])
+    # record_dict[data['site_name']].prediction(jpg_as_np)
 
 # Define an event handler for the 'disconnect' event
 @sio.on('disconnect')
 def on_disconnect(sid):
     print('Client disconnected:', sid)
 
+app = socketio.WSGIApp(sio)
 if __name__ == '__main__':
     # Wrap the Socket.IO server with the eventlet server
-    app = socketio.WSGIApp(sio)
-    eventlet.wsgi.server(eventlet.listen(('localhost', 7000)), app)
+    wsgi.server(eventlet.listen(('localhost', 8000)), app)
