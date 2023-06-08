@@ -112,7 +112,7 @@ class VehicleDetection(threading.Thread, Model):
                     frame2 = frame.copy()
                     if cv2.waitKey(1) & 0xFF == ord('q'):
                         cv2.destroyAllWindows() 
-                        lanesCount = [0] * len(self.detectionLines)
+                        lanesCount = [0] * len(detectionLines)
                         try:
                             laneSides["IN"] = lanesCount[0]
                             laneSides["OUT"] = lanesCount[1]

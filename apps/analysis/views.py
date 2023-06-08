@@ -26,6 +26,7 @@ from .models import Stream, Image, Object
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from datetime import datetime, timedelta
+from object_detection import Model, VehicleDetection
 
 # Define a global variable to hold the most recent frame received from the client
 latest_frame = None
