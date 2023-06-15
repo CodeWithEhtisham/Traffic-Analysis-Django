@@ -33,7 +33,7 @@ stream_data = None
 labels = ['car','bus','van','truck','bike','rickshaw']
 
 # Load the YOLOv8 model
-model = YOLO('/home/manahil/Traffic-Analysis-Django/apps/analysis/best.pt')
+model = YOLO('best.pt')
 sio = socketio.Server(async_mode='threading', cors_allowed_origins='*')
 
 print(model,'######################')
@@ -54,7 +54,7 @@ def my_event(sid, data):
 
 def run_socketio_server():
     global model
-    model = YOLO('/home/manahil/Traffic-Analysis-Django/apps/analysis/best.pt')
+    model = YOLO('best.pt')
     app = socketio.WSGIApp(sio)
     wsgi.server(eventlet.listen(('localhost', 7000)), app)
 
