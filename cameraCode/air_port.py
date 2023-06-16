@@ -102,7 +102,7 @@ while True:
                 "frame": base64.b64encode(cv2.imencode('.jpg', frame,[cv2.IMWRITE_JPEG_QUALITY, 60])[1]).decode()
             }
             sio.emit('received_frame', data)
-        print(laneSides)
+        print(frame_count)
 
         # Exit loop if 'q' is pressed
         if cv2.waitKey(1) & 0xFF == ord('q'):

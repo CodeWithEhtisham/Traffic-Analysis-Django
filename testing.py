@@ -3,7 +3,7 @@ import math
 import numpy as np
 from ultralytics import YOLO
 import argparse
-
+import multiprocessing
 
 
 # args = vars(ap.parse_args())
@@ -17,19 +17,20 @@ class Model():
             print('args yolo',args['yolo'])
             self.model=YOLO(args['yolo'])
         return self.model
-    
 class VehicleDetection():
-    def __init__(self,model,laneSides,detectionLines) -> None:
+    def __init__(self,model) -> None:
         self.offset = 10
         self.velocityoffset = 10
         self.distancethres = 20
+        self.x1 = 0
+        self.y1 = 0
+        self.drawing = False
         self.framecount = 0
         self.lanesCount = [0, 0, 0, 0, 0, 0]
-        # print('lane sides',laneSides)
-        self.laneSides = laneSides
+        self.laneSides = {'IN':None, 'OUT':None}
         self.vTypeCount = [0, 0, 0, 0, 0, 0]
         self.vTypeCountOut = [0, 0, 0, 0, 0, 0]
-        self.detectionlines = detectionLines
+        self.detectionlines = []
         # self.previousCentersAndIDs = []
         self.id = 0
         self.detectedVehicleIDs = []
@@ -42,43 +43,78 @@ class VehicleDetection():
         self.COLORS = np.random.randint(0, 255, size=(len(self.class_list), 3),dtype="uint8")
 
 
+    def drawLine(self,event, x, y, flags, param):
+        if event == cv2.EVENT_LBUTTONDOWN:
+            if not self.drawing:
+                # Start self.drawing a line
+                self.x1, self.y1 = x, y
+                self.drawing = True
+            else:
+                # Stop self.drawing a line
+                x2, y2 = x, y
+                self.detectionlines.append([self.x1, self.y1, x2, y2])
+                self.drawing = False
+        elif event == cv2.EVENT_RBUTTONDOWN:
+            # Delete right clicked line
+            for i in self.detectionlines:
+                p1 = np.array([i[0], i[1]])
+                p2 = np.array([i[2], i[3]])
+                p3 = np.array([x, y])
+                if i[0] < i[2]:
+                    largerX = i[2]
+                    smallerX = i[0]
+                else:
+                    largerX = i[0]
+                    smallerX = i[2]
+                if abs(np.cross(p2 - p1, p3 - p1) / np.linalg.norm(p2 - p1)) < 10 and smallerX - 10 < x < largerX + 10:
+                    self.detectionlines.remove(i)
 
     # def updateCount(self,i,classes,confidence,row):
     def update_count(self, index, vehicle_class, confidence, detection_row):
-        print('update count start',self.laneSides,self.detectionlines)
-        try:
-            if index == 0:
-                self.vTypeCount[self.class_list.index(vehicle_class)] += 1
-            else:
-                self.vTypeCountOut[self.class_list.index(vehicle_class)] += 1
+        print('update count')
+        if index == 0:
+            self.vTypeCount[self.class_list.index(vehicle_class)] += 1
+        else:
+            self.vTypeCountOut[self.class_list.index(vehicle_class)] += 1
 
-            detection_type = "IN" if index == 0 else "OUT"
-            self.VCount[detection_type][vehicle_class].append({
-                'count': self.vTypeCount[self.class_list.index(vehicle_class)] if index == 0 else self.vTypeCountOut[self.class_list.index(vehicle_class)],
-                'conf': f'{confidence:.2f}',
-                'x': detection_row[0],
-                'y': detection_row[1],
-                'w': detection_row[2],
-                'h': detection_row[3]
-            })
-            self.laneSides[detection_type] += 1
-            self.VCount[detection_type]['total_count_in' if index == 0 else 'total_count_out'] += 1
-            print('update count end',self.VCount)
-        except Exception as e:
-            print('update count error',e)
+        detection_type = "IN" if index == 0 else "OUT"
+        self.VCount[detection_type][vehicle_class].append({
+            'count': self.vTypeCount[self.class_list.index(vehicle_class)] if index == 0 else self.vTypeCountOut[self.class_list.index(vehicle_class)],
+            'conf': f'{confidence:.2f}',
+            'x': detection_row[0],
+            'y': detection_row[1],
+            'w': detection_row[2],
+            'h': detection_row[3]
+        })
+        self.laneSides[detection_type] += 1
+        self.VCount[detection_type]['total_count_in' if index == 0 else 'total_count_out'] += 1
+
 
     def detectVehicle(self,frame):
-        # print('detect vehicle',frame.shape)
         return self.model.predict(frame)[0].boxes.data
+    
+    def frame_prediction(self, frame_queue, detection_queue, args):
+        while True:
+            # Get a frame from the queue
+            frame = frame_queue.get()
+            if frame is None:
+                break
+            # Perform prediction on the frame
+            detection = self.detectVehicle(frame)
+            # Put the detection result into the queue
+            detection_queue.put((frame, detection))
 
+    def frame_display(self, frame_queue, detection_queue):
+        unavailableIDs = []
+        centersAndIDs = []
 
-    def prediction(self,frame):
-            print('prediction')
-        # while True:
-            centersAndIDs = []
-            unavailableIDs = []
-            detection=self.detectVehicle(frame)
-
+        while True:
+            # Get a frame and its prediction result from the queue
+            frame, detection = detection_queue.get()
+            if frame is None or detection is None:
+                break
+            # Display the frame with the detection result
+            # You may need to adjust this part depending on how you want to visualize the detection result
             for ind, row in enumerate(detection):
                 confidence=float(row[4])
                 obj = int(row[5])
@@ -146,7 +182,7 @@ class VehicleDetection():
                                     cv2.line(frame, (dl[0], dl[1]), (dl[2], dl[3]), (90, 224, 63), 6)
                                     self.lanesCount[i] += 1
                                     try:
-                                        print('update count')
+
                                         self.update_count(i,classes,confidence,row)
                                         print(self.VCount)
                                     except Exception as e:
@@ -160,74 +196,81 @@ class VehicleDetection():
                     cv2.putText(frame, "IN:" + str(self.laneSides["IN"]), (20, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (55,18,219), 3)
                     cv2.putText(frame, "OUT:" + str(self.laneSides["OUT"]), (20, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (55,18,219), 3)
 
-
+                # ... your visualization code ...
             cv2.imshow("Frame", frame)
-            self.framecount +=1
-            cacheSize = 5
-            self.cache.insert(0, centersAndIDs.copy())
-            if len(self.cache) > cacheSize:
-                del self.cache[cacheSize]
 
-            if cv2.waitKey(1)&0xFF==27:
-                return False
+            if cv2.waitKey(1) & 0xFF == 27:
+                break
+
+    def prediction(self,args):
+        cap = cv2.VideoCapture(args["frame"])
+        frame_queue = multiprocessing.Queue()
+        detection_queue = multiprocessing.Queue()
+
+        # Create separate processes for frame prediction and display
+        prediction_process = multiprocessing.Process(target=self.frame_prediction, args=(frame_queue, detection_queue, args))
+        display_process = multiprocessing.Process(target=self.frame_display, args=(frame_queue, detection_queue,))
+
+        # Start the processes
+        prediction_process.start()
+        display_process.start()
+
+        # Feed frames into the queue for prediction
+        first_frame = True
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                break
+
+            if first_frame:
+                cv2.imshow("Frame", frame)
+                cv2.setMouseCallback("Frame", self.drawLine)
+                while True:
+                    key = cv2.waitKey(1) & 0xFF
+                    if key == ord("p"):  # press 'p' to pause and draw lines
+                        break
+                first_frame = False
+
+            frame_queue.put(frame)
+
+        # Wait for processes to finish
+        prediction_process.join()
+        display_process.join()
+
+        cap.release()
+        cv2.destroyAllWindows()
+
+            
+
+        #     cv2.imshow("Frame", frame)
+        #     self.framecount +=1
+        #     cacheSize = 5
+        #     self.cache.insert(0, centersAndIDs.copy())
+        #     if len(self.cache) > cacheSize:
+        #         del self.cache[cacheSize]
+
+        #     if cv2.waitKey(1)&0xFF==27:
+        #         break
         # cap.release()
         # cv2.destroyAllWindows()
 
-args={
-    "yolo":"best.onnx",
-    "conf":0.2,
-}
+def parse_args():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-v", "--frame", required=True,
+        help="path to input frame")
+    ap.add_argument("-y", "--yolo", required=True,
+        help="base path to YOLO directory")
+    ap.add_argument("-n", "--names",
+        help="base path to YOLO directory", default='torchweight/names.txt')
+    ap.add_argument("-c", "--conf", type=float, default=0.2,
+        help="minimum probability to filter weak detections")
+    return vars(ap.parse_args())
 
-import socketio
-import eventlet
-from eventlet import wsgi
-import base64
-import threading
-
-# Create a Socket.IO server
-sio = socketio.Server(async_mode='eventlet', cors_allowed_origins='*')
-model=Model().loadModel(args)
-record_dict={}
+args = parse_args()
 
 
-# Define an event handler for the 'connect' event
-@sio.on('connect')
-def on_connect(sid, environ):
-    print('Client connected:', sid)
+if __name__ == "__main__":
+    model=Model().loadModel(args)
+    vehicle = VehicleDetection(model)
+    vehicle.prediction(args)
 
-# Define an event handler for the 'data' event
-@sio.on('frist_frame')
-def on_received_first_frame(sid, data):
-    global record_dict,model
-
-    if data['site_name'] not in record_dict:
-        record_dict[data['site_name']]=VehicleDetection(model,data['lane_sides'],data['detection_lines'])
-
-@sio.on("received_frame")
-def on_received_frame(sid,data):
-    global record_dict
-    image=base64.b64decode(data['frame'])
-    jpg_as_np = np.frombuffer(image, dtype=np.uint8)
-    jpg_as_np = cv2.imdecode(jpg_as_np, flags=1)
-    threading.Thread(target=process_frame,args=(record_dict,data['site_name'],jpg_as_np,data['frame_number'])).start()
-
-
-# Define an event handler for the 'disconnect' event
-@sio.on('disconnect')
-def on_disconnect(sid):
-    # again try to connect to the server
-    print('Client disconnected:', sid)
-
-
-def process_frame(record_dict, site_name, frame,frame_no):
-    try:
-        print("received frame",site_name,frame_no)
-        print(record_dict.keys())
-        record_dict[site_name].prediction(frame)
-    except Exception as e:
-        print(e)
-
-app = socketio.WSGIApp(sio)
-if __name__ == '__main__':
-    # Wrap the Socket.IO server with the eventlet server
-    wsgi.server(eventlet.listen(('localhost', 8000)), app)
