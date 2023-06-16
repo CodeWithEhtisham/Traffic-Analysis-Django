@@ -14,7 +14,7 @@ def on_disconnect():
     print('Disconnected from the server')
 
 # Connect to the server
-sio.connect('http://localhost:8000')
+sio.connect('http://localhost:7000')
 
 
 import cv2
@@ -27,6 +27,8 @@ laneSides = {'IN':0, 'OUT':0}
 x1 = 0
 y1 = 0
 drawing = False
+desired_fps = 10
+delay_ms = int(1000 / desired_fps)
 
 def drawLine(event, x, y, flags, param):
     global x1, y1, drawing, detectionLines
@@ -58,6 +60,7 @@ while True:
     ret, frame = cap.read()
     if ret:
         if frame_count == 0:
+            frame = cv2.resize(frame, (400, 400))
             cv2.namedWindow("Draw Lines")
             cv2.setMouseCallback("Draw Lines", drawLine)
             while 1:
@@ -97,13 +100,12 @@ while True:
             data = {
                 "site_name": "Air port road",
                 "frame_number": frame_count,
-                # "lane_sides": laneSides,
-                # "detection_lines": detectionLines,
                 "frame": base64.b64encode(cv2.imencode('.jpg', frame,[cv2.IMWRITE_JPEG_QUALITY, 60])[1]).decode()
             }
             sio.emit('received_frame', data)
         print(frame_count)
 
         # Exit loop if 'q' is pressed
+        cv2.imshow('frame', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break

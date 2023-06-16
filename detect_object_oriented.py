@@ -41,15 +41,15 @@ class Model:
         namesTxt = data.split("\n") 
         return namesTxt
 
-class VehicleDetection(threading.Thread, Model):
+class VehicleDetection(Model):
     def __init__(self):
         Model.__init__(self)
-        threading.Thread.__init__(self)
         self.drawing = False
         self.x = 0
         self.y = 0
         self.framecount = 0
         self.id = 0
+        self.model=self.loadmodel()
         self.COLORS = np.random.randint(0, 255, size=(len(self.names()), 3),
         dtype="uint8")
     
@@ -125,8 +125,12 @@ class VehicleDetection(threading.Thread, Model):
             
             for dl in detectionLines:
                 cv2.line(frame, (dl[0], dl[1]), (dl[2], dl[3]), (255, 203, 48), 6)
+            
+            if self.framecount % 2 == 0:
+                self.framecount+=1
+                continue
 
-            results = self.loadmodel().predict(frame)
+            results = self.model.predict(frame)
             detection = results[0].boxes.data
             for ind, row in enumerate(detection):
                 confidence=float(row[4])
@@ -234,10 +238,8 @@ def parse_args():
 if __name__ == '__main__':
 
     args = parse_args()
+    detector = VehicleDetection()
+    detector.run()
 
-    thread1 = VehicleDetection()
-    thread1.daemon = True
-    thread1.start()
-    thread1.join()
 
 
