@@ -53,9 +53,9 @@ def send_frames():
                     detectionLines.remove(i)
 
     cap = cv2.VideoCapture('Produce.mp4')
-    fps = cap.get(cv2.CAP_PROP_FPS)
-    print("Frames per second (fps):", fps)
-    return None
+    # fps = cap.get(cv2.CAP_PROP_FPS)
+    # print("Frames per second (fps):", fps)
+    # return None
 
     while True:
         ret, frame = cap.read()
@@ -84,7 +84,7 @@ def send_frames():
 
                 cv2.destroyAllWindows()
                 data = {
-                    "site_name": "baleli",
+                    "site_name": "Baleli Road",
                     "frame_number": frame_count,
                     "lane_sides": laneSides,
                     "detection_lines": detectionLines,
@@ -94,7 +94,7 @@ def send_frames():
 
             else:
                 data = {
-                    "site_name": "baleli",
+                    "site_name": "Baleli Road",
                     "frame_number": frame_count,
                     "frame": base64.b64encode(cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 60])[1]).decode()
                 }
@@ -102,11 +102,11 @@ def send_frames():
 
             frame_count += 1
             print(frame_count)
-            cv2.imshow('frame', frame)
+            # cv2.imshow('frame', frame)
 
-            # Exit loop if 'q' is pressed
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            # # Exit loop if 'q' is pressed
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     break
 
     cap.release()
     cv2.destroyAllWindows()

@@ -44,15 +44,20 @@ def on_received_first_frame(sid, data):
 
 #     if data['site_name'] not in record_dict:
 #         record_dict[data['site_name']]=VehicleDetection(model,data['lane_sides'],data['detection_lines'])
-
+import sys
 @sio.on("received_frame")
 def on_received_frame(sid,data):
     print(f"received frame from {data['site_name']} with frame number {data['frame_number']}")
-    image = base64.b64decode(data['frame'])
-    jpg_as_np = np.frombuffer(image, dtype=np.uint8)
-    jpg_as_np = cv2.imdecode(jpg_as_np, flags=1)
-    cv2.imshow("frame",jpg_as_np)
-    cv2.waitKey(1)
+    # image = base64.b64decode(data['frame'])
+    # jpg_as_np = np.frombuffer(image, dtype=np.uint8)
+    # jpg_as_np = cv2.imdecode(jpg_as_np, flags=1)
+    # print(f"frame size {sys.getsizeof(jpg_as_np)/1024} KB")
+    # print(f"frame shape {sys.getsizeof(data['frame'])/1024} KB")
+    # image=
+    # sio.emit(data['site_name'],cv2.imdecode(np.frombuffer(jpg_as_np, np.uint8), cv2.IMREAD_COLOR))
+    sio.emit(data['site_name'],data['frame'])
+    # cv2.imshow("frame",jpg_as_np)
+    # cv2.waitKey(1)
     
     # global record_dict
     # image=base64.b64decode(data['frame'])
@@ -257,11 +262,18 @@ def run_socketio_server():
 
 class Index(TemplateView):
     def get(self, request):
-        return render(request, 'index.html')
+        site_name = Stream.objects.all().values_list('site_name', flat=True)
+        return render(request, 'index.html',{
+            'site_name':site_name
+        })
 
 class Dashboard(TemplateView):
-    def get(self, request):
-        return render(request, 'dashboard.html')
+    def get(self, request,site_name):
+        site_names = Stream.objects.all().values_list('site_name', flat=True)
+        return render(request, 'dashboard.html',{
+            'site_name':site_name,
+            'site_names':site_names
+        })
 
 class History(TemplateView):
     def get(self, request):

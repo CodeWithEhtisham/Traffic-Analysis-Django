@@ -61,22 +61,18 @@
                     <li class="nav-item active">
                         <a href="{% url 'index' %}" class="nav-link">
                             <i class="link-icon" data-feather="box"></i>
-                            <span class="link-title">Dashboard</span>
+                            <span class="link-title">All sites</span>
                         </a>
                     </li>
-                    <li class="nav-item nav-category">All sites</li>
+                    {% for site in site_name%}
                     <li class="nav-item">
-                        <a href="{% url 'dashboard' %}" class="nav-link">
+                        <a href="{% url 'dashboard' site_name=site %}" class="nav-link">
                             <i class="link-icon" data-feather="framer"></i>
-                            <span class="link-title">Saryab Road</span>
+                            <span class="link-title">{{site}}</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="link-icon" data-feather="framer"></i>
-                            <span class="link-title">Airport Road</span>
-                        </a>
-                    </li>
+                    {% endfor %}
+                    
                 </ul>
             </div>
         </nav>
@@ -167,10 +163,11 @@
 
                 <div class="row">
                     <!-- Location -->
+                    {% for site in site_name%}
                     <div class="col-lg-5 col-xl-6 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body p-0">
-                                <h4 class="p-3 text-center">Saryab Road</h4>
+                                <h4 class="p-3 text-center">{{site}}</h4>
                                 <!-- video -->
                                 <div>
                                     <!-- <video id="video" width="100%" height="100%" controls autoplay>
@@ -180,7 +177,7 @@
                                             type="video/mp4" width="100%" height="100%">
                                     </video> -->
                                     <img src="static/images/map.PNG" alt="stream2" style="height: 400px; width: 100%;"
-                                        id="image">
+                                        id="{{site}}">
 
                                 </div>
                             </div>
@@ -215,61 +212,17 @@
                             </div>
                         </div>
                     </div>
+                    {% endfor %}
                     <!-- Location -->
-                    <div class="col-lg-5 col-xl-6 grid-margin stretch-card ">
-                        <div class="card">
-                            <div class="card-body p-0 ">
-                                <h4 class="p-2 p-3 text-center">Airport Road</h4>
-                                <!-- video -->
-                                <div>
-                                    <video id="video" width="100%" height="100%" controls autoplay>
-
-                                        <source
-                                            src="https://codingyaar.com/wp-content/uploads/video-in-bootstrap-card.mp4"
-                                            type="video/mp4" width="100%" height="100%">
-                                    </video>
-                                    <!-- <img src="static/images/map.PNG" alt="stream2" style="height: 400px;" id="image" > -->
-
-                                </div>
-                            </div>
-
-                            <div class="card-footer">
-                                <div class="row m-2">
-                                    <div class="col-5 d-flex justify-content-end">
-                                        <div>
-                                            <label
-                                                class="d-flex align-items-center justify-content-end tx-24 text-uppercase font-weight-bold">yesterday
-                                                Total Traffic
-                                                <span class="p-1 ml-1 rounded-circle bg-primary-muted"></span></label>
-                                            <h5 class="font-weight-bold p-1 ml-5 " style="font-size: large;">500</h5>
-                                        </div>
-                                    </div>
-                                    <div class="col-2 d-flex justify-content-end vr">
-
-                                    </div>
-                                    <div class="col-5">
-                                        <div>
-                                            <label
-                                                class="d-flex align-items-center tx-32 text-uppercase font-weight-bold"><span
-                                                    class="p-1 mr-1 rounded-circle bg-primary"></span>Today Total
-                                                Traffic</label>
-                                            <!-- </label> -->
-                                            <!-- add right margin -->
-                                            <h5 class="font-weight-bold p-1 ml-5 " style="font-size: large;">100</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    
                     <!-- map  -->
                     <!-- <div class="col-2 d-flex "></div> -->
 
                     <div class="col-12 ">
                         <!-- add google map image into div -->
-                        <div>
+                        <!-- <div>
                             <img src="static/images/map.PNG" alt="map" width="100%" height="50%">
-                        </div>
+                        </div> -->
 
 
                     </div>
@@ -314,26 +267,27 @@
             console.log('disconnected');
         });
 
-
-        socket.on('frame', function (data) {
-            document.getElementById('image').src = "data:image/png;base64," + data;
+        {% for site in site_name%}
+        socket.on('{{site}}', function (data) {
+            document.getElementById('{{site}}').src = "data:image/png;base64," + data;
         });
+        {% endfor %}
 
         // ajax apis for getting data
-        setInterval(function () {
-            $.ajax({
-                method: "GET",
-                url: "/apis/get_vehicle_counts",
-                success: function (data) {
-                    console.log(data);
-                    document.getElementById('today_count').innerHTML = data.today;
-                    document.getElementById('yesterday_count').innerHTML = data.yesterday;
-                },
-                error: function () {
-                    console.log("error on get_vehicle_counts");
-                }
-            });
-        }, 10000); // 30 seconds in milliseconds
+        // setInterval(function () {
+        //     $.ajax({
+        //         method: "GET",
+        //         url: "/apis/get_vehicle_counts",
+        //         success: function (data) {
+        //             console.log(data);
+        //             document.getElementById('today_count').innerHTML = data.today;
+        //             document.getElementById('yesterday_count').innerHTML = data.yesterday;
+        //         },
+        //         error: function () {
+        //             console.log("error on get_vehicle_counts");
+        //         }
+        //     });
+        // }, 10000); // 30 seconds in milliseconds
 
 
     </script>

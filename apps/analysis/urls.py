@@ -8,7 +8,7 @@ from .views import get_vehicle_counts,get_objects, get_images,get_image_objects
 
 urlpatterns = [
     path('index',Index.as_view() , name='index'),
-    path('dashboard',Dashboard.as_view() , name='dashboard'),
+    path('dashboard/<str:site_name>/',Dashboard.as_view() , name='dashboard'),
     path('history',History.as_view() , name='history'),
     path('video_analysis',VideoAnalysis.as_view() , name='video_analysis'),
     path('live_stream',LiveStream.as_view() , name='live_stream'),
