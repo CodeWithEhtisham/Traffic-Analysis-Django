@@ -26,10 +26,14 @@ from .models import Stream, Image, Object
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from datetime import datetime, timedelta
+import redis
+import sys
+import pickle
 
 sio = socketio.Server(async_mode='eventlet', cors_allowed_origins='*')
-
-
+redis_host = 'localhost'  # Redis server host
+redis_port = 6379  # Redis server port
+redis_client = redis.Redis(host='localhost', port=6379, db=0)
 
 # Define an event handler for the 'connect' event
 @sio.on('connect')
@@ -37,17 +41,28 @@ def on_connect(sid, environ):
     print('Client connected:', sid)
 
 # Define an event handler for the 'data' event
+# Define an event handler for the 'frist_frame' event
 @sio.on('frist_frame')
 def on_received_first_frame(sid, data):
-    print(f"received first frame from {data['site_name']}")
-#     global record_dict,model
+    print(f"received first frame from {data['site_name']} with frame number {data['frame_number']}")
+    site_key = data['site_name']
+    frame_data = pickle.dumps(data)
+    
+    # Append the frame data to the site's list
+    redis_client.lpush(site_key, frame_data)
 
-#     if data['site_name'] not in record_dict:
-#         record_dict[data['site_name']]=VehicleDetection(model,data['lane_sides'],data['detection_lines'])
-import sys
+# Define an event handler for the 'received_frame' event
 @sio.on("received_frame")
-def on_received_frame(sid,data):
+def on_received_frame(sid, data):
     print(f"received frame from {data['site_name']} with frame number {data['frame_number']}")
+    site_key = data['site_name']
+    frame_data = pickle.dumps(data)
+    
+    # Append the frame data to the site's list
+    redis_client.lpush(site_key, frame_data)
+# @sio.on("received_frame")
+# def on_received_frame(sid,data):
+    # print(f"received frame from {data['site_name']} with frame number {data['frame_number']}")
     # image = base64.b64decode(data['frame'])
     # jpg_as_np = np.frombuffer(image, dtype=np.uint8)
     # jpg_as_np = cv2.imdecode(jpg_as_np, flags=1)
@@ -55,7 +70,8 @@ def on_received_frame(sid,data):
     # print(f"frame shape {sys.getsizeof(data['frame'])/1024} KB")
     # image=
     # sio.emit(data['site_name'],cv2.imdecode(np.frombuffer(jpg_as_np, np.uint8), cv2.IMREAD_COLOR))
-    sio.emit(data['site_name'],data['frame'])
+    # sio.emit(data['site_name'],data['frame'])
+    # redis_client.rpush(data['site_name'], json.dumps(data))
     # cv2.imshow("frame",jpg_as_np)
     # cv2.waitKey(1)
     
@@ -69,7 +85,6 @@ def on_received_frame(sid,data):
 # Define an event handler for the 'disconnect' event
 @sio.on('disconnect')
 def on_disconnect(sid):
-    # again try to connect to the server
     print('Client disconnected:', sid)
 
 

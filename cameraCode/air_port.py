@@ -108,8 +108,8 @@ def send_frames():
             # if cv2.waitKey(1) & 0xFF == ord('q'):
             #     break
 
-    cap.release()
-    cv2.destroyAllWindows()
+    # cap.release()
+    # cv2.destroyAllWindows()
 
 # Connect to the server
 sio.connect('http://localhost:7000')
