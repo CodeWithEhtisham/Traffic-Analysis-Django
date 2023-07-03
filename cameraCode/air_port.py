@@ -59,7 +59,7 @@ def send_frames():
 
     while True:
         ret, frame = cap.read()
-        if ret:
+        if ret or frame not in [None, ""]:
             frame=cv2.resize(frame,(400,400))
             if frame_count == 0:
                 cv2.namedWindow("Draw Lines")
@@ -84,7 +84,7 @@ def send_frames():
 
                 cv2.destroyAllWindows()
                 data = {
-                    "site_name": "Baleli Road",
+                    "site_name": "Air Port Road",
                     "frame_number": frame_count,
                     "lane_sides": laneSides,
                     "detection_lines": detectionLines,
@@ -94,7 +94,7 @@ def send_frames():
 
             else:
                 data = {
-                    "site_name": "Baleli Road",
+                    "site_name": "Air Port Road",
                     "frame_number": frame_count,
                     "frame": base64.b64encode(cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 60])[1]).decode()
                 }

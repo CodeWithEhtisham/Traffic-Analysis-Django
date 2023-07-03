@@ -29,11 +29,48 @@ from datetime import datetime, timedelta
 import redis
 import sys
 import pickle
-
+from .vehicle_counting import VehicleDetection
+# eventlet.monkey_patch()
 sio = socketio.Server(async_mode='eventlet', cors_allowed_origins='*')
 redis_host = 'localhost'  # Redis server host
 redis_port = 6379  # Redis server port
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
+threading_dict = {}
+vehicle_counting_dict = {}
+
+async def process_frame(site_name):
+    # run while loop till redis list is empty
+    # print("processing frame",site_name)
+    while redis_client.llen(site_name) > 0:
+        # pop the frame from redis list from the right side
+        frame_data = redis_client.rpop(site_name)
+        if frame_data is None:
+            continue
+        data=pickle.loads(frame_data)
+        print("processing frame",site_name,data['frame_number'])
+        image=base64.b64decode(data['frame'])
+        jpg_as_np = np.frombuffer(image, dtype=np.uint8)
+        jpg_as_np = cv2.imdecode(jpg_as_np, flags=1)
+        print("processing frame",vehicle_counting_dict)
+
+
+
+# async funtion to add frame and meta data to redis
+async def add_frame_to_redis(site_name,data):
+    global threading_dict,vehicle_counting_dict
+    # print("adding frame to redis",site_name,threading_dict)
+    redis_client.lpush(site_name, pickle.dumps(data))
+    # print("adding frame to redis",site_name,threading_dict)
+    if site_name not in threading_dict:
+        threading_dict[site_name] = threading.Thread(target=asyncio.run,args=(process_frame(site_name),))
+        threading_dict[site_name].start()
+        vehicle_counting_dict[site_name] = VehicleDetection(data['lane_sides'],data['detection_lines'])
+        print("Thread started", threading_dict)
+    else:
+        if threading_dict[site_name] is None or not threading_dict[site_name].is_alive():
+            threading_dict[site_name] = threading.Thread(target=asyncio.run,args=(process_frame(site_name),))
+            threading_dict[site_name].start()
+
 
 # Define an event handler for the 'connect' event
 @sio.on('connect')
@@ -47,19 +84,23 @@ def on_received_first_frame(sid, data):
     print(f"received first frame from {data['site_name']} with frame number {data['frame_number']}")
     site_key = data['site_name']
     frame_data = pickle.dumps(data)
-    
-    # Append the frame data to the site's list
+    # # Append the frame data to the site's list
     redis_client.lpush(site_key, frame_data)
 
 # Define an event handler for the 'received_frame' event
 @sio.on("received_frame")
 def on_received_frame(sid, data):
-    print(f"received frame from {data['site_name']} with frame number {data['frame_number']}")
-    site_key = data['site_name']
-    frame_data = pickle.dumps(data)
+    # print(f"received frame from {data['site_name']} with frame number {data['frame_number']}")
+    threading.Thread(target=asyncio.run,args=(add_frame_to_redis(data['site_name'],data),)).start()
+    sio.emit(data['site_name'],data['frame'])
+    # add_frame_to_redis(data['site_name'],data)
+    # site_key = data['site_name']
+    # frame_data = pickle.dumps(data)
     
     # Append the frame data to the site's list
-    redis_client.lpush(site_key, frame_data)
+    # redis_client.lpush(site_key, frame_data)
+
+
 # @sio.on("received_frame")
 # def on_received_frame(sid,data):
     # print(f"received frame from {data['site_name']} with frame number {data['frame_number']}")
@@ -86,6 +127,9 @@ def on_received_frame(sid, data):
 @sio.on('disconnect')
 def on_disconnect(sid):
     print('Client disconnected:', sid)
+    # send disconect message to client
+    sio.emit('disconnect',sid)
+
 
 
 # app = socketio.WSGIApp(sio)

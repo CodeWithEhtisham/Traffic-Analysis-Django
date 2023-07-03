@@ -19,7 +19,7 @@ for i in range(10, 20):
         # "frame": base64.b64encode(cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 60])[1]).decode()
     }
     obj = json.dumps(data)
-    redis_client.rpush(site_key, obj)  # Convert data to JSON string and add it to Redis list
+    redis_client(site_key, obj)  # Convert data to JSON string and add it to Redis list
 
 # frame_data = redis_client.lrange(site_key, 0, -1)
 # for frame in frame_data:

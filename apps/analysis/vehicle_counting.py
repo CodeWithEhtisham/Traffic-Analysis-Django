@@ -2,28 +2,23 @@ import cv2
 import math
 import numpy as np
 from ultralytics import YOLO
-import argparse
+# import argparse
 
 
-args={
-    "yolo":"best.onnx",
-    "conf":0.2,
-}
+model_name = 'best.onnx'
+conf=0.2
 
-# args = vars(ap.parse_args())
+class Model:
 
-class Model():
-    def __init__(self) -> None:
-        self.model=None
-
-    def loadModel(self,args):
-        if self.model is None:
-            print('args yolo',args['yolo'])
-            self.model=YOLO(args['yolo'])
+    def __init__(self):
+        self.model = model_name
+    def loadmodel(self):
+        self.model = YOLO(model_name)
         return self.model
     
-class VehicleDetection():
-    def __init__(self,model,laneSides,detectionLines) -> None:
+class VehicleDetection(Model):
+    def __init__(self,laneSides,detectionLines) -> None:
+        Model.__init__(self)
         self.offset = 10
         self.velocityoffset = 10
         self.distancethres = 20
@@ -41,7 +36,7 @@ class VehicleDetection():
         # self.vehicleVelocities = {}
         self.VCount = {'IN':{'car':[],'bus':[],'van':[],'truck':[],'bike':[],'rickshaw':[],'total_count_in':0},
         'OUT':{'car':[],'bus':[],'van':[],'truck':[],'bike':[],'rickshaw':[],'total_count_out':0}}
-        self.model=model
+        self.model=self.loadmodel()
         self.class_list = ['car', 'bus', 'van', 'truck', 'bike', 'rickshaw']
         self.COLORS = np.random.randint(0, 255, size=(len(self.class_list), 3),dtype="uint8")
 
@@ -71,23 +66,19 @@ class VehicleDetection():
         except Exception as e:
             print('update count error',e)
 
-    def detectVehicle(self,frame):
-        # print('detect vehicle',frame.shape)
-        return self.model.predict(frame)[0].boxes.data
-
 
     def prediction(self,frame):
             print('prediction')
         # while True:
             centersAndIDs = []
             unavailableIDs = []
-            detection=self.detectVehicle(frame)
+            detection=self.model.predict(frame)[0].boxes.data
 
             for ind, row in enumerate(detection):
                 confidence=float(row[4])
                 obj = int(row[5])
                 classes = self.class_list[obj]
-                if confidence > args['conf']:    
+                if confidence > conf:    
                     (x, y) = (int(row[0]), int(row[1]))
                     (w, h) = (int(row[2]), int(row[3]))
                     center = (x + w) / 2, (y + h) / 2
@@ -165,69 +156,71 @@ class VehicleDetection():
                     cv2.putText(frame, "OUT:" + str(self.laneSides["OUT"]), (20, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (55,18,219), 3)
 
 
-            cv2.imshow("Frame", frame)
+            # cv2.imshow("Frame", frame)
             self.framecount +=1
             cacheSize = 5
             self.cache.insert(0, centersAndIDs.copy())
             if len(self.cache) > cacheSize:
                 del self.cache[cacheSize]
 
-            if cv2.waitKey(1)&0xFF==27:
-                return False
+            # if cv2.waitKey(1)&0xFF==27:
+            #     return False
         # cap.release()
         # cv2.destroyAllWindows()
 
+# import socketio
+# import eventlet
+# from eventlet import wsgi
+# import base64
+# import threading
 
-import socketio
-import eventlet
-from eventlet import wsgi
-import base64
-import threading
-
-# Create a Socket.IO server
-sio = socketio.Server(async_mode='eventlet', cors_allowed_origins='*')
-model=Model().loadModel(args)
-record_dict={}
-
-
-# Define an event handler for the 'connect' event
-@sio.on('connect')
-def on_connect(sid, environ):
-    print('Client connected:', sid)
-
-# Define an event handler for the 'data' event
-@sio.on('frist_frame')
-def on_received_first_frame(sid, data):
-    global record_dict,model
-
-    if data['site_name'] not in record_dict:
-        record_dict[data['site_name']]=VehicleDetection(model,data['lane_sides'],data['detection_lines'])
-
-@sio.on("received_frame")
-def on_received_frame(sid,data):
-    global record_dict
-    image=base64.b64decode(data['frame'])
-    jpg_as_np = np.frombuffer(image, dtype=np.uint8)
-    jpg_as_np = cv2.imdecode(jpg_as_np, flags=1)
-    threading.Thread(target=process_frame,args=(record_dict,data['site_name'],jpg_as_np,data['frame_number'])).start()
+# # Create a Socket.IO server
+# sio = socketio.Server(async_mode='eventlet', cors_allowed_origins='*')
+# # model=Model().loadModel()
+# record_dict={}
 
 
-# Define an event handler for the 'disconnect' event
-@sio.on('disconnect')
-def on_disconnect(sid):
-    # again try to connect to the server
-    print('Client disconnected:', sid)
+# # Define an event handler for the 'connect' event
+# @sio.on('connect')
+# def on_connect(sid, environ):
+#     print('Client connected:', sid)
+
+# # Define an event handler for the 'data' event
+# @sio.on('frist_frame')
+# def on_received_first_frame(sid, data):
+#     global record_dict
+
+#     if data['site_name'] not in record_dict:
+#         record_dict[data['site_name']]=VehicleDetection(data['lane_sides'],data['detection_lines'])
+
+# @sio.on("received_frame")
+# def on_received_frame(sid,data):
+#     global record_dict
+#     image=base64.b64decode(data['frame'])
+#     jpg_as_np = np.frombuffer(image, dtype=np.uint8)
+#     jpg_as_np = cv2.imdecode(jpg_as_np, flags=1)
+#     process_frame(data['site_name'],jpg_as_np,data['frame_number'])
+#     # threading.Thread(target=process_frame,args=(data['site_name'],jpg_as_np,data['frame_number'])).start()
 
 
-def process_frame(record_dict, site_name, frame,frame_no):
-    try:
-        print("received frame",site_name,frame_no)
-        print(record_dict.keys())
-        record_dict[site_name].prediction(frame)
-    except Exception as e:
-        print(e)
+# # Define an event handler for the 'disconnect' event
+# @sio.on('disconnect')
+# def on_disconnect(sid):
+#     # again try to connect to the server
+#     print('Client disconnected:', sid)
 
-app = socketio.WSGIApp(sio)
-if __name__ == '__main__':
-    # Wrap the Socket.IO server with the eventlet server
-    wsgi.server(eventlet.listen(('localhost', 8000)), app)
+
+# def process_frame( site_name, frame,frame_no):
+#     try:
+#         global record_dict
+#         print("received frame",site_name,frame_no)
+#         print(record_dict.keys())
+#         # print(type(record_dict[site_name]))
+#         record_dict[site_name].prediction(frame)
+#     except Exception as e:
+#         print(e)
+
+# app = socketio.WSGIApp(sio)
+# if __name__ == '__main__':
+#     # Wrap the Socket.IO server with the eventlet server
+#     wsgi.server(eventlet.listen(('localhost', 7000)), app)
