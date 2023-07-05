@@ -16,13 +16,13 @@ class Model:
         self.model = YOLO(model_name)
         return self.model
     
-class VehicleDetection(Model):
+class VehicleDetection():
     def __init__(self,laneSides,detectionLines) -> None:
-        Model.__init__(self)
+        # Model.__init__(self)
         self.offset = 10
         self.velocityoffset = 10
         self.distancethres = 20
-        self.framecount = 0
+        # self.framecount = 0
         self.lanesCount = [0, 0, 0, 0, 0, 0]
         # print('lane sides',laneSides)
         self.laneSides = laneSides
@@ -36,7 +36,7 @@ class VehicleDetection(Model):
         # self.vehicleVelocities = {}
         self.VCount = {'IN':{'car':[],'bus':[],'van':[],'truck':[],'bike':[],'rickshaw':[],'total_count_in':0},
         'OUT':{'car':[],'bus':[],'van':[],'truck':[],'bike':[],'rickshaw':[],'total_count_out':0}}
-        self.model=self.loadmodel()
+        # self.model=self.loadmodel()
         self.class_list = ['car', 'bus', 'van', 'truck', 'bike', 'rickshaw']
         self.COLORS = np.random.randint(0, 255, size=(len(self.class_list), 3),dtype="uint8")
 
@@ -44,7 +44,7 @@ class VehicleDetection(Model):
 
     # def updateCount(self,i,classes,confidence,row):
     def update_count(self, index, vehicle_class, confidence, detection_row):
-        print('update count start',self.laneSides,self.detectionlines)
+        # print('update count start',self.laneSides,self.detectionlines)
         try:
             if index == 0:
                 self.vTypeCount[self.class_list.index(vehicle_class)] += 1
@@ -62,17 +62,19 @@ class VehicleDetection(Model):
             })
             self.laneSides[detection_type] += 1
             self.VCount[detection_type]['total_count_in' if index == 0 else 'total_count_out'] += 1
-            print('update count end',self.VCount)
+            print('update count end',self.vTypeCount)
+            print('update count end',self.vTypeCountOut)
+
         except Exception as e:
             print('update count error',e)
 
 
-    def prediction(self,frame):
+    def prediction(self,detection):
             print('prediction')
         # while True:
             centersAndIDs = []
             unavailableIDs = []
-            detection=self.model.predict(frame)[0].boxes.data
+            # detection=self.model.predict(frame)[0].boxes.data
 
             for ind, row in enumerate(detection):
                 confidence=float(row[4])
@@ -107,7 +109,7 @@ class VehicleDetection(Model):
 
                     if len(centersAndIDs) !=0:
                         vehicleId = centersAndIDs[len(centersAndIDs) -1][2] 
-                    cv2.circle(frame, (int(center[0]), int(center[1])), 4, (41, 18, 252), 5)   # Plot center point
+                    # cv2.circle(frame, (int(center[0]), int(center[1])), 4, (41, 18, 252), 5)   # Plot center point
 
                     for i, dl in enumerate(self.detectionlines):
                         p1 = np.array([dl[0], dl[1]])
@@ -132,13 +134,13 @@ class VehicleDetection(Model):
 
                                 for dvi in self.detectedVehicleIDs:
                                     if dvi == vehicleId:
-                                        cv2.line(frame, (dl[0], dl[1]), (dl[2], dl[3]), (90, 224, 63), 6)
+                                        # cv2.line(frame, (dl[0], dl[1]), (dl[2], dl[3]), (90, 224, 63), 6)
                                         alreadyCounted = True
                                         break
 
                                 if not alreadyCounted:
                                     self.detectedVehicleIDs.append(vehicleId)
-                                    cv2.line(frame, (dl[0], dl[1]), (dl[2], dl[3]), (90, 224, 63), 6)
+                                    # cv2.line(frame, (dl[0], dl[1]), (dl[2], dl[3]), (90, 224, 63), 6)
                                     self.lanesCount[i] += 1
                                     try:
                                         print('update count')
@@ -148,16 +150,16 @@ class VehicleDetection(Model):
                                         print()
                                     else:
                                         continue
-                    cv2.rectangle(frame, (x, y), (w, h), (0, 255, 0), 2)  
-                    text = "{}: {:.4f}".format(classes, confidence)
-                    color = [int(c) for c in self.COLORS[obj]]
-                    cv2.putText(frame, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-                    cv2.putText(frame, "IN:" + str(self.laneSides["IN"]), (20, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (55,18,219), 3)
-                    cv2.putText(frame, "OUT:" + str(self.laneSides["OUT"]), (20, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (55,18,219), 3)
+                    # cv2.rectangle(frame, (x, y), (w, h), (0, 255, 0), 2)  
+                    # text = "{}: {:.4f}".format(classes, confidence)
+                    # color = [int(c) for c in self.COLORS[obj]]
+                    # cv2.putText(frame, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+                    # cv2.putText(frame, "IN:" + str(self.laneSides["IN"]), (20, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (55,18,219), 3)
+                    # cv2.putText(frame, "OUT:" + str(self.laneSides["OUT"]), (20, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (55,18,219), 3)
 
 
             # cv2.imshow("Frame", frame)
-            self.framecount +=1
+            # self.framecount +=1
             cacheSize = 5
             self.cache.insert(0, centersAndIDs.copy())
             if len(self.cache) > cacheSize:

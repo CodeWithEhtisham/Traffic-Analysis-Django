@@ -96,6 +96,8 @@ def send_frames():
                 data = {
                     "site_name": "Air Port Road",
                     "frame_number": frame_count,
+                    "lane_sides": laneSides,
+                    "detection_lines": detectionLines,
                     "frame": base64.b64encode(cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 60])[1]).decode()
                 }
                 sio.emit('received_frame', data)

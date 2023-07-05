@@ -30,6 +30,7 @@ import redis
 import sys
 import pickle
 from .vehicle_counting import VehicleDetection
+
 # eventlet.monkey_patch()
 sio = socketio.Server(async_mode='eventlet', cors_allowed_origins='*')
 redis_host = 'localhost'  # Redis server host
@@ -37,21 +38,30 @@ redis_port = 6379  # Redis server port
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
 threading_dict = {}
 vehicle_counting_dict = {}
+model = YOLO("best.onnx")
+
 
 async def process_frame(site_name):
     # run while loop till redis list is empty
-    # print("processing frame",site_name)
+    # print("processing fr  `1              vvv vame",site_name)
+    global redis_client,vehicle_counting_dict
     while redis_client.llen(site_name) > 0:
+        # print("processing frame len",redis_client.llen(site_name))
         # pop the frame from redis list from the right side
         frame_data = redis_client.rpop(site_name)
         if frame_data is None:
             continue
         data=pickle.loads(frame_data)
-        print("processing frame",site_name,data['frame_number'])
+        # print("processing frame",site_name,data['frame_number'])
         image=base64.b64decode(data['frame'])
         jpg_as_np = np.frombuffer(image, dtype=np.uint8)
         jpg_as_np = cv2.imdecode(jpg_as_np, flags=1)
-        print("processing frame",vehicle_counting_dict)
+        result=model.predict(jpg_as_np)[0].boxes.data
+        if result is not None and len(result)>0:
+            vehicle_counting_dict[site_name].prediction(result)
+    print(site_name,"done")
+    print(vehicle_counting_dict[site_name].VCount['IN']['total_count_in'])
+    print(vehicle_counting_dict[site_name].VCount['OUT']['total_count_out'])
 
 
 
@@ -61,15 +71,17 @@ async def add_frame_to_redis(site_name,data):
     # print("adding frame to redis",site_name,threading_dict)
     redis_client.lpush(site_name, pickle.dumps(data))
     # print("adding frame to redis",site_name,threading_dict)
+    print(f"dict keys {threading_dict.keys()}   {site_name}")
     if site_name not in threading_dict:
         threading_dict[site_name] = threading.Thread(target=asyncio.run,args=(process_frame(site_name),))
         threading_dict[site_name].start()
-        vehicle_counting_dict[site_name] = VehicleDetection(data['lane_sides'],data['detection_lines'])
         print("Thread started", threading_dict)
+        vehicle_counting_dict[site_name] = VehicleDetection(data['lane_sides'],data['detection_lines'])
     else:
         if threading_dict[site_name] is None or not threading_dict[site_name].is_alive():
             threading_dict[site_name] = threading.Thread(target=asyncio.run,args=(process_frame(site_name),))
             threading_dict[site_name].start()
+    print(f"dict for vehicle counting {vehicle_counting_dict}")
 
 
 # Define an event handler for the 'connect' event
