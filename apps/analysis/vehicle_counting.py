@@ -3,10 +3,38 @@ import math
 import numpy as np
 from ultralytics import YOLO
 # import argparse
-
-
+from apps.analysis.models import *
+import os
+import threading
+import asyncio
 model_name = 'best.onnx'
 conf=0.2
+
+async def data_insertion(site_name,image,time_stamp,lable,conf,x,y,w,h,count_in,count_out):
+    stream=Stream.objects.get(site_name=site_name)
+    # save image into directory and save image path into database
+    # frame.save(f'./media/{stream.site_name}/{stream.stream_id}/{stream.stream_id}_.jpg')
+    if not os.path.exists(f"./media/{site_name}"):
+        os.mkdir(f"./media/{site_name}")
+    cv2.imwrite(f'./media/{site_name}/{time_stamp}_.jpg', image)
+    print('image saved#######################33',time_stamp,'#######################33')
+    image_obj=Image.objects.create(
+        stream=stream,
+        timestamp=time_stamp,
+        image_path=f'./media/{site_name}/{time_stamp}.jpg'
+    ).save()
+
+    VehicleObject.objects.create(
+        image=image_obj,
+        label=lable,
+        confidence=conf,
+        x=x,y=y,w=w,h=h,
+        total_count_in=count_in,
+        total_count_out=count_out
+    ).save
+    print("Data Inserted into the DB site:",site_name)
+
+
 
 class Model:
 
@@ -43,13 +71,17 @@ class VehicleDetection():
 
 
     # def updateCount(self,i,classes,confidence,row):
-    def update_count(self, index, vehicle_class, confidence, detection_row):
+    def update_count(self, index, vehicle_class, confidence, detection_row,site_name,time_stemp,frame):
         # print('update count start',self.laneSides,self.detectionlines)
         try:
+            count_in=0
+            count_out=0
             if index == 0:
                 self.vTypeCount[self.class_list.index(vehicle_class)] += 1
+                count_in=1
             else:
                 self.vTypeCountOut[self.class_list.index(vehicle_class)] += 1
+                count_out=1
 
             detection_type = "IN" if index == 0 else "OUT"
             self.VCount[detection_type][vehicle_class].append({
@@ -64,12 +96,26 @@ class VehicleDetection():
             self.VCount[detection_type]['total_count_in' if index == 0 else 'total_count_out'] += 1
             print('update count end',self.vTypeCount)
             print('update count end',self.vTypeCountOut)
+            threading.Thread(target=asyncio.run,args=(data_insertion(
+                site_name=site_name,
+                image=frame,
+                time_stamp=time_stemp,
+                lable=vehicle_class,
+                x=detection_row[0],
+                y=detection_row[1],
+                w=detection_row[2],
+                h=detection_row[3],
+                conf=f'{confidence:.2}',
+                count_in=count_in,
+                count_out=count_out
+                ),)).start()
+
 
         except Exception as e:
             print('update count error',e)
 
 
-    def prediction(self,detection):
+    def prediction(self,detection,site_name,time_stemp,frame):
             print('prediction')
         # while True:
             centersAndIDs = []
@@ -144,7 +190,7 @@ class VehicleDetection():
                                     self.lanesCount[i] += 1
                                     try:
                                         print('update count')
-                                        self.update_count(i,classes,confidence,row)
+                                        self.update_count(i,classes,confidence,row,site_name,time_stemp,frame)
                                         print(self.VCount)
                                     except Exception as e:
                                         print()

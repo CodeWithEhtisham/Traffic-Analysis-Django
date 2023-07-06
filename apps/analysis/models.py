@@ -16,11 +16,9 @@ class Image(models.Model):
     stream = models.ForeignKey(Stream, on_delete=models.CASCADE)
     image_path = models.CharField(max_length=255)
     timestamp = models.DateTimeField(auto_now_add=False)
-    # count = models.IntegerField()
-    total_count_in = models.IntegerField()
-    total_count_out = models.IntegerField()
+    
 
-class Object(models.Model):
+class VehicleObject(models.Model):
     image = models.ForeignKey(Image, on_delete=models.CASCADE)
     label = models.CharField(max_length=255)
     confidence = models.FloatField()
@@ -28,3 +26,6 @@ class Object(models.Model):
     y = models.FloatField()
     w = models.FloatField()
     h = models.FloatField()
+    # count = models.IntegerField()
+    total_count_in = models.IntegerField(default=0)
+    total_count_out = models.IntegerField(default=0)

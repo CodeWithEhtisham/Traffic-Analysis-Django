@@ -39,7 +39,7 @@ redis_client = redis.Redis(host='localhost', port=6379, db=0)
 threading_dict = {}
 vehicle_counting_dict = {}
 model = YOLO("best.onnx")
-
+from apps.analysis.models import *
 
 async def process_frame(site_name):
     # run while loop till redis list is empty
@@ -58,10 +58,10 @@ async def process_frame(site_name):
         jpg_as_np = cv2.imdecode(jpg_as_np, flags=1)
         result=model.predict(jpg_as_np)[0].boxes.data
         if result is not None and len(result)>0:
-            vehicle_counting_dict[site_name].prediction(result)
-    print(site_name,"done")
-    print(vehicle_counting_dict[site_name].VCount['IN']['total_count_in'])
-    print(vehicle_counting_dict[site_name].VCount['OUT']['total_count_out'])
+            vehicle_counting_dict[site_name].prediction(result,site_name,data['time_stemp'],jpg_as_np)
+    # print(site_name,"done")
+    # print(vehicle_counting_dict[site_name].VCount['IN']['total_count_in'])
+    # print(vehicle_counting_dict[site_name].VCount['OUT']['total_count_out'])
 
 
 
