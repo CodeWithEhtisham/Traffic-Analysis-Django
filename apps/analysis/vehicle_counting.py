@@ -7,33 +7,60 @@ from apps.analysis.models import *
 import os
 import threading
 import asyncio
+from asgiref.sync import sync_to_async
 model_name = 'best.onnx'
 conf=0.2
 
-async def data_insertion(site_name,image,time_stamp,lable,conf,x,y,w,h,count_in,count_out):
-    stream=Stream.objects.get(site_name=site_name)
-    # save image into directory and save image path into database
-    # frame.save(f'./media/{stream.site_name}/{stream.stream_id}/{stream.stream_id}_.jpg')
+# async def data_insertion(site_name,image,time_stamp,lable,conf,x,y,w,h,count_in,count_out):
+#     stream=Stream.objects.get(site_name=site_name)
+#     # save image into directory and save image path into database
+#     # frame.save(f'./media/{stream.site_name}/{stream.stream_id}/{stream.stream_id}_.jpg')
+#     if not os.path.exists(f"./media/{site_name}"):
+#         os.mkdir(f"./media/{site_name}")
+#     cv2.imwrite(f'./media/{site_name}/{time_stamp}_.jpg', image)
+#     print('image saved#######################33',time_stamp,'#######################33')
+#     image_obj=Image.objects.create(
+#         stream=stream,
+#         timestamp=time_stamp,
+#         image_path=f'./media/{site_name}/{time_stamp}.jpg'
+#     ).save()
+
+#     VehicleObject.objects.create(
+#         image=image_obj,
+#         label=lable,
+#         confidence=conf,
+#         x=x,y=y,w=w,h=h,
+#         total_count_in=count_in,
+#         total_count_out=count_out
+#     ).save
+#     print("Data Inserted into the DB site:",site_name)
+
+async def data_insertion_async(site_name, image, time_stamp, lable, conf, x, y, w, h, count_in, count_out):
+    stream = await sync_to_async(Stream.objects.get)(site_name=site_name)
+
     if not os.path.exists(f"./media/{site_name}"):
         os.mkdir(f"./media/{site_name}")
     cv2.imwrite(f'./media/{site_name}/{time_stamp}_.jpg', image)
-    print('image saved#######################33',time_stamp,'#######################33')
-    image_obj=Image.objects.create(
+    print('image saved#######################33', time_stamp, '#######################33')
+
+    image_obj = await sync_to_async(Image.objects.create)(
         stream=stream,
         timestamp=time_stamp,
         image_path=f'./media/{site_name}/{time_stamp}.jpg'
-    ).save()
+    )
+    await sync_to_async(image_obj.save)()
 
-    VehicleObject.objects.create(
+    vehicle_obj = await sync_to_async(VehicleObject.objects.create)(
         image=image_obj,
         label=lable,
         confidence=conf,
-        x=x,y=y,w=w,h=h,
+        x=x, y=y, w=w, h=h,
         total_count_in=count_in,
         total_count_out=count_out
-    ).save
-    print("Data Inserted into the DB site:",site_name)
+    )
+    await sync_to_async(vehicle_obj.save)()
 
+    print("Data Inserted into the DB site:", site_name)
 
 
 class Model:
@@ -71,7 +98,7 @@ class VehicleDetection():
 
 
     # def updateCount(self,i,classes,confidence,row):
-    def update_count(self, index, vehicle_class, confidence, detection_row,site_name,time_stemp,frame):
+    def update_count(self, index, vehicle_class, confidence, detection_row,site_name,time_stamp,frame):
         # print('update count start',self.laneSides,self.detectionlines)
         try:
             count_in=0
@@ -96,10 +123,10 @@ class VehicleDetection():
             self.VCount[detection_type]['total_count_in' if index == 0 else 'total_count_out'] += 1
             print('update count end',self.vTypeCount)
             print('update count end',self.vTypeCountOut)
-            threading.Thread(target=asyncio.run,args=(data_insertion(
+            threading.Thread(target=asyncio.run,args=(data_insertion_async(
                 site_name=site_name,
                 image=frame,
-                time_stamp=time_stemp,
+                time_stamp=time_stamp,
                 lable=vehicle_class,
                 x=detection_row[0],
                 y=detection_row[1],
@@ -115,7 +142,7 @@ class VehicleDetection():
             print('update count error',e)
 
 
-    def prediction(self,detection,site_name,time_stemp,frame):
+    def prediction(self,detection,site_name,time_stamp,frame):
             print('prediction')
         # while True:
             centersAndIDs = []
@@ -190,7 +217,7 @@ class VehicleDetection():
                                     self.lanesCount[i] += 1
                                     try:
                                         print('update count')
-                                        self.update_count(i,classes,confidence,row,site_name,time_stemp,frame)
+                                        self.update_count(i,classes,confidence,row,site_name,time_stamp,frame)
                                         print(self.VCount)
                                     except Exception as e:
                                         print()

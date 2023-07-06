@@ -2,6 +2,7 @@ import socketio
 import cv2
 import base64
 import numpy as np
+import datetime
 
 # Initialize the Socket.IO client
 sio = socketio.Client()
@@ -85,6 +86,7 @@ def send_frames():
                 cv2.destroyAllWindows()
                 data = {
                     "site_name": "Air Port Road",
+                    "time_stamp":datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                     "frame_number": frame_count,
                     "lane_sides": laneSides,
                     "detection_lines": detectionLines,
@@ -95,6 +97,7 @@ def send_frames():
             else:
                 data = {
                     "site_name": "Air Port Road",
+                    "time_stamp":datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                     "frame_number": frame_count,
                     "lane_sides": laneSides,
                     "detection_lines": detectionLines,

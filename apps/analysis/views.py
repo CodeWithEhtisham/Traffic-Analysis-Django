@@ -22,7 +22,7 @@ import base64
 import cv2
 from ultralytics import YOLO
 import asyncio
-from .models import Stream, Image, Object
+from .models import Stream, Image, VehicleObject
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from datetime import datetime, timedelta
@@ -58,7 +58,7 @@ async def process_frame(site_name):
         jpg_as_np = cv2.imdecode(jpg_as_np, flags=1)
         result=model.predict(jpg_as_np)[0].boxes.data
         if result is not None and len(result)>0:
-            vehicle_counting_dict[site_name].prediction(result,site_name,data['time_stemp'],jpg_as_np)
+            vehicle_counting_dict[site_name].prediction(result,site_name,data['time_stamp'],jpg_as_np)
     # print(site_name,"done")
     # print(vehicle_counting_dict[site_name].VCount['IN']['total_count_in'])
     # print(vehicle_counting_dict[site_name].VCount['OUT']['total_count_out'])

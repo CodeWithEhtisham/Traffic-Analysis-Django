@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Stream, Image, Object
+from .models import Stream, Image, VehicleObject
 
 
 class StreamSerializer(serializers.ModelSerializer):
@@ -16,12 +16,12 @@ class ImageSerializer(serializers.ModelSerializer):
 class ObjectSerializer(serializers.ModelSerializer):
     # image = ImageSerializer(read_only=True)
     class Meta:
-        model = Object
+        model = VehicleObject
         fields = '__all__'
 
 class ObjectSerializer2(serializers.ModelSerializer):
     class Meta:
-        model = Object
+        model = VehicleObject
         fields = '__all__'
 
 class ImageWithObjectsSerializer(serializers.ModelSerializer):

@@ -72,7 +72,7 @@
                         </a>
                     </li>
                     {% endfor %}
-                    
+
                 </ul>
             </div>
         </nav>
@@ -164,22 +164,19 @@
                 <div class="row">
                     <!-- Location -->
                     {% for site in site_name%}
+
                     <div class="col-lg-5 col-xl-6 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body p-0">
                                 <h4 class="p-3 text-center">{{site}}</h4>
-                                <!-- video -->
-                                <div>
-                                    <!-- <video id="video" width="100%" height="100%" controls autoplay>
-                                        
-                                        <source
-                                            src="https://codingyaar.com/wp-content/uploads/video-in-bootstrap-card.mp4"
-                                            type="video/mp4" width="100%" height="100%">
-                                    </video> -->
-                                    <img src="static/images/map.PNG" alt="stream2" style="height: 400px; width: 100%;"
-                                        id="{{site}}">
+                                <a href="{% url 'dashboard' site_name=site %}">
+                                    <!-- video -->
+                                    <div>
+                                        <img src="static/images/map.PNG" alt="stream2"
+                                            style="height: 400px; width: 100%;" id="{{site}}">
 
-                                </div>
+                                    </div>
+                                </a>
                             </div>
 
                             <div class="card-footer">
@@ -190,7 +187,8 @@
                                                 class="d-flex align-items-center justify-content-end tx-24 text-uppercase font-weight-bold">yesterday
                                                 Total Traffic
                                                 <span class="p-1 ml-1 rounded-circle bg-primary-muted"></span></label>
-                                            <h5 class="font-weight-bold p-1 ml-5 " style="font-size: large;" id="yesterday_count">500</h5>
+                                            <h5 class="font-weight-bold p-1 ml-5 " style="font-size: large;"
+                                                id="yesterday_count">500</h5>
                                         </div>
                                     </div>
                                     <div class="col-2 d-flex justify-content-end vr">
@@ -205,7 +203,8 @@
                                                 Traffic</label>
                                             <!-- </label> -->
                                             <!-- add right margin -->
-                                            <h5 class="font-weight-bold p-1 ml-5 " style="font-size: large;" id="today_count">100</h5>
+                                            <h5 class="font-weight-bold p-1 ml-5 " style="font-size: large;"
+                                                id="today_count">100</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -214,7 +213,7 @@
                     </div>
                     {% endfor %}
                     <!-- Location -->
-                    
+
                     <!-- map  -->
                     <!-- <div class="col-2 d-flex "></div> -->
 
@@ -267,7 +266,7 @@
             console.log('disconnected');
         });
 
-        {% for site in site_name%}
+        {% for site in site_name %}
         socket.on('{{site}}', function (data) {
             document.getElementById('{{site}}').src = "data:image/png;base64," + data;
         });
