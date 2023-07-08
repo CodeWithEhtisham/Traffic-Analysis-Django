@@ -308,17 +308,19 @@
     <script src="{% static 'js/charts/e_line_chart.js'%}"></script>
     <!-- <script src="{% static 'js/dynamic-plots.js'%}"></script> -->
     <script>
-        // socket.on("connect", function () {
-        //     console.log("connected");
-        // });
+        // var socket = io.connect("http://
+        const socket = io.connect('http://127.0.0.1:7000');
+        socket.on("connect", function () {
+            console.log("connected");
+        });
 
-        // socket.on("disconnect", function () {
-        //     console.log("disconnected");
-        // });
+        socket.on("disconnect", function () {
+            console.log("disconnected");
+        });
 
-        // socket.on("{{site_name}}", function (data) {
-        //     document.getElementById('{{site_name}}').src = "data:image/png;base64," + data;
-        // });
+        socket.on("{{site_name}}", function (data) {
+            document.getElementById('{{site_name}}').src = "data:image/png;base64," + data;
+        });
 
 
 

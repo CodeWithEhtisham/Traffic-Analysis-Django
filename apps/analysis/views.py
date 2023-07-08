@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.views import View
 from django.views.generic import TemplateView
 from django.contrib.auth import authenticate, login, logout
@@ -22,7 +22,7 @@ import base64
 import cv2
 from ultralytics import YOLO
 import asyncio
-from .models import Stream, Image, VehicleObject
+from .models import *
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from datetime import datetime, timedelta
@@ -30,7 +30,6 @@ import redis
 import sys
 import pickle
 from .vehicle_counting import VehicleDetection
-
 # eventlet.monkey_patch()
 sio = socketio.Server(async_mode='eventlet', cors_allowed_origins='*')
 redis_host = 'localhost'  # Redis server host
@@ -349,10 +348,43 @@ class Dashboard(TemplateView):
 class History(TemplateView):
     def get(self, request):
         return render(request, 'history.html')
-
+from django.core.files.storage import FileSystemStorage
+import os
 class VideoAnalysis(TemplateView):
     def get(self, request):
-        return render(request, 'video_analysis.html')
+        site_names = Stream.objects.all().values_list('site_name', flat=True)
+        video_analysis = VideoAnalysisModel.objects.all()
+        return render(request, 'video_analysis.html',{
+            'site_names':site_names,
+            'video_analysis':video_analysis
+        })
+    
+    def post(self, request):
+        try:
+            if request.method == 'POST' and request.FILES.get('video'):
+                video_name = request.POST.get('video_name')
+                date_time = request.POST.get('date_time')
+                video_file = request.FILES['video']
+                # save video file into directory
+                fs = FileSystemStorage()
+                if not os.path.exists(f'./media/save_video'):
+                    os.mkdir(f'./media/save_video')
+                filename = fs.save(f'./media/save_video/{video_name}.mp4', video_file)
+                uploaded_file_url = fs.url(filename)
+                VideoAnalysisModel.objects.create(
+                    video_name=video_name,
+                    date_time=date_time,
+                    video_path=uploaded_file_url
+                ).save()
+                site_names = Stream.objects.all().values_list('site_name', flat=True)
+                video_analysis = VideoAnalysisModel.objects.all()
+                return render(request, 'video_analysis.html',{
+                    'site_names':site_names,
+                    'video_analysis':video_analysis
+                })
+        except Exception as e:
+            print(e)
+            return JsonResponse({'error': str(e)})
 
 class LiveStream(TemplateView):
     def get(self, request):
