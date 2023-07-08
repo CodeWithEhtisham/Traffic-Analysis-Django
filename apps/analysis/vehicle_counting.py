@@ -41,7 +41,7 @@ async def data_insertion_async(site_name, image, time_stamp, lable, conf, x, y, 
     if not os.path.exists(f"./media/{site_name}"):
         os.mkdir(f"./media/{site_name}")
     cv2.imwrite(f'./media/{site_name}/{time_stamp}_.jpg', image)
-    print('image saved#######################33', time_stamp, '#######################33')
+    # print('image saved#######################33', time_stamp, '#######################33')
 
     image_obj = await sync_to_async(Image.objects.create)(
         stream=stream,
@@ -143,7 +143,7 @@ class VehicleDetection():
 
 
     def prediction(self,detection,site_name,time_stamp,frame):
-            print('prediction')
+            # print('prediction')
         # while True:
             centersAndIDs = []
             unavailableIDs = []
@@ -216,7 +216,7 @@ class VehicleDetection():
                                     # cv2.line(frame, (dl[0], dl[1]), (dl[2], dl[3]), (90, 224, 63), 6)
                                     self.lanesCount[i] += 1
                                     try:
-                                        print('update count')
+                                        # print('update count')
                                         self.update_count(i,classes,confidence,row,site_name,time_stamp,frame)
                                         print(self.VCount)
                                     except Exception as e:

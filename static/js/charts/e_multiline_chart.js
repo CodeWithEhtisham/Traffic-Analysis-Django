@@ -1,9 +1,8 @@
-
 var chartDom = document.getElementById('e_multiline_chart');
 var multi_line_chart = echarts.init(chartDom);
-var option;
+var multiline_options;
 
-option = {
+multiline_options = {
   title: {
     text: 'Total Count'
   },
@@ -11,7 +10,7 @@ option = {
     trigger: 'axis'
   },
   legend: {
-    data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine']
+    data: ['Car', 'Bike', 'Bus', 'Truck', 'Rickshaw', 'Van'],
   },
   grid: {
     left: '3%',
@@ -26,45 +25,76 @@ option = {
   },
   xAxis: {
     type: 'category',
-    boundaryGap: false,
-    data: ['Mon', 'Tue', 'Wed', 'Thu']
+    data: ['02:32:33', '02:32:33', '02:32:33', '02:32:33', '02:32:33', '02:32:33', '02:32:34', '02:32:34', '02:32:34', '02:32:35', '02:32:35']
   },
   yAxis: {
     type: 'value',
-    max: 2500
+    max: 30,
+    min: 0,
+    // interval: 1 
   },
   series: [
     {
-      name: 'Email',
+      name: 'Car',
       type: 'line',
-      stack: 'Total',
-      data: [120, 132, 101, 134]
+      // stack: 'Total',
+      data: [1, 2, 3, 4, 4, 4, 4, 5, 6, 6, 6]
+
     },
     {
-      name: 'Union Ads',
+      name: 'Bike',
       type: 'line',
-      stack: 'Total',
-      data: [220, 182, 191, 234]
+      data: [0, 0, 0, 0, 0, 1, 2, 3, 3, 3, 4, 4]
     },
     {
-      name: 'Video Ads',
+      name: 'Bus',
       type: 'line',
-      stack: 'Total',
-      data: [154, 190, 330, 410]
+      data: [0, 0, 0, 0, 0, 0, 0, 0, 1]
     },
     {
-      name: 'Direct',
+      name: 'Truck',
       type: 'line',
-      stack: 'Total',
-      data: [334, 390, 330, 320]
+      data: [0, 0, 0, 0, 0, 0, 0, 2, 3]
     },
     {
-      name: 'Search Engine',
+      name: 'Rickshaw',
       type: 'line',
-      stack: 'Total',
-      data: [820, 932, 901, 934]
-    }
+      data: [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    },
+    {
+        name: 'Van',
+        type: 'line',
+
+        data: [0, 0, 0, 0, 0, 0, 1, 2, 3]
+      }
   ]
 };
 
-option && multi_line_chart.setOption(option);
+multiline_options && multi_line_chart.setOption(multiline_options);
+
+function multi_line_chart_fun(csrfToken,site_name) {
+  // console.log(csrfToken,site_name)
+  $.ajax({
+      method: "POST",
+      url: "/apis/get_multiline_chart_records",
+      dataType: "json",
+      headers: { "X-CSRFToken": csrfToken },
+      data: {
+          "site_name": site_name,
+      },
+      success: function (data) {
+          // update the chart with the new data series
+          multiline_options.series = data["data"];
+          multiline_options.yAxis.max = data["max"];
+          multiline_options.xAxis.data = data["time_stamp"];
+
+          multi_line_chart.setOption(multiline_options);
+
+         
+      },
+      error: function () {
+          console.log("Error on get_vehicle_counts");
+      }
+  });
+
+}

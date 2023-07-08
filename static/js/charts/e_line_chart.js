@@ -12,9 +12,9 @@ setTimeout(function () {
     },
     dataset: {
       source: [
-        ['product', '2012', '2013', '2014', '2015', '2016', '2017'],
-        ['IN', 56.5, 82.1, 88.7, 70.1, 53.4, 85.1],
-        ['OUT', 51.1, 51.4, 55.1, 53.3, 73.8, 68.7]
+      //   ['product', '2012', '2013', '2014', '2015', '2016', '2017'],
+      //   ['IN', 56.5, 82.1, 88.7, 70.1, 53.4, 85.1],
+      //   ['OUT', 51.1, 51.4, 55.1, 53.3, 73.8, 68.7]
       ]
     },
     xAxis: { type: 'category' },
@@ -44,11 +44,11 @@ setTimeout(function () {
         label: {
           formatter: '{b}: Vehicle '
         },
-        encode: {
-          itemName: 'product',
-          value: '2012',
-          tooltip: '2012'
-        }
+        // encode: {
+        //   itemName: 'Time_stamp',
+        //   value: 'IN',
+        //   tooltip: 'IN'
+        // }
       }
     ]
   };
@@ -74,3 +74,29 @@ setTimeout(function () {
 });
 
 line_option && line_chart.setOption(line_option);
+
+
+function line_chart_fun(csrfToken,site_name) {
+  // console.log(csrfToken,site_name)
+  $.ajax({
+      method: "POST",
+      url: "/apis/get_line_chart_records",
+      dataType: "json",
+      headers: { "X-CSRFToken": csrfToken },
+      data: {
+          "site_name": site_name,
+      },
+      success: function (data) {
+          // update the chart with the new data series
+          console.log(data)
+          line_option.dataset.source = data["data"];
+          line_chart.setOption(line_option);
+
+         
+      },
+      error: function () {
+          console.log("Error on get_vehicle_counts");
+      }
+  }); 
+
+}

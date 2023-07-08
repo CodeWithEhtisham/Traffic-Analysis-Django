@@ -2,7 +2,7 @@ import socketio
 import cv2
 import base64
 import numpy as np
-
+import datetime
 # Initialize the Socket.IO client
 sio = socketio.Client()
 
@@ -89,6 +89,7 @@ def send_frames():
                     "frame_number": frame_count,
                     "lane_sides": laneSides,
                     "detection_lines": detectionLines,
+                    "time_stamp":datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                     "frame": base64.b64encode(cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 60])[1]).decode()
                 }
                 sio.emit('frist_frame', data)
@@ -99,6 +100,7 @@ def send_frames():
                     "frame_number": frame_count,
                     "lane_sides": laneSides,
                     "detection_lines": detectionLines,
+                    "time_stamp":datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                     "frame": base64.b64encode(cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 60])[1]).decode()
                 }
                 sio.emit('received_frame', data)

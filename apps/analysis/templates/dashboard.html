@@ -157,9 +157,50 @@
                     <div class="col-xl-6 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
-                                <h6 class="card-title">Streaming Analysis
-                                </h6>
-                                <canvas id="chartjsAreaa"></canvas>
+                                <h6 class="card-title">Streaming Analysis</h6>
+                                <!-- create 6 card  -->
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Vehicle</th>
+                                                    <th>Count</th>
+                                                    <th>status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="today_table">
+                                                <tr>
+                                                    <td class="py-1">
+                                                        Car
+                                                    </td>
+                                                    <td>44</td>
+                                                    <td>
+                                                        <div class="progress">
+                                                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                                                                role="progressbar" style="width: 25%" aria-valuenow="25"
+                                                                aria-valuemin="0" aria-valuemax="100"></div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="py-1">
+                                                        Bike
+                                                    </td>
+                                                    <td>22</td>
+                                                    <td>
+                                                        <div class="progress">
+                                                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger"
+                                                                role="progressbar" style="width: 22%" aria-valuenow="75"
+                                                                aria-valuemin="0" aria-valuemax="100"></div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -278,6 +319,74 @@
         // socket.on("{{site_name}}", function (data) {
         //     document.getElementById('{{site_name}}').src = "data:image/png;base64," + data;
         // });
+
+
+
+        // // ajax apis for getting data
+        // setInterval(function () {
+        //     $.ajax({
+        //         method: "GET",
+        //         url: "/apis/get_objects",
+        //         success: function (data) {
+        //             console.log(data);
+        //             document.getElementById('today_count').innerHTML = data.today;
+        //             document.getElementById('yesterday_count').innerHTML = data.yesterday;
+        //         },
+        //         error: function () {
+        //             console.log("error on get_vehicle_counts");
+        //         }
+        //     });
+        // }, 10000); // 30 seconds in milliseconds
+
+        var csrfToken = "{{ csrf_token }}";
+        var site_name = "{{site_name}}";
+        // // ajax apis for getting data
+
+        setInterval(function () {
+            $.ajax({
+                method: "POST",
+                url: "/apis/get_table_records",
+                dataType: "json",
+                headers: { "X-CSRFToken": csrfToken },
+                data: {
+                    "site_name": site_name,
+                },
+                success: function (data) {
+                    // console.log(data);
+                    let percentage = data['percentage'];
+                    let today_data = data['data'];
+
+                    // Update the table rows
+                    let tableData = '';
+                    Object.entries(today_data).forEach(([vehicle, count], index) => {
+                        tableData += `
+                <tr>
+                    <td>${vehicle}</td>
+                    <td>${count}</td>
+                    <td>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated ${percentage[index] > 50 ? 'bg-success' : 'bg-danger'}" role="progressbar" style="width: ${percentage[index]}%" aria-valuenow="${percentage[index]}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </td>
+                </tr>
+            `;
+                    });
+
+                    // Update the table with the new data
+                    $('#today_table').html(tableData);
+                },
+                error: function () {
+                    console.log("Error on get_vehicle_counts");
+                }
+            });
+            multi_line_chart_fun(csrfToken,site_name);
+            line_chart_fun(csrfToken,site_name);
+            bar_chart_fun(csrfToken,site_name);
+        }, 6000); // 30 seconds in milliseconds
+
+
+        
+
 
     </script>
     <!-- <script src="static/js/morris.js'%}"></script> -->
