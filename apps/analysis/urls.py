@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import Index,Dashboard,History,VideoAnalysis,LiveStream
-from .views import get_vehicle_counts,get_objects, get_images,get_image_objects,get_table_records,get_multiline_chart_records,get_line_chart_records,get_bar_chart_records
+from .views import get_vehicle_counts,get_objects, get_images,get_image_objects,get_table_records,get_multiline_chart_records,get_line_chart_records,get_bar_chart_records,get_first_frame
 # from django.conf.urls.static import static
 # from django.conf import settings
 # import socketio_handler
@@ -24,6 +24,8 @@ urlpatterns = [
     path('apis/get_multiline_chart_records', get_multiline_chart_records, name='get_multiline_chart_records'),
     path('apis/get_line_chart_records', get_line_chart_records, name='get_line_chart_records'),
     path('apis/get_bar_chart_records', get_bar_chart_records, name='get_bar_chart_records'),
+    path('apis/get_first_frame', get_first_frame, name='get_first_frame'),
+
 ]
 
 # urlpatterns += static('/socket.io/', document_root=os.path.join(settings.BASE_DIR, 'node_modules', 'socket.io-client', 'dist'))

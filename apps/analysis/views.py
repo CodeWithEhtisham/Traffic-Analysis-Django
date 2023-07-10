@@ -37,7 +37,7 @@ redis_port = 6379  # Redis server port
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
 threading_dict = {}
 vehicle_counting_dict = {}
-model = YOLO("best.onnx")
+model = YOLO("best.pt")
 from apps.analysis.models import *
 
 async def process_frame(site_name):
@@ -717,6 +717,33 @@ def get_bar_chart_records(request):
             ],
             'max': max(In+Out)+5
 
+        })
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        })
+
+
+@api_view(['POST'])
+def get_first_frame(request):
+    try:
+        video_path=request.POST.get("video_path")
+        print(video_path)
+        # get first frame from video
+        cap = cv2.VideoCapture(video_path[1:])
+        while True:
+            ret, frame = cap.read()
+            print(ret)
+            if ret:
+                # convert frame into base64
+                retval, buffer = cv2.imencode('.jpg', frame)
+                jpg_as_text = base64.b64encode(buffer)
+                break
+            # continue
+        # return as json object
+        # print("first frame",jpg_as_text.decode())
+        return Response({
+            'frame': jpg_as_text.decode()
         })
     except Exception as e:
         return Response({

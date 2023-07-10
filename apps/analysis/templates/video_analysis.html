@@ -338,7 +338,7 @@
 	<!-- video model -->
 	<div class="modal fade" id="vidoemodel" tabindex="-1" role="dialog" aria-labelledby="vidoemodelLabel"
 		aria-hidden="true">
-		<div class="modal-dialog" role="document">
+		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="vidoemodelLabel">Modal title</h5>
@@ -347,7 +347,7 @@
 					</button>
 				</div>
 				<div class="modal-body">
-
+					<canvas id="first_frame" style="width: 100%; height: 100%;"></canvas>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -356,6 +356,7 @@
 			</div>
 		</div>
 	</div>
+
 
 	<!-- core:js -->
 	<script src="{% static 'vendors/core/core.js'%}"></script>
@@ -452,89 +453,110 @@
 			progressBar.innerText = '';
 		}
 
+		function draw_line() {
+			// Get the canvas element
+			var canvas = document.getElementById('first_frame');
+			var ctx = canvas.getContext('2d');
+
+			var x1, y1, x2, y2;
+			var drawing = false;
+			var detectionLines = [];
+
+			// Function to draw a line
+			function drawLine() {
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				for (var i = 0; i < detectionLines.length; i++) {
+					var line = detectionLines[i];
+					ctx.beginPath();
+					ctx.moveTo(line[0], line[1]);
+					ctx.lineTo(line[2], line[3]);
+					ctx.stroke();
+				}
+			}
+
+			// Event listener for mouse down event
+			canvas.addEventListener('mousedown', function (event) {
+				x1 = event.offsetX;
+				y1 = event.offsetY;
+				drawing = true;
+			});
+
+			// Event listener for mouse up event
+			canvas.addEventListener('mouseup', function (event) {
+				if (drawing) {
+					x2 = event.offsetX;
+					y2 = event.offsetY;
+					detectionLines.push([x1, y1, x2, y2]);
+					drawing = false;
+					drawLine();
+				}
+			});
+
+			// Event listener for context menu event (right-click)
+			canvas.addEventListener('contextmenu', function (event) {
+				event.preventDefault();
+				var rect = canvas.getBoundingClientRect();
+				var x = event.clientX - rect.left;
+				var y = event.clientY - rect.top;
+				for (var i = 0; i < detectionLines.length; i++) {
+					var line = detectionLines[i];
+					var p1 = { x: line[0], y: line[1] };
+					var p2 = { x: line[2], y: line[3] };
+					var p3 = { x: x, y: y };
+					var dist = Math.abs((p2.x - p1.x) * (p3.y - p1.y) - (p3.x - p1.x) * (p2.y - p1.y)) / Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+					if (dist < 10 && x > Math.min(p1.x, p2.x) - 10 && x < Math.max(p1.x, p2.x) + 10) {
+						detectionLines.splice(i, 1);
+						drawLine();
+						break;
+					}
+				}
+				console.log(detectionLines);
+			});
+
+		}
+
+		// Invoke the draw_line() function to start the drawing functionality
+		draw_line();
+
+
+		// Invoke the draw_line() function to start the drawing functionality
+		draw_line();
+
+
+
+
+		var csrf_token = "{{ csrf_token }}";
 
 		function load_video_function(path) {
-			var modalBody = document.querySelector('.modal-body');
+			// var modalBody = document.querySelector('.modal-body');
 
 			// Create the video element
-			var videoElement = document.createElement('video');
-			videoElement.src = path;
-			videoElement.controls = true;
-			videoElement.style.width = '100%';
+			$.ajax({
+				method: "POST",
+				url: "/apis/get_first_frame",
+				headers: { "X-CSRFToken": csrf_token },
+				data: {
+					"video_path": path,
+				},
+				success: function (data) {
+					// console.log('data',data);
+					let convas = document.getElementById("first_frame")
+					let ctx = convas.getContext("2d")
+					let image = new Image();
+					image.onload = function () {
+						ctx.drawImage(image, 0, 0);
+					};
+					image.src = "data:image/jpeg;base64," + data.frame;
 
-			// Clear the modal body and append the video element
-			modalBody.innerHTML = '';
-			modalBody.appendChild(videoElement);
+				},
+				error: function () {
+					console.log("error on get_first_frame");
+				}
+			});
 
 			// Open the modal
 			$('#vidoemodel').modal('show');
 		}
-
-
-		// // ajax apis for getting data
-		// setInterval(function () {
-		//     $.ajax({
-		//         method: "GET",
-		//         url: "/apis/get_objects",
-		//         success: function (data) {
-		//             console.log(data);
-		//             document.getElementById('today_count').innerHTML = data.today;
-		//             document.getElementById('yesterday_count').innerHTML = data.yesterday;
-		//         },
-		//         error: function () {
-		//             console.log("error on get_vehicle_counts");
-		//         }
-		//     });
-		// }, 10000); // 30 seconds in milliseconds
-
-		// var csrfToken = "{{ csrf_token }}";
-		// var site_name = "{{site_name}}";
-		// // // ajax apis for getting data
-
-		// setInterval(function () {
-		// 	$.ajax({
-		// 		method: "POST",
-		// 		url: "/apis/get_table_records",
-		// 		dataType: "json",
-		// 		headers: { "X-CSRFToken": csrfToken },
-		// 		data: {
-		// 			"site_name": site_name,
-		// 		},
-		// 		success: function (data) {
-		// 			// console.log(data);
-		// 			let percentage = data['percentage'];
-		// 			let today_data = data['data'];
-
-		// 			// Update the table rows
-		// 			let tableData = '';
-		// 			Object.entries(today_data).forEach(([vehicle, count], index) => {
-		// 				tableData += `
-        //         <tr>
-        //             <td>${vehicle}</td>
-        //             <td>${count}</td>
-        //             <td>
-        //                 <div class="progress">
-        //                     <div class="progress-bar progress-bar-striped progress-bar-animated ${percentage[index] > 50 ? 'bg-success' : 'bg-danger'}" role="progressbar" style="width: ${percentage[index]}%" aria-valuenow="${percentage[index]}" aria-valuemin="0" aria-valuemax="100"></div>
-        //                 </div>
-        //             </td>
-        //         </tr>
-        //     `;
-		// 			});
-
-		// 			// Update the table with the new data
-		// 			$('#today_table').html(tableData);
-		// 		},
-		// 		error: function () {
-		// 			console.log("Error on get_vehicle_counts");
-		// 		}
-		// 	});
-		// 	multi_line_chart_fun(csrfToken,site_name);
-		// 	line_chart_fun(csrfToken,site_name);
-		// 	bar_chart_fun(csrfToken,site_name);
-		// }, 6000); // 30 seconds in milliseconds
-
-
-
 
 
 	</script>
