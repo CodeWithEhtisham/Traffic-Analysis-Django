@@ -736,6 +736,8 @@ def get_first_frame(request):
             print(ret)
             if ret:
                 # convert frame into base64
+                # resize image 400 to 400
+                frame = cv2.resize(frame, (400, 400))
                 retval, buffer = cv2.imencode('.jpg', frame)
                 jpg_as_text = base64.b64encode(buffer)
                 break
