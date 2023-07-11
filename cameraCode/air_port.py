@@ -30,6 +30,7 @@ def send_frames():
     global frame_count, drawing, detectionLines, laneSides, x1, y1
 
     def drawLine(event, x, y, flags, param):
+        print(x,y)
         global x1, y1, drawing, detectionLines
         if event == cv2.EVENT_LBUTTONDOWN:
             if not drawing:
@@ -52,8 +53,9 @@ def send_frames():
                     smallerX = i[2]
                 if abs(np.cross(p2 - p1, p3 - p1) / np.linalg.norm(p2 - p1)) < 10 and smallerX - 10 < x < largerX + 10:
                     detectionLines.remove(i)
+        print(detectionLines)
 
-    cap = cv2.VideoCapture('b.dav')
+    cap = cv2.VideoCapture('Produce.mp4')
     # fps = cap.get(cv2.CAP_PROP_FPS)
     # print("Frames per second (fps):", fps)
     # return None
@@ -66,12 +68,12 @@ def send_frames():
                 cv2.namedWindow("Draw Lines")
                 cv2.setMouseCallback("Draw Lines", drawLine)
                 while True:
-                    print("Draw lines on the frame and press 'q' to continue")
+                    # print("Draw lines on the frame and press 'q' to continue")
                     frame2 = frame.copy()
                     if cv2.waitKey(1) & 0xFF == ord('q'):
                         cv2.destroyAllWindows()
                         lanesCount = [0] * len(detectionLines)
-                        print(lanesCount)
+                        # print(lanesCount)
                         try:
                             laneSides["IN"] = lanesCount[0]
                             laneSides["OUT"] = lanesCount[1]
@@ -81,7 +83,7 @@ def send_frames():
                     for l in detectionLines:
                         cv2.line(frame, (l[0], l[1]), (l[2], l[3]), (255, 203, 48), 6)
                     cv2.imshow("Draw Lines", frame2)
-                    print(laneSides)
+                    # print(laneSides)
 
                 cv2.destroyAllWindows()
                 data = {
