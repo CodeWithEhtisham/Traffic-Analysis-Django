@@ -745,9 +745,45 @@ def get_first_frame(request):
         # return as json object
         # print("first frame",jpg_as_text.decode())
         return Response({
-            'frame': jpg_as_text.decode()
+            'frame': jpg_as_text.decode(),
+            'video_id': VideoAnalysisModel.objects.get(video_path=video_path).id
         })
     except Exception as e:
         return Response({
+            'error': str(e)
+        })
+
+from .video_prediction import VehicleDetectionVideoAnalysis
+@api_view(['POST'])
+def video_prediction(request):
+    try:
+        vid_id=request.POST.get("video_id")
+        video_path=VideoAnalysisModel.objects.get(id=vid_id).video_path
+        detection_line=[request.POST.getlist("detection_line0[]"),request.POST.getlist("detection_line1[]")]
+
+        # line_sides={"IN":0,"OUT":0}
+        # lanesCount= [0] * len(detection_line)
+        # print(lanesCount)
+        # line_sides["IN"]=lanesCount[0]
+        # line_sides["OUT"]=lanesCount[1]
+        print(vid_id)
+        # print(line_sides)
+        # convert all values to int
+        # detection_line[0]=list(map(float,detection_line[0]))
+        # detection_line[1]=list(map(float,detection_line[1]))
+        # detection_line[0]=list(map(int,detection_line[0]))
+        # detection_line[1]=list(map(int,detection_line[1]))
+        detection_line = [[int(x) for x in line] for line in detection_line]
+        # print(type(detection_line[0][0]))
+
+        obj=VehicleDetectionVideoAnalysis(model=model,detectionLines=detection_line,vid_id=vid_id)
+        threading.Thread(target=obj.prediction, args=(video_path[1:],)).start()
+        return Response({
+            "message":True
+        })
+    except Exception as e:
+        print(e)
+        return Response({
+            'message': False,
             'error': str(e)
         })
