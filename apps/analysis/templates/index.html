@@ -23,8 +23,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/ol@v7.2.2/dist/ol.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.2.2/ol.css">
-
-    <style>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+    
         .card {
             transition: transform 0.2s ease;
             box-shadow: 0 4px 6px 0 rgba(22, 22, 26, 0.18);
@@ -255,7 +255,8 @@
     <script src="static/js/datepicker.js"></script>
 
     <script src="static/js/map.js"></script>
-    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+
+
     <script>
         const socket = io.connect('http://127.0.0.1:7000');
         socket.on('connect', function () {
