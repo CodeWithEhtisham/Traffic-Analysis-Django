@@ -730,10 +730,11 @@ def get_first_frame(request):
         video_path=request.POST.get("video_path")
         print(video_path)
         # get first frame from video
+        print(video_path[1:])
         cap = cv2.VideoCapture(video_path[1:])
         while True:
             ret, frame = cap.read()
-            print(ret)
+            # print(ret)
             if ret:
                 # convert frame into base64
                 # resize image 400 to 400
