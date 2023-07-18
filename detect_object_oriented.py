@@ -102,6 +102,9 @@ class VehicleDetection(Model):
             unavailableIDs = []			
             boxes = []
             ret,frame = cap.read()
+            if not ret:
+                break
+            frame = cv2.resize(frame, (640, 360))
             (H, W) = frame.shape[:2]
             if self.framecount == 0:
                 cv2.namedWindow("Draw Lines")
