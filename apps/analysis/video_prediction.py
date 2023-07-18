@@ -215,11 +215,9 @@ class VehicleDetectionVideoAnalysis():
         df['OUT']=outs
         name=self.vid_id.video_path.split("/")[-1].split(".")[0]
         df.to_csv(f"./media/excel/{name}.csv",index=False)
-        self.vid_id.excel_file=f"excel/{name}.csv"
-        self.vid_id.status="completed"
-        self.vid_id.save()
-        # cap.release()
-        # cv2.destroyAllWindows()
+        VideoAnalysisModel.objects.filter(id=int(self.vid_id.id)).update(excel_path=f"./media/excel/{name}.csv",status=True)
+        cap.release()
+        cv2.destroyAllWindows()
 
 
 # import socketio

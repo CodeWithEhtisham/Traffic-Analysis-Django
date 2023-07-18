@@ -788,3 +788,56 @@ def video_prediction(request):
             'message': False,
             'error': str(e)
         })
+    
+import mimetypes
+
+@api_view(['POST'])
+def download_excel(request):
+    # Retrieve the file path from the query parameter
+    file_path = request.POST.get('excel_path', None)
+    print(file_path,'sadfsad')
+    if file_path:
+        # Check if the file exists
+        if os.path.exists(file_path):
+            # Set the appropriate content type for Excel
+            content_type = mimetypes.guess_type(file_path)[0]
+            if not content_type:
+                content_type = 'application/octet-stream'
+
+            # Generate the response with the file
+            with open(file_path, 'rb') as file:
+                response = HttpResponse(file.read(), content_type=content_type)
+                response['Content-Disposition'] = f'attachment; filename=excel_file.csv'
+                return response
+
+    # Return an error response if the file path is invalid or the file doesn't exist
+    print("file not found")
+    return HttpResponse('File not found.', status=404)
+
+@api_view(['DELETE'])
+def delete_video(request):
+    try:
+        vid_id=request.POST.get("vid_id")
+        print(vid_id,"id")
+        video=VideoAnalysisModel.objects.get(id=vid_id)
+        video_path=video.video_path
+        excel_path=video.excel_path
+        print(video_path,excel_path)
+        if excel_path:
+            if os.path.exists(excel_path[1:]):
+                os.remove(excel_path[1:])
+        if video_path:
+            if os.path.exists(video_path[1:]):
+                os.remove(video_path[1:])
+        VideoAnalysisObject.objects.filter(video_analysis=video).delete()
+        video.delete()
+        print("video deleted")
+        return Response({
+            "message":True
+        })
+    except Exception as e:
+        print(e)
+        return Response({
+            'message': False,
+            'error': str(e)
+        })

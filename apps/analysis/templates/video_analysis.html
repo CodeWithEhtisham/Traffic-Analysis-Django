@@ -215,9 +215,14 @@
 														<button type="button"
 															onclick="load_video_function('{{vid.video_path}}')"
 															class="btn btn-primary btn-sm">Process</button>
-														<button type="button" onclick=""
+														{% if vid.status == 1 %}
+														<button type="button"
+															onclick="downloadExcel('{{vid.excel_path}}','{{vid.video_name}}')"
 															class="btn btn-success btn-sm">Excel</button>
-														<button type="button" onclick=""
+														<button type="button" onclick="get_results('{{vid.id}}')"
+															class="btn btn-secondary btn-sm">Results</button>
+														{% endif %}
+														<button type="button" onclick="delete_video('{{vid.id}}')"
 															class="btn btn-danger btn-sm">Delete</button>
 													</td>
 												</tr>
@@ -374,12 +379,13 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal"
 						onclick="model_close()">Close</button>
-					<button type="button" class="btn btn-primary" id="video_prediction" onclick="prediction_call()">Save changes</button>
+					<button type="button" class="btn btn-primary" id="video_prediction" onclick="prediction_call()">Save
+						changes</button>
 				</div>
 			</div>
 		</div>
 	</div>
-	
+
 
 
 	<!-- core:js -->
@@ -396,9 +402,9 @@
 	<script src="{% static 'js/datepicker.js'%}"></script>
 	<script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
 	<!-- <script src="{% static 'js/dynamic-plots.js'%}"></script> -->
-	<script src="{% static 'js/charts/e_bar_chart.js'%}"></script>
-	<script src="{% static 'js/charts/e_multiline_chart.js'%}"></script>
-	<script src="{% static 'js/charts/e_line_chart.js'%}"></script>
+	<script src="{% static 'js/upload_chart/e_bar_chart.js'%}"></script>
+	<script src="{% static 'js/upload_chart/e_multiline_chart.js'%}"></script>
+	<script src="{% static 'js/upload_chart/e_line_chart.js'%}"></script>
 	<!-- <script src="{% static 'js/dynamic-plots.js'%}"></script> -->
 	<script>
 		// var socket = io.connect("http://
@@ -484,7 +490,7 @@
 			console.log('prediction call', vid_id);
 			console.log(detectionLines);
 			// socket.emit('detection_lines', detectionLines);
-			
+
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			// close the modal
 			$('#vidoemodel').modal('hide');
@@ -514,17 +520,17 @@
 								'Video Prediction Failed!',
 								'Please try again',
 								'error'
-								)
-							}
-							detectionLines = [];
-						},
+							)
+						}
+						detectionLines = [];
+					},
 					error: function () {
 						console.log("error on video prediction");
 					}
 				});
 
 			} catch (error) {
-				console.log("catch",error);
+				console.log("catch", error);
 			}
 		}
 
@@ -589,11 +595,91 @@
 			progressBar.innerText = '';
 		}
 
+		// function downloadExcel() {
+		// Replace "path/to/api" with the URL of your Django download_excel view
+		function downloadExcel(filePath, name) {
+			// Replace "path/to/api" with the URL of your Django download_excel view
+			$.ajax({
+				method: "POST",
+				url: "/apis/download_excel",
+				headers: { "X-CSRFToken": csrf_token },
+				data: {
+					"excel_path": filePath,
+				},
+				success: function (data) {
+					// Create a Blob from the data
+					const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 
-		// 	function onOpenCvLoaded() {
-		//     // OpenCV.js is loaded and ready to use
-		//     draw_line();
-		//   }
+					// Create a URL for the Blob
+					const url = URL.createObjectURL(blob);
+
+					// Create a hidden anchor element
+					const a = document.createElement('a');
+					a.href = url;
+					a.download = name;
+
+					// Append the anchor to the document and simulate a click to initiate download
+					document.body.appendChild(a);
+					a.click();
+
+					// Clean up the URL and remove the anchor
+					URL.revokeObjectURL(url);
+					document.body.removeChild(a);
+				},
+				error: function () {
+					console.log("error on file not found");
+				}
+			})
+		}
+
+
+
+		function delete_video(id) {
+			// Replace "path/to/api" with the URL of your Django download_excel view
+
+			Swal.fire({
+				title: 'Are you sure?',
+				text: "You won't be able to revert this!",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Yes, delete it!'
+			}).then((result) => {
+				$.ajax({
+					method: "DELETE",
+					url: "/apis/delete_video",
+					headers: { "X-CSRFToken": csrf_token },
+					data: {
+						"vid_id": id,
+					},
+					success: function (data) {
+						if (result.isConfirmed) {
+							Swal.fire(
+								'Deleted!',
+								'Your file has been deleted.',
+								'success'
+							)
+						}
+						console.log("success on delete");
+						window.location.reload();
+					},
+					error: function () {
+						console.log("error on file not found");
+					}
+				})
+
+			})
+
+		}
+		
+
+		function get_results(id){
+			multi_line_chart_fun(csrf_token,id);
+            line_chart_fun(csrf_token,id);
+            bar_chart_fun(csrf_token,id);
+
+		}
 
 
 
