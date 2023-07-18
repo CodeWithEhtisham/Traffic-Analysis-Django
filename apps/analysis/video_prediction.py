@@ -214,7 +214,10 @@ class VehicleDetectionVideoAnalysis():
         df['IN']=ins
         df['OUT']=outs
         name=self.vid_id.video_path.split("/")[-1].split(".")[0]
-        df.to_csv(f".media/excel/{name}.csv",index=False)
+        df.to_csv(f"./media/excel/{name}.csv",index=False)
+        self.vid_id.excel_file=f"excel/{name}.csv"
+        self.vid_id.status="completed"
+        self.vid_id.save()
         # cap.release()
         # cv2.destroyAllWindows()
 
