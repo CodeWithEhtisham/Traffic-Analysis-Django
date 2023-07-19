@@ -35,11 +35,11 @@ urlpatterns = [
     path('apis/download_excel', download_excel, name='download_excel'),
      path('apis/delete_video', delete_video, name='delete_video'),
 
-     path('apis/get_multiline_chart_records/uploads', get_multiline_chart_records_uploads,
+     path('apis/get_multiline_chart_records_uploads', get_multiline_chart_records_uploads,
          name='get_multiline_chart_records_uploads'),
-    path('apis/get_line_chart_records/uploads', get_line_chart_records_uploads,
+    path('apis/get_line_chart_records_uploads', get_line_chart_records_uploads,
          name='get_line_chart_records_uploads'),
-    path('apis/get_bar_chart_records/uploads', get_bar_chart_records_uploads,
+    path('apis/get_bar_chart_records_uploads', get_bar_chart_records_uploads,
          name='get_bar_chart_records_uploads'),
 ]
 

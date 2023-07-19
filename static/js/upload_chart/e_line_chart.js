@@ -80,7 +80,7 @@ function line_chart_fun(csrfToken,id) {
   // console.log(csrfToken,site_name)
   $.ajax({
       method: "POST",
-      url: "/apis/get_line_chart_records/uploads/",
+      url: "/apis/get_line_chart_records_uploads",
       dataType: "json",
       headers: { "X-CSRFToken": csrfToken },
       data: {

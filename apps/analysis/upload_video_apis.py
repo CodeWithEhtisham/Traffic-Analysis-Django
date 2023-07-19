@@ -74,6 +74,7 @@ from .vehicle_counting import VehicleDetection
 
 @api_view(['POST'])
 def get_multiline_chart_records_uploads(request):
+    print("get_multiline_chart_records_uploads")
     try:
         result = {
             "car": [0],
@@ -86,15 +87,12 @@ def get_multiline_chart_records_uploads(request):
         car, bike, bus, truck, rickshaw, van = 0, 0, 0, 0, 0, 0
         # result = []
         time_stamp = []
-        site_name = request.POST.get('site_name')
+        vid_id = request.POST.get('id')
         today = datetime.now()
-        today_count = VehicleObject.objects.select_related('image').filter(
-            image__timestamp__date=today.date().strftime("%Y-%m-%d"),
-            image__stream__site_name=site_name
-        )
+        records=VideoAnalysisObject.objects.filter(video_analysis__id=vid_id)
         
-        for obj in today_count:
-            time_stamp.append(obj.image.timestamp.strftime("%H:%M:%S"))
+        for obj in records:
+            time_stamp.append(obj.date_time.strftime("%H:%M:%S"))
             if obj.label == 'car':
                 car += 1
                 result['car'].append(car)
@@ -180,7 +178,7 @@ def get_multiline_chart_records_uploads(request):
         return Response({
             'data': multi_line_chart_data,
             'time_stamp': time_stamp,
-            'max': max(result['car'] + result['bike'] + result['bus'] + result['truck'] + result['rickshaw'] + result['van'])+25
+            'max': max(result['car'] + result['bike'] + result['bus'] + result['truck'] + result['rickshaw'] + result['van'])+5
         })
     except Exception as e:
         return Response({
@@ -197,15 +195,11 @@ def get_line_chart_records_uploads(request):
             "OUT": ['OUT'],
         }
         In,out= 0, 0
-        site_name = request.POST.get('site_name')
-        today = datetime.now()
-        today_count = VehicleObject.objects.select_related('image').filter(
-            image__timestamp__date=today.date().strftime("%Y-%m-%d"),
-            image__stream__site_name=site_name
-        )
+        vid_id = request.POST.get('id')
+        record=VideoAnalysisObject.objects.filter(video_analysis__id=vid_id)
         
-        for obj in today_count:
-            result['time_stamp'].append(obj.image.timestamp.strftime("%H:%M:%S"))
+        for obj in record:
+            result['time_stamp'].append(obj.date_time.strftime("%H:%M:%S"))
             if obj.total_count_in == 1:
                 In += 1
                 result['IN'].append(In)
@@ -249,14 +243,10 @@ def get_bar_chart_records_uploads(request):
         In=[0, 0, 0, 0, 0, 0,0]
         Out=[0, 0, 0, 0, 0, 0,0]
 
-        site_name = request.POST.get('site_name')
-        today = datetime.now()
-        today_count = VehicleObject.objects.select_related('image').filter(
-            image__timestamp__date=today.date().strftime("%Y-%m-%d"),
-            image__stream__site_name=site_name
-        )
+        vid_id = request.POST.get('id')
+        records=VideoAnalysisObject.objects.filter(video_analysis__id=vid_id)
         
-        for obj in today_count:
+        for obj in records:
             if obj.total_count_in==1:
                 if obj.label == 'car':
                     In[0] += 1
@@ -292,7 +282,7 @@ def get_bar_chart_records_uploads(request):
                 result['IN'],
                 result['OUT']
             ],
-            'max': max(In+Out)+5
+            'max': max(In+Out)+2
 
         })
     except Exception as e:

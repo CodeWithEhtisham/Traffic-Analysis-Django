@@ -76,7 +76,7 @@ function multi_line_chart_fun(csrfToken,id) {
   // console.log(csrfToken,site_name)
   $.ajax({
       method: "POST",
-      url: "/apis/get_multiline_chart_records/uploads/",
+      url: "/apis/get_multiline_chart_records_uploads",
       dataType: "json",
       headers: { "X-CSRFToken": csrfToken },
       data: {

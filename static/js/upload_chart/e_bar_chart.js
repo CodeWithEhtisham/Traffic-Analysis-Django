@@ -91,7 +91,7 @@ function bar_chart_fun(csrfToken,id) {
     // console.log(csrfToken,site_name)
     $.ajax({
         method: "POST",
-        url: "/apis/get_bar_chart_records/upload/",
+        url: "/apis/get_bar_chart_records_uploads",
         dataType: "json",
         headers: { "X-CSRFToken": csrfToken },
         data: {
