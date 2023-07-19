@@ -365,12 +365,15 @@ class VideoAnalysis(TemplateView):
                 video_name = request.POST.get('video_name')
                 date_time = request.POST.get('date_time')
                 video_file = request.FILES['video']
+                print(video_name, date_time)
                 # save video file into directory
                 fs = FileSystemStorage()
                 if not os.path.exists(f'./media/save_video'):
                     os.mkdir(f'./media/save_video')
                 filename = fs.save(f'./media/save_video/{video_name}.mp4', video_file)
                 uploaded_file_url = fs.url(filename)
+                date_time=datetime.strptime(date_time, '%Y-%m-%dT%H:%M').strftime("%Y-%m-%d %H:%M:%S")
+                print(date_time)
                 VideoAnalysisModel.objects.create(
                     video_name=video_name,
                     date_time=date_time,
@@ -724,6 +727,9 @@ def get_bar_chart_records(request):
         })
 
 
+from .video_prediction import VehicleDetectionVideoAnalysis
+from django.conf import settings
+
 @api_view(['POST'])
 def get_first_frame(request):
     try:
@@ -738,7 +744,7 @@ def get_first_frame(request):
             if ret:
                 # convert frame into base64
                 # resize image 400 to 400
-                frame = cv2.resize(frame, (400, 400))
+                frame = cv2.resize(frame, (settings.IMAGE_WIDTH, settings.IMAGE_HEIGHT))
                 retval, buffer = cv2.imencode('.jpg', frame)
                 jpg_as_text = base64.b64encode(buffer)
                 break
@@ -753,8 +759,6 @@ def get_first_frame(request):
         return Response({
             'error': str(e)
         })
-
-from .video_prediction import VehicleDetectionVideoAnalysis
 @api_view(['POST'])
 def video_prediction(request):
     try:
@@ -762,20 +766,9 @@ def video_prediction(request):
         video_path=VideoAnalysisModel.objects.get(id=vid_id).video_path
         detection_line=[request.POST.getlist("detection_line0[]"),request.POST.getlist("detection_line1[]")]
 
-        # line_sides={"IN":0,"OUT":0}
-        # lanesCount= [0] * len(detection_line)
-        # print(lanesCount)
-        # line_sides["IN"]=lanesCount[0]
-        # line_sides["OUT"]=lanesCount[1]
         print(vid_id)
-        # print(line_sides)
-        # convert all values to int
-        # detection_line[0]=list(map(float,detection_line[0]))
-        # detection_line[1]=list(map(float,detection_line[1]))
-        # detection_line[0]=list(map(int,detection_line[0]))
-        # detection_line[1]=list(map(int,detection_line[1]))
         detection_line = [[int(x) for x in line] for line in detection_line]
-        # print(type(detection_line[0][0]))
+        VideoAnalysisObject.objects.filter(video_analysis=vid_id).delete()
 
         obj=VehicleDetectionVideoAnalysis(model=model,detectionLines=detection_line,vid_id=vid_id)
         threading.Thread(target=obj.prediction, args=(video_path[1:],)).start()

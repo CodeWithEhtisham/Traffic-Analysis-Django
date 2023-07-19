@@ -2,9 +2,10 @@ import cv2
 import math
 import numpy as np
 from ultralytics import YOLO
-import argparse
+import datetime
 from .models import VideoAnalysisModel,VideoAnalysisObject
-
+# import widht or height of the the django setting
+from django.conf import settings
 args={
     "yolo":"best.onnx",
     "conf":0.2,
@@ -46,13 +47,13 @@ class VehicleDetectionVideoAnalysis():
         self.class_list = ['car', 'bus', 'van', 'truck', 'bike', 'rickshaw']
         self.COLORS = np.random.randint(0, 255, size=(len(self.class_list), 3),dtype="uint8")
 
-    def data_insertion_to_db(self,label,confidence,x,y,w,h,total_count_in,total_count_out):
-        VideoAnalysisObject.objects.create(video_analysis=self.vid_id,label=label,confidence=confidence,x=x,y=y,w=w,h=h,total_count_in=total_count_in,total_count_out=total_count_out)
+    def data_insertion_to_db(self,label,confidence,x,y,w,h,total_count_in,total_count_out,date_time):
+        VideoAnalysisObject.objects.create(video_analysis=self.vid_id,label=label,confidence=confidence,x=x,y=y,w=w,h=h,total_count_in=total_count_in,total_count_out=total_count_out,date_time=date_time)
         
 
 
     # def updateCount(self,i,classes,confidence,row):
-    def update_count(self, index, vehicle_class, confidence, detection_row):
+    def update_count(self, index, vehicle_class, confidence, detection_row,date_time):
         # print('update count start',self.laneSides,self.detectionlines)
         try:
             ins, outs = 0,0
@@ -75,7 +76,7 @@ class VehicleDetectionVideoAnalysis():
             self.laneSides[detection_type] += 1
             self.VCount[detection_type]['total_count_in' if index == 0 else 'total_count_out'] += 1
             print('update count end',self.VCount)
-            self.data_insertion_to_db(vehicle_class,confidence,detection_row[0],detection_row[1],detection_row[2],detection_row[3],ins,outs)
+            self.data_insertion_to_db(vehicle_class,confidence,detection_row[0],detection_row[1],detection_row[2],detection_row[3],ins,outs,date_time)
         except Exception as e:
             print('update count error',e)
 
@@ -87,6 +88,8 @@ class VehicleDetectionVideoAnalysis():
     def prediction(self,path):
         print('prediction',path)
         cap = cv2.VideoCapture(path)
+        date_time=self.vid_id.date_time
+        frame_count=0
 
         while True:
             centersAndIDs = []
@@ -95,9 +98,13 @@ class VehicleDetectionVideoAnalysis():
             print('ret',ret)
             if not ret:
                 break
-            frame=cv2.resize(frame,(400,400))
+            if frame_count%30==0:
+                # add one second to date_time
+                print('date_time',date_time)
+                date_time=date_time+datetime.timedelta(seconds=1)
+            frame_count+=1
+            frame=cv2.resize(frame,(settings.IMAGE_WIDTH,settings.IMAGE_HEIGHT))
             detection=self.model.predict(frame)[0].boxes.data
-            print(self.detectionlines)
 
             for dl in self.detectionlines:
                 cv2.line(frame, (dl[0], dl[1]), (dl[2], dl[3]), (255, 203, 48), 6)
@@ -170,10 +177,10 @@ class VehicleDetectionVideoAnalysis():
                                     self.lanesCount[i] += 1
                                     try:
                                         print('update count')
-                                        self.update_count(i,classes,confidence,row)
+                                        self.update_count(i,classes,confidence,row,date_time)
                                         print(self.VCount)
                                     except Exception as e:
-                                        print()
+                                        print(e)
                                     else:
                                         continue
                     cv2.rectangle(frame, (x, y), (w, h), (0, 255, 0), 2)  
@@ -202,8 +209,8 @@ class VehicleDetectionVideoAnalysis():
             if k=="total_count_in":
                 k="TOTAL"
                 vehicle.append(k)
-                ins.append(self.VCount.get("IN").get(k))
-                outs.append(self.VCount.get("OUT").get(v))
+                ins.append(sum(ins))
+                outs.append(sum(outs))
                 continue
             vehicle.append(k)
             ins.append(int(len(self.VCount.get("IN").get(k))))

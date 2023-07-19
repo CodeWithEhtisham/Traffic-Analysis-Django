@@ -33,7 +33,7 @@ class VehicleObject(models.Model):
 
 class VideoAnalysisModel(models.Model):
     video_name = models.CharField(max_length=255)
-    date_time = models.DateTimeField(auto_now_add=True)
+    date_time = models.DateTimeField()
     video_path = models.CharField(max_length=255)
     status=models.BooleanField(default=False)
     excel_path = models.CharField(max_length=255,default=None,null=True)
@@ -41,7 +41,7 @@ class VideoAnalysisModel(models.Model):
 
 class VideoAnalysisObject(models.Model):
     video_analysis = models.ForeignKey(VideoAnalysisModel, on_delete=models.CASCADE)
-    date_time = models.DateTimeField(auto_now_add=True)
+    date_time = models.DateTimeField()
     label = models.CharField(max_length=255)
     confidence = models.FloatField()
     x = models.FloatField()

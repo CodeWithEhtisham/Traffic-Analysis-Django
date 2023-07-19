@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-_rd$u1axph^&1ar1)(rto98_w-*q*v@fnkw+ksgzr0zut$e#v)
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+IMAGE_WIDTH = 640
+IMAGE_HEIGHT = 360
 
 # Application definition
 

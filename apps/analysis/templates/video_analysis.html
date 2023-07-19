@@ -23,8 +23,8 @@
 
 	<style>
 		.canvas-container {
-			width: 400px;
-			height: 400px;
+			width: 640px;
+			height: 360px;
 			position: relative;
 		}
 
@@ -323,7 +323,7 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">New message</h5>
+					<h5 class="modal-title" id="exampleModalLabel">Upload Video</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -363,10 +363,10 @@
 	<!-- video model -->
 	<div class="modal fade" id="vidoemodel" tabindex="-1" role="dialog" aria-labelledby="vidoemodelLabel"
 		aria-hidden="true">
-		<div class="modal-dialog modal-lm" role="document">
+		<div class="modal-dialog modal-lg" role="document" style="max-width: 700px;">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="vidoemodelLabel">Modal title</h5>
+					<h5 class="modal-title" id="vidoemodelLabel">Draw Lines</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -504,6 +504,7 @@
 						"video_id": vid_id,
 						'detection_line0': detectionLines[0],
 						'detection_line1': detectionLines[1],
+						
 					},
 					success: function (data) {
 						console.log("success on video prediction");
@@ -707,9 +708,9 @@
 					let image = new Image();
 
 					image.onload = function () {
-						canvas.width = 400;
-						canvas.height = 400;
-						ctx.drawImage(image, 0, 0, 400, 400);
+						canvas.width = 640;
+						canvas.height = 360;
+						ctx.drawImage(image, 0, 0, 640, 360);
 					};
 
 					image.src = "data:image/jpeg;base64," + data.frame;
