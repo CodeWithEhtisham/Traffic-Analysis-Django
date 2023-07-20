@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.http import HttpRequest,HttpResponse
 from django.views import View
 from django.views.generic import TemplateView
-from .models import CustomUser
 from .forms import LoginForm,Registerform
 from django.contrib.auth import authenticate,login,logout
 from django.urls import reverse_lazy
