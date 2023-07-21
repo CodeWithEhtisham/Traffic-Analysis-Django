@@ -53,3 +53,5 @@ class CustomeUserAdmin(UserAdmin):
     )
     search_fields = ('name', 'cnic', 'company')
     ordering = ('-date_time',)
+
+admin.site.register(CustomUser, CustomeUserAdmin)
