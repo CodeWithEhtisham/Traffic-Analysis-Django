@@ -19,7 +19,7 @@ class UserRegistration(UserCreationForm):
     class Meta:
         model = CustomUser
         fields = (
-            'name','lastname', 'email', 'phone',
+            'first_name','lastname', 'email', 'phone',
             'age', 'gender', 'city', 'address', 'cnic', 'company',
             'role', 'user_img',
         )
@@ -29,7 +29,7 @@ class UserRegistrationChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
         fields = (
-            'name','lastname', 'email', 'phone',
+            'first_name','lastname', 'email', 'phone',
             'age', 'gender', 'city', 'address', 'cnic', 'company',
             'role', 'user_img',
         )

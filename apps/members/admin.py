@@ -13,7 +13,7 @@ class CustomeUserAdmin(UserAdmin):
     form = UserRegistrationChangeForm
     model = CustomUser
 
-    list_display = ('name','email','phone','company','role','is_staff','is_active','last_login', 'date_joined')
+    list_display = ('first_name','email','phone','company','role','is_staff','is_active','last_login', 'date_joined')
     list_filter = ('cnic','email','company','is_staff','is_active',)
     
     def user_image_tag(self, obj):
@@ -25,7 +25,7 @@ class CustomeUserAdmin(UserAdmin):
 
     fieldsets = (
     (None, {
-        'fields': ('name', 'lastname', 'password')
+        'fields': ('first_name', 'lastname', 'password')
     }),
     ('Personal Information', {
         'fields': ('age', 'gender', 'city', 'address', 'cnic', 'phone')
@@ -45,13 +45,13 @@ class CustomeUserAdmin(UserAdmin):
         (None, {
             'classes': ('wide',),
             'fields': (
-                'name', 'lastname', 'age', 'gender', 'city', 'address', 'cnic',
+                'first_name', 'lastname', 'age', 'gender', 'city', 'address', 'cnic',
                 'phone', 'company', 'role', 'email','password1', 'password2', 'user_img',
                 'is_staff', 'is_active', 'groups', 'user_permissions',
             ),
         }),
     )
-    search_fields = ('name', 'cnic', 'company')
-    ordering = ('-date_time',)
+    search_fields = ('first_name', 'cnic', 'company')
+    ordering = ('-date_joined',)
 
 admin.site.register(CustomUser, CustomeUserAdmin)
