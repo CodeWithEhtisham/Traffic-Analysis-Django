@@ -37,7 +37,11 @@ redis_port = 6379  # Redis server port
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
 threading_dict = {}
 vehicle_counting_dict = {}
-model = YOLO("best.pt")
+
+try:
+    model = YOLO("best.pt")
+except FileNotFoundError as e:
+    print()
 from apps.analysis.models import *
 
 async def process_frame(site_name):

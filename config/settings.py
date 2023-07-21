@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
@@ -38,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.user.apps.UserConfig',
+    'apps.members.apps.UserConfig',
+    # 'apps.members.apps.UserConfig',
+    # 'apps.members',
     'apps.analysis.apps.DashboardConfig',
     'rest_framework',
 ]
@@ -94,6 +95,10 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
+
+AUTH_USER_MODEL = "members.CustomUser"
+
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -135,6 +140,13 @@ STATIC_URL = '/static/'
 # print(PROJECT_DIR)
 # print(STATICFILES_DIRS)
 STATIC_ROOT = normpath(os.path.join(BASE_DIR, 'static'))
+
+MEDIA_DIR = normpath(os.path.join(BASE_DIR, 'static'))
+
+MEDIA_ROOT = MEDIA_DIR
+MEDIA_URL = '/media/'
+print(os.getcwd())
+
 # print(STATIC_ROOT)
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
