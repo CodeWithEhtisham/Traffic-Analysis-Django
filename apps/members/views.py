@@ -6,6 +6,7 @@ from .forms import LoginForm,Registerform
 from django.contrib.auth import authenticate,login,logout
 from django.urls import reverse_lazy
 from django.contrib.auth.models import User
+from .models import CustomUser
 
 # Create your views here.
 class Login(View):
@@ -32,7 +33,7 @@ class Register(View):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             print(username,email,password)
-            user = CustomUser.objects.create(user=User.objects.create(username=username,email=email,password=password))
+            user = CustomUser.objects.create_user(email=email,password=password)
             return render(request, 'login.html')
         
 class Logout(View):
