@@ -31,29 +31,87 @@
 						<div class="card">
 							<div class="row">
                 <div class="col-md-4 pr-md-0">
-                  <div class="auth-left-wrapper" style="background-image: url({% static 'images/map.png' %})">
+                  <div class="auth-left-wrapper"  style="background-image: url('{% static 'images/map.png' %}')">
                     
-
                   </div>
                 </div>
                 <div class="col-md-8 pl-md-0">
+                  {% if messages %}
+                      <ul class="messages">
+                          {% for message in messages %}
+                              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                          {% endfor %}
+                      </ul>
+                  {% endif %}
                   <div class="auth-form-wrapper px-4 py-5">
                     <a href="#" class="noble-ui-logo d-block mb-2">Smart<span>Traffic</span></a>
                     <h5 class="text-muted font-weight-normal mb-4">Create an account.</h5>
-                    <form class="forms-sample" method="post">
+                    <form class="forms-sample" action="{% url 'register' %}" method="post" enctype="multipart/form-data">
                       {% csrf_token %}
                       <div class="form-group">
-                        <label for="exampleInputUsername1">Username</label>
-                        <input type="text" class="form-control" name="username" autocomplete="Username" placeholder="Username">
+                        <label for="user">First Name</label>
+                        <input type="text" class="form-control" name="first_name" autocomplete="Username" placeholder="Username" required>
                       </div>
                       <div class="form-group">
-                        <label for="exampleInputEmail1">Email address</label>
+                        <label for="lastname">Last Name</label>
+                        <input type="text" class="form-control" name="lastname" autocomplete="lastname" placeholder="Last Name" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="email">Email address</label>
                         <input type="email" class="form-control" name="email" placeholder="Email">
                       </div>
                       <div class="form-group">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input type="password" class="form-control" name="password" autocomplete="current-password" placeholder="Password">
+                        <label for="gender">Gender</label><br>
+                        <input type="radio" id="male" name="gender" value="Male">
+                        <label for="male">Male</label><br>
+                        <input type="radio" id="female" name="gender" value="Female">
+                        <label for="female">Female</label><br>
                       </div>
+                                 
+                    <div class="form-group">
+                      <label for="age">Age</label>
+                      <input type="text" class="form-control" name="age" placeholder="Age">
+                    </div>
+                             
+                      <div class="form-group">
+                        <label for="cnic">CNIC</label>
+                        <input type="text" id="cnic" name="cnic" class="form-control" data-inputmask="'mask' : '*****-*******-*'" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" id="city" name="city" class="form-control" required>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="address">Address</label>
+                        <textarea type="text" id="address" name="address" rows="3" class="form-control" required></textarea>
+                      </div>
+                      <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="text" id="phone" name="phone" class="form-control" data-inputmask="'mask' : '****-*******'" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="company">Company</label>
+                        <input type="text" id="company" name="company" class="form-control" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="role">Role</label>
+                        <input type="text" id="role" name="role" class="form-control" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="password1">Password</label>
+                        <input type="password" id="password1" class="form-control" name="password1" placeholder="********" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="password2">Confirm Password</label>
+                        <input type="password" id="password2" class="form-control" name="password2" placeholder="********" required>
+                      </div>
+                      
+                      <div class="form-group img-container">
+                        <label for="img">Upload Image</label>
+                        <input type="file" id="img" class="form-control" name="user_img" accept="image/*" required>
+                      </div>
+                      
                       <!-- <div class="form-check form-check-flat form-check-primary">
                         <label class="form-check-label">
                           <input type="checkbox" class="form-check-input">
@@ -90,9 +148,34 @@
 	<script src="{% static 'vendors/feather-icons/feather.min.js' %}"></script>
 	<!-- <script src="static/vendors/feather-icons/feather.min.js"></script> -->
 	<script src="{% static 'js/template.js' %}"></script>
+  <!-- <script src="{% static 'static/vendors/inputmask/jquery.inputmask.min.js' %}"></script> -->
+  <script src=
+  "https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js">
+      </script>
+  
+
 	<!-- <script src="static/js/template.js"></script> -->
 	<!-- endinject -->
   <!-- custom js for this page -->
 	<!-- end custom js for this page -->
+  <script>
+    $(document).ready(function () {
+
+        Inputmask("9{2}[-]9{2}[-]9{4}", {
+            placeholder: "-",
+            greedy: false
+        }).mask('#cnic');
+        Inputmask("9{2}[-]9{2}[-]9{4}", {
+            placeholder: "-",
+            greedy: false
+        }).mask('#phone');
+
+        Inputmask("*{8,16}", {
+            placeholder: "-",
+            greedy: false,
+        }).mask('#password');
+    });
+</script>
+
 </body>
 </html>

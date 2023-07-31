@@ -1,5 +1,7 @@
 from django.db import models
-
+from apps.members.models import CustomUser
+from django.contrib import admin
+from django.utils.html import format_html
 # class Site(models.Model):
 #     name = models.CharField(max_length=255)
 #     url = models.CharField(max_length=255)
@@ -8,6 +10,7 @@ class Stream(models.Model):
     # site = models.ForeignKey(Site, on_delete=models.CASCADE)
     site_name = models.CharField(max_length=255)
     stream_id = models.CharField(max_length=255)
+    users = models.ManyToManyField(CustomUser)
     stream_url = models.CharField(max_length=255)
     start_time = models.DateTimeField(auto_now_add=True)
     end_time = models.DateTimeField(null=True)
