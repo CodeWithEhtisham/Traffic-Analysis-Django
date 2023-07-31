@@ -7,6 +7,8 @@ from django.conf import settings
 from .managers import CustomUserManager
 
 
+
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     first_name = models.CharField(max_length=50, null=True, blank=True)
