@@ -4,7 +4,7 @@ from django.views import View
 from django.views.generic import TemplateView
 from .forms import LoginForm,Registerform
 from django.contrib.auth import authenticate,login,logout
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, CreateView
 from django.core.files.storage import default_storage
 from django.contrib import messages
@@ -30,7 +30,9 @@ def user_login(request):
             
         else:
             error = 'Invalid Email or Password'
-            return render(request, 'login.html', {'error': error})
+            # return render(request, 'login.html', {'error': error})
+            # send index page get request user user id 1
+            return redirect(f'/index/?user_id={2}')
     
     
     return render(request, 'login.html',)

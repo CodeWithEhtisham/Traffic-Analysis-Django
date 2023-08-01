@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>NobleUI Responsive Bootstrap 4 Dashboard Template</title>
+    <!-- core:css -->
+    <link rel="stylesheet" href="{% static 'vendors/core/core.css'%}">
+    <link rel="stylesheet" href="{% static 'vendors/bootstrap-datepicker/bootstrap-datepicker.min.css'%}">
+    <link rel="stylesheet" href="{% static 'fonts/feather-font/css/iconfont.css'%}">
+    <link rel="stylesheet" href="{% static 'vendors/flag-icon-css/css/flag-icon.min.css'%}">
+    <link rel="stylesheet" href="{% static 'css/demo_1/style.css'%}">
+    <link rel="shortcut icon" href="{% static 'images/favicon.png'%}" />
+    <script src="https://cdn.jsdelivr.net/npm/ol@v7.2.2/dist/ol.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.2.2/ol.css">
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+
+</head>
+
+{% block content%}
+{% endblock %}
+
+{% include 'analysis_script.html' %}
+
+</html>
