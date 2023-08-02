@@ -11,7 +11,11 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from .models import CustomUser
 from .forms import UserRegistration
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import user_passes_test
+from django.shortcuts import get_object_or_404
 import logging
+
 # Create your views here.
 
 def user_login(request):
@@ -25,18 +29,27 @@ def user_login(request):
                 login(request, user)
 
                 return redirect('index')
-            else:
-                HttpResponse('You are Not Authorized User')
             
-        else:
-            error = 'Invalid Email or Password'
-            # return render(request, 'login.html', {'error': error})
-            # send index page get request user user id 1
-            return redirect(f'/index/?user_id={2}')
-    
-    
-    return render(request, 'login.html',)
+            elif user is not None and user.is_active == True:
+                print(user)
+                try:
+                    # req_user = CustomUser.objects.get(id=user.id)
+                    # user_uid = req_user.id
+                    # user_company = req_user.company
+                    login(request, user)
+                    return redirect('index')
 
+                except:
+                    return HttpResponse('Your Account is not Active Yet')
+            else:
+                return HttpResponse('Your Account is not Active Yet')  
+        else:
+            return HttpResponse('Please Register before login')              
+    else:
+        return render(request, 'login.html')
+
+    
+    
 
 class UserRegister(CreateView):
     model = CustomUser
@@ -59,3 +72,5 @@ class UserRegister(CreateView):
 class Logout(View):
     def get(self,request):
         return render(request,'login.html')
+    
+

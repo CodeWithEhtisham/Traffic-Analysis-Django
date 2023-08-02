@@ -125,7 +125,19 @@ def run_socketio_server():
 
 class Index(TemplateView):  
     def get(self, request):
-        print("Index view is called")
+        user_id = request.user.id
+        print("user id is ",user_id)
+        user=CustomUser.objects.get(id=user_id)
+        if user.is_staff and user.is_active:
+            site_name=Stream.objects.all().values_list('site_name',flat=True)
+            print(site_name)
+            # print([s for s in site_name])
+            return render(request, 'index.html', {'site_name': site_name})
+        elif user.is_active:
+             site_name=Stream.objects.filter(users=user).values_list('site_name',flat=True)
+             return render(request, 'index.html', {'site_name': site_name})
+        
+        # print("Index view is called")
         print(request.GET)
         user_id = request.GET.get('user_id')
         print("user_id:", user_id)  # Add this line to check the value of 'user_id'
