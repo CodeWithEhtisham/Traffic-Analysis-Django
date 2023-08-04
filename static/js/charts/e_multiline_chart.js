@@ -98,3 +98,140 @@ function multi_line_chart_fun(csrfToken,site_name) {
   });
 
 }
+
+
+
+// import * as echarts from 'echarts';
+
+// var chartDom = document.getElementById('main');
+// var myChart = echarts.init(chartDom);
+// var option;
+
+// // prettier-ignore
+// let timeData = ['2009/10/1 0:00', '2009/10/1 1:00', '2009/10/1 2:00', '2009/10/1 3:00', '2009/10/1 4:00', '2009/10/1 5:00', '2009/10/1 6:00', '2009/10/1 7:00', '2009/10/1 8:00', '2009/10/1 9:00', '2009/10/1 10:00', '2009/10/1 11:00', '2009/10/1 12:00', '2009/10/1 13:00', '2009/10/1 14:00'];
+// timeData = timeData.map(function (str) {
+//   return str.replace('2009/', '');
+// });
+
+// option = {
+//   title: {
+//     text: 'IN vs OUT',
+//     left: 'center'
+//   },
+//   tooltip: {
+//     trigger: 'axis',
+//     axisPointer: {
+//       animation: false
+//     }
+//   },
+//   legend: {
+//     data: ['Car', 'Bike'],
+//     left: 10
+//   },
+//   toolbox: {
+//     feature: {
+//       dataZoom: {
+//         yAxisIndex: 'none'
+//       },
+//       restore: {},
+//       saveAsImage: {}
+//     }
+//   },
+//   axisPointer: {
+//     link: [
+//       {
+//         xAxisIndex: 'all'
+//       }
+//     ]
+//   },
+//   dataZoom: [
+//     {
+//       show: true,
+//       realtime: true,
+//       start: 30,
+//       end: 70,
+//       xAxisIndex: [0, 1]
+//     },
+//     {
+//       type: 'inside',
+//       realtime: true,
+//       start: 30,
+//       end: 70,
+//       xAxisIndex: [0, 1]
+//     }
+//   ],
+//   grid: [
+//     {
+//       left: 60,
+//       right: 50,
+//       height: '35%'
+//     },
+//     {
+//       left: 60,
+//       right: 50,
+//       top: '55%',
+//       height: '35%'
+//     }
+//   ],
+//   xAxis: [
+//     {
+//       type: 'category',
+//       boundaryGap: false,
+//       axisLine: { onZero: true },
+//       data: timeData
+//     },
+//     {
+//       gridIndex: 1,
+//       type: 'category',
+//       boundaryGap: false,
+//       axisLine: { onZero: true },
+//       data: timeData,
+//       position: 'top'
+//     }
+//   ],
+//   yAxis: [
+//     {
+//       name: 'IN',
+//       type: 'value',
+//       max: 200
+//     },
+//     {
+//       gridIndex: 1,
+//       name: 'OUT',
+//       type: 'value',
+//       inverse: true
+//     }
+//   ],
+//   series: [
+//     {
+//       name: 'Bike',
+//       type: 'line',
+//       symbolSize: 8,
+//       data: [47, 56, 96, 55, 25, 44, 44, 74, 24, 64, 84, 94, 54, 34, 74]
+//     },
+//     {
+//       name: 'Car',
+//       type: 'line',
+//       symbolSize: 8,
+//       data: [9, 89, 28, 67, 86, 65, 25, 85, 46, 97, 88, 19, 99, 91, 42]
+//     },
+//     {
+//       name: 'Car',
+//       type: 'line',
+//       xAxisIndex: 1,
+//       yAxisIndex: 1,
+//       symbolSize: 8,
+//       data: [10, 30, 50, 30, 50, 30, 70, 90, 20, 30, 10, 70, 10, 40, 50]
+//     },
+//     {
+//       name: 'Bike',
+//       type: 'line',
+//       xAxisIndex: 1,
+//       yAxisIndex: 1,
+//       symbolSize: 8,
+//       data: [40, 20, 40, 60, 80, 40, 20, 10, 40, 60, 80, 55, 10, 15, 20]
+//     }
+//   ]
+// };
+
+// option && myChart.setOption(option);
