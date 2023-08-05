@@ -135,11 +135,11 @@
 
                 <div class="row">
                     <!-- area chart -->
-                    <div class="col-xl-6 grid-margin stretch-card">
+                    <!-- <div class="col-xl-6 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
                                 <h6 class="card-title">Streaming Analysis</h6>
-                                <!-- create 6 card  -->
+                                
                                 <div class="card-body">
                                     <div class="table-responsive">
                                         <table class="table table-striped">
@@ -184,6 +184,15 @@
                                 </div>
                             </div>
                         </div>
+                    
+                    </div> -->
+                    <div class="col-xl-6 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title">Bar chart</h6>
+                                <div id="e_bar_chart" style="width: 100%; height: 400px "></div>
+                            </div>
+                        </div>
                     </div>
                     <!-- end area chart -->
                     <!-- bar chart -->
@@ -217,7 +226,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <h6 class="card-title">MultiLine</h6>
-                                <div id="e_multiline_chart" style="width: 100%; height: 400px;"></div>
+                                <div id="e_multiline_chart" style="width: 100%; height: 800px;"></div>
                             </div>
                         </div>
                     </div>
@@ -225,24 +234,17 @@
                 </div>
                 <div class="row">
                     <!-- area chart -->
-                    <div class="col-xl-6 grid-margin stretch-card">
+                    <div class="col-xl-12 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
-                                <h6 class="card-title">Area chart</h6>
+                                <h6 class="card-title">Area chart <h5></h5></h6> 
                                 <div id="e_line_chart" style="width: 100%; height: 400px;"></div>
                             </div>
                         </div>
                     </div>
                     <!-- end area chart -->
                     <!-- bar chart -->
-                    <div class="col-xl-6 grid-margin stretch-card">
-                        <div class="card">
-                            <div class="card-body">
-                                <h6 class="card-title">Bar chart</h6>
-                                <div id="e_bar_chart" style="width: 100%; height: 400px "></div>
-                            </div>
-                        </div>
-                    </div>
+                    
                     <!-- bar chart End -->
 
                 </div>
@@ -337,9 +339,9 @@
                     console.log("Error on get_vehicle_counts");
                 }
             });
-            multi_line_chart_fun(csrfToken,site_name);
-            line_chart_fun(csrfToken,site_name);
-            bar_chart_fun(csrfToken,site_name);
+            // multi_line_chart_fun(csrfToken,site_name);
+            // line_chart_fun(csrfToken,site_name);
+            // bar_chart_fun(csrfToken,site_name);
         }, 6000); // 30 seconds in milliseconds
 
 
