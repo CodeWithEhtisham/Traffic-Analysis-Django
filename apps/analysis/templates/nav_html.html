@@ -1,0 +1,90 @@
+{% load static %}
+<!-- partial:partials/_sidebar.html -->
+<nav class="sidebar">
+    <div class="sidebar-header">
+        <a href="#" class="sidebar-brand">
+            Smart<span>Traffic</span>
+        </a>
+        <div class="sidebar-toggler not-active">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+    <div class="sidebar-body">
+        <ul class="nav">
+            <li class="nav-item active">
+                <a href="{% url 'index' %}" class="nav-link">
+                    <i class="link-icon" data-feather="box"></i>
+                    <span class="link-title">All sites</span>
+                </a>
+            </li>
+            {% for site in site_name%}
+            <li class="nav-item">
+                <a href="{% url 'dashboard' site_name=site %}" class="nav-link">
+                    <i class="link-icon" data-feather="framer"></i>
+                    <span class="link-title">{{site}}</span>
+                </a>
+            </li>
+            {% endfor %}
+
+        </ul>
+    </div>
+</nav>
+
+
+
+<!-- partial:partials/_navbar.html -->
+<nav class="navbar">
+    <a href="#" class="sidebar-toggler">
+        <i data-feather="menu"></i>
+    </a>
+    <div class="navbar-content">
+        <ul class="navbar-nav">
+            <li class="nav-item dropdown nav-profile">
+                <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    <img src="{% static 'images\my.jpg'%}" alt="profile">
+                </a>
+                <div class="dropdown-menu" aria-labelledby="profileDropdown">
+                    <div class="dropdown-header d-flex flex-column align-items-center">
+                        <div class="figure mb-3">
+                            <img src="{% static 'images\my.jpg'%}" alt="">
+                        </div>
+                        <div class="info text-center">
+                            <p class="name font-weight-bold mb-0">Ehtisham </p>
+                            <p class="email text-muted mb-3">shamikhan0347</p>
+                        </div>
+                    </div>
+                    <div class="dropdown-body">
+                        <ul class="profile-nav p-0 pt-3">
+                            <li class="nav-item">
+                                <a href="profile.html" class="nav-link">
+                                    <i data-feather="user"></i>
+                                    <span>Profile</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="javascript:;" class="nav-link">
+                                    <i data-feather="edit"></i>
+                                    <span>Edit Profile</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="javascript:;" class="nav-link">
+                                    <i data-feather="log-out"></i>
+                                    <span>Log Out</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+<!-- partial -->
+
+
+
+
