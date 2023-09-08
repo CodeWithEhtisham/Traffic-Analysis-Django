@@ -1,249 +1,162 @@
-{% extends 'analysis_base.html'%}
-{% load static %}
+{% extends 'analysis_base.html'%} {% load static %}
 <style>
-    .card {
-        transition: transform 0.2s ease;
-        box-shadow: 0 4px 6px 0 rgba(22, 22, 26, 0.18);
-        border-radius: 0;
-        /* border: 0; */
-        /* margin-bottom: 1.5em; */
-    }
+  .card {
+    transition: transform 0.2s ease;
+    box-shadow: 0 4px 6px 0 rgba(22, 22, 26, 0.18);
+    border-radius: 0;
+    /* border: 0; */
+    /* margin-bottom: 1.5em; */
+  }
 
-    .card:hover {
-        transform: scale(1.1);
-    }
+  .card:hover {
+    transform: scale(1.1);
+  }
 </style>
 {% block content%}
 
 <body>
-    {% include 'nav_html.html'%}
     <div class="main-wrapper">
-
-
-        <div class="page-wrapper">
-            <nav class="navbar">
-                <a href="#" class="sidebar-toggler">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="feather feather-menu">
-                        <line x1="3" y1="12" x2="21" y2="12"></line>
-                        <line x1="3" y1="6" x2="21" y2="6"></line>
-                        <line x1="3" y1="18" x2="21" y2="18"></line>
-                    </svg>
-                </a>
-                <div class="navbar-content">
-                    
-                    <ul class="navbar-nav">
-                        <li class="nav-item dropdown nav-profile">
-                            <a class="nav-link dropdown-toggle" href="#" id="profileDropdownButton" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <img
-                                    src="https://via.placeholder.com/30x30" alt="profile">
-                            </a>
-                            <div class="dropdown-menu" id="profileDropdown" aria-labelledby="profileDropdownButton">
-                                <div class="dropdown-header d-flex flex-column align-items-center">
-                                    <div class="figure mb-3">
-                                        <img src="https://via.placeholder.com/80x80" alt="">
-                                    </div>
-                                    <div class="info text-center">
-                                        <p class="name font-weight-bold mb-0">Amiah Burton</p>
-                                        <p class="email text-muted mb-3">amiahburton@gmail.com</p>
-                                    </div>
-                                </div>
-                                <div class="dropdown-body">
-                                    <ul class="profile-nav p-0 pt-3">
-                                        <li class="nav-item">
-                                            <a href="pages/general/profile.html" class="nav-link">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                    class="feather feather-user">
-                                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                                    <circle cx="12" cy="7" r="4"></circle>
-                                                </svg>
-                                                <span>Profile</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="javascript:;" class="nav-link">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                    class="feather feather-edit">
-                                                    <path
-                                                        d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7">
-                                                    </path>
-                                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z">
-                                                    </path>
-                                                </svg>
-                                                <span>Edit Profile</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="javascript:;" class="nav-link">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                    class="feather feather-repeat">
-                                                    <polyline points="17 1 21 5 17 9"></polyline>
-                                                    <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
-                                                    <polyline points="7 23 3 19 7 15"></polyline>
-                                                    <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
-                                                </svg>
-                                                <span>Switch User</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="javascript:;" class="nav-link">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                    class="feather feather-log-out">
-                                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                                                    <polyline points="16 17 21 12 16 7"></polyline>
-                                                    <line x1="21" y1="12" x2="9" y2="12"></line>
-                                                </svg>
-                                                <span>Log Out</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-            <div class="page-content">
-
-                <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
-                    <div>
-                        <h4 class="mb-3 mb-md-0">Welcome to Traffic Monitoring System</h4>
-                    </div>
-                    <!-- <div class="d-flex align-items-center flex-wrap text-nowrap">
+      {% include 'nav_html.html'%}
+    <div class="page-wrapper">
+      <div class="page-content">
+        
+        <div
+          class="d-flex justify-content-between align-items-center flex-wrap grid-margin"
+        >
+          <div>
+            <h4 class="mb-3 mb-md-0">Welcome to Traffic Monitoring System</h4>
+          </div>
+          <!-- <div class="d-flex align-items-center flex-wrap text-nowrap">
                         
                         <button type="button" class="btn btn-primary btn-icon-text mb-2 mb-md-0">
                             <i class="btn-icon-prepend" data-feather="download-cloud"></i>
                             Download Report
                         </button>
                     </div> -->
-                </div>
-
-
-                <div class="row">
-                    <!-- Location -->
-                    {% for site in site_name%}
-
-                    <div class="col-lg-5 col-xl-6 grid-margin stretch-card">
-                        <div class="card">
-                            <div class="card-body p-0">
-                                <h4 class="p-3 text-center">{{site}}</h4>
-                                <a href="{% url 'dashboard' site_name=site %}">
-                                    <!-- video -->
-                                    <div>
-                                        <img src="{% static 'images/map.PNG'%}" alt="stream2"
-                                            style="height: 400px; width: 100%;" id="{{site}}">
-
-                                    </div>
-                                </a>
-                            </div>
-
-                            <div class="card-footer">
-                                <div class="row m-2">
-                                    <div class="col-5 d-flex justify-content-end">
-                                        <div>
-                                            <label
-                                                class="d-flex align-items-center justify-content-end tx-24 text-uppercase font-weight-bold">yesterday
-                                                Total Traffic
-                                                <span class="p-1 ml-1 rounded-circle bg-primary-muted"></span></label>
-                                            <h5 class="font-weight-bold p-1 ml-5 " style="font-size: large;"
-                                                id="yesterday_count">500</h5>
-                                        </div>
-                                    </div>
-                                    <div class="col-2 d-flex justify-content-end vr">
-
-
-                                    </div>
-                                    <div class="col-5">
-                                        <div>
-                                            <label
-                                                class="d-flex align-items-center tx-32 text-uppercase font-weight-bold"><span
-                                                    class="p-1 mr-1 rounded-circle bg-primary"></span>Today Total
-                                                Traffic</label>
-                                            <!-- </label> -->
-                                            <!-- add right margin -->
-                                            <h5 class="font-weight-bold p-1 ml-5 " style="font-size: large;"
-                                                id="today_count">100</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                    <!-- Location -->
-
-                    <!-- map  -->
-                    <!-- <div class="col-2 d-flex "></div> -->
-
-                    <div class="col-12 ">
-                        <!-- add google map image into div -->
-                        <!-- <div>
-                            <img src="{% static 'images/map.PNG'%}" alt="map" width="100%" height="50%">
-                        </div> -->
-
-
-                    </div>
-                    <!-- <div class="col-1 d-flex "></div> -->
-                </div> <!-- row -->
-                <!-- <div id="map"></div> -->
-
-            </div>
-
         </div>
 
+        <div class="row">
+          <!-- Location -->
+          {% for site in site_name%}
+
+          <div class="col-lg-5 col-xl-6 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body p-0">
+                <h4 class="p-3 text-center">{{site}}</h4>
+                <a href="{% url 'dashboard' site_name=site %}">
+                  <!-- video -->
+                  <div>
+                    <img
+                      src="{% static 'images/map.PNG'%}"
+                      alt="stream2"
+                      style="height: 400px; width: 100%"
+                      id="{{site}}"
+                    />
+                  </div>
+                </a>
+              </div>
+
+              <div class="card-footer">
+                <div class="row m-2">
+                  <div class="col-5 d-flex justify-content-end">
+                    <div>
+                      <label
+                        class="d-flex align-items-center justify-content-end tx-24 text-uppercase font-weight-bold"
+                        >yesterday Total Traffic
+                        <span
+                          class="p-1 ml-1 rounded-circle bg-primary-muted"
+                        ></span
+                      ></label>
+                      <h5
+                        class="font-weight-bold p-1 ml-5"
+                        style="font-size: large"
+                        id="yesterday_count"
+                      >
+                        500
+                      </h5>
+                    </div>
+                  </div>
+                  <div class="col-2 d-flex justify-content-end vr"></div>
+                  <div class="col-5">
+                    <div>
+                      <label
+                        class="d-flex align-items-center tx-32 text-uppercase font-weight-bold"
+                        ><span class="p-1 mr-1 rounded-circle bg-primary"></span
+                        >Today Total Traffic</label
+                      >
+                      <!-- </label> -->
+                      <!-- add right margin -->
+                      <h5
+                        class="font-weight-bold p-1 ml-5"
+                        style="font-size: large"
+                        id="today_count"
+                      >
+                        100
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+          <!-- Location -->
+
+          <!-- map  -->
+          <!-- <div class="col-2 d-flex "></div> -->
+
+          <div class="col-12">
+            <!-- add google map image into div -->
+            <!-- <div>
+                            <img src="{% static 'images/map.PNG'%}" alt="map" width="100%" height="50%">
+                        </div> -->
+          </div>
+          <!-- <div class="col-1 d-flex "></div> -->
+        </div>
+        <!-- row -->
+        <!-- <div id="map"></div> -->
+      </div>
     </div>
+  </div>
 
-    {% include 'analysis_script.html' %}
+  {% include 'analysis_script.html' %}
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const dropdownButton = document.getElementById("profileDropdownButton");
-            const dropdownMenu = document.getElementById("profileDropdown");
+  <script>
+    {% comment %} document.addEventListener("DOMContentLoaded", function () {
+        const dropdownButton = document.getElementById("profileDropdownButton");
+        const dropdownMenu = document.getElementById("profileDropdown");
 
-            dropdownButton.addEventListener("click", function () {
-                // Use Bootstrap's 'show' class to control visibility
-                dropdownMenu.classList.toggle("show");
-            });
-
-            // Add event listener when the dropdown is shown
-            dropdownMenu.addEventListener("show.bs.dropdown", function () {
-                dropdownMenu.classList.add("show");
-            });
-
-            // Add event listener when the dropdown is hidden
-            dropdownMenu.addEventListener("hide.bs.dropdown", function () {
-                dropdownMenu.classList.remove("show");
-            });
+        dropdownButton.addEventListener("click", function () {
+            // Use Bootstrap's 'show' class to control visibility
+            dropdownMenu.classList.toggle("show");
         });
 
-
-        const socket = io.connect('http://127.0.0.1:7000');
-        socket.on('connect', function () {
-            console.log('connected');
+        // Add event listener when the dropdown is shown
+        dropdownMenu.addEventListener("show.bs.dropdown", function () {
+            dropdownMenu.classList.add("show");
         });
 
-        socket.on('disconnect', function () {
-            console.log('disconnected');
+        // Add event listener when the dropdown is hidden
+        dropdownMenu.addEventListener("hide.bs.dropdown", function () {
+            dropdownMenu.classList.remove("show");
         });
-
-        {% for site in site_name %}
-        socket.on('{{site}}', function (data) {
-            document.getElementById('{{site}}').src = "data:image/png;base64," + data;
-        });
-        {% endfor %}
+    }); {% endcomment %}
 
 
+    const socket = io.connect('http://127.0.0.1:7000');
+    socket.on('connect', function () {
+        console.log('connected');
+    });
 
+    socket.on('disconnect', function () {
+        console.log('disconnected');
+    });
 
-    </script>
+    {% for site in site_name %}
+    socket.on('{{site}}', function (data) {
+        document.getElementById('{{site}}').src = "data:image/png;base64," + data;
+    });
+    {% endfor %}
+  </script>
 </body>
 {% endblock %}
