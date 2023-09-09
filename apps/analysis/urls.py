@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import Index, Dashboard, History, VideoAnalysis, LiveStream
+from .views import Index, Dashboard, History, video_analysis, LiveStream
 from .views import (get_vehicle_counts, get_objects, get_images, get_image_objects, get_table_records,download_excel,delete_video,
                     get_multiline_chart_records, get_line_chart_records, get_bar_chart_records, get_first_frame, video_prediction)
 from .upload_video_apis import (get_multiline_chart_records_uploads, get_line_chart_records_uploads, get_bar_chart_records_uploads)
@@ -12,7 +12,7 @@ urlpatterns = [
     path('index/', Index.as_view(), name='index'),
     path('dashboard/<str:site_name>/', Dashboard.as_view(), name='dashboard'),
     path('history', History.as_view(), name='history'),
-    path('video_analysis', VideoAnalysis.as_view(), name='video_analysis'),
+    path('video_analysis', video_analysis, name='video_analysis'),
     path('live_stream', LiveStream.as_view(), name='live_stream'),
 
     # apis urls

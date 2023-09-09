@@ -10,6 +10,22 @@ setTimeout(function () {
       trigger: 'axis',
       showContent: true
     },
+    dataZoom: [
+      {
+        show: true,
+        realtime: true,
+        start: 0,
+        end: 100,
+        xAxisIndex: [0, 1]
+      },
+      {
+        type: 'inside',
+        realtime: true,
+        start: 30,
+        end: 70,
+        xAxisIndex: [0, 1]
+      }
+    ],
     dataset: {
       source: [
       //   ['product', '2012', '2013', '2014', '2015', '2016', '2017'],
@@ -17,6 +33,7 @@ setTimeout(function () {
       //   ['OUT', 51.1, 51.4, 55.1, 53.3, 73.8, 68.7]
       ]
     },
+    
     xAxis: { type: 'category' },
     yAxis: { gridIndex: 0 },
     grid: { top: '55%' },

@@ -1,9 +1,9 @@
-from django.shortcuts import render
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.shortcuts import redirect, render
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.views import View
 from django.views.generic import TemplateView
 from django.contrib.auth import authenticate, login, logout
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth.models import User
 import cv2
 import numpy as np
@@ -58,6 +58,7 @@ async def process_frame(site_name):
         data=pickle.loads(frame_data)
         # print("processing frame",site_name,data['frame_number'])
         print(data['time_stamp'])
+        print(site_name)
         image=base64.b64decode(data['frame'])
         jpg_as_np = np.frombuffer(image, dtype=np.uint8)
         jpg_as_np = cv2.imdecode(jpg_as_np, flags=1)
@@ -165,16 +166,10 @@ class History(TemplateView):
         return render(request, 'history.html')
 from django.core.files.storage import FileSystemStorage
 import os
-class VideoAnalysis(TemplateView):
-    def get(self, request):
-        site_names = Stream.objects.all().values_list('site_name', flat=True)
-        video_analysis = VideoAnalysisModel.objects.all()
-        return render(request, 'video_analysis.html',{
-            'site_names':site_names,
-            'video_analysis':video_analysis
-        })
+def video_analysis(request):
+    # def get(self, request):
     
-    def post(self, request):
+    # def post(self, request):
         try:
             if request.method == 'POST' and request.FILES.get('video'):
                 video_name = request.POST.get('video_name')
@@ -183,9 +178,12 @@ class VideoAnalysis(TemplateView):
                 print(video_name, date_time)
                 # save video file into directory
                 fs = FileSystemStorage()
-                if not os.path.exists(f'./media/save_video'):
-                    os.mkdir(f'./media/save_video')
-                filename = fs.save(f'./media/save_video/{video_name}.mp4', video_file)
+                # Define the directory and file name
+                video_directory = 'save_video'
+                # Construct the full file path
+                video_path = os.path.join(video_directory, f'{video_name}.mp4')
+                if not os.path.exists(video_directory):os.makedirs(video_directory)
+                filename = fs.save(video_path, video_file)
                 uploaded_file_url = fs.url(filename)
                 date_time=datetime.strptime(date_time, '%Y-%m-%dT%H:%M').strftime("%Y-%m-%d %H:%M:%S")
                 print(date_time)
@@ -194,12 +192,18 @@ class VideoAnalysis(TemplateView):
                     date_time=date_time,
                     video_path=uploaded_file_url
                 ).save()
-                site_names = Stream.objects.all().values_list('site_name', flat=True)
-                video_analysis = VideoAnalysisModel.objects.all()
-                return render(request, 'video_analysis.html',{
-                    'site_names':site_names,
-                    'video_analysis':video_analysis
-                })
+                # site_names = Stream.objects.all().values_list('site_name', flat=True)
+                # video_analysis = VideoAnalysisModel.objects.all()
+                # print(video_analysis)
+                # return HttpResponseRedirect(reverse("video_analysis"))
+                # return redirect('video_analysis')
+            site_names = Stream.objects.all().values_list('site_name', flat=True)
+            video_analysis = VideoAnalysisModel.objects.all()
+            print(video_analysis)
+            return render(request, 'video_analysis.html',{
+                'site_names':site_names,
+                'video_analysis':video_analysis
+            })
         except Exception as e:
             print(e)
             return JsonResponse({'error': str(e)})
@@ -212,38 +216,40 @@ class LiveStream(TemplateView):
 
 @api_view(['GET'])
 def get_vehicle_counts(request):
-    try:
-        # number of rows inserted yesterday from object table
-        yesterday = datetime.now() - timedelta(days=1)
-        yesterday_count = Object.objects.filter(image__timestamp__date=yesterday.date()).count()
+    pass
+    # try:
+    #     # number of rows inserted yesterday from object table
+    #     yesterday = datetime.now() - timedelta(days=1)
+    #     yesterday_count = Object.objects.filter(image__timestamp__date=yesterday.date()).count()
 
-        # number of rows inserted today from object table
-        today = datetime.now()
-        today_count = Object.objects.filter(image__timestamp__date=today.date()).count()
+    #     # number of rows inserted today from object table
+    #     today = datetime.now()
+    #     today_count = Object.objects.filter(image__timestamp__date=today.date()).count()
 
-        # return as json object 
-        return Response({
-            'yesterday': yesterday_count,
-            'today': today_count
-        })
-    except Exception as e:
-        return Response({
-            'error': str(e)
-        })
+    #     # return as json object 
+    #     return Response({
+    #         'yesterday': yesterday_count,
+    #         'today': today_count
+    #     })
+    # except Exception as e:
+    #     return Response({
+    #         'error': str(e)
+    #     })
 
 
 from .serializer import ObjectSerializer, ImageSerializer, StreamSerializer,ImageWithObjectsSerializer
 from django.db.models import Prefetch
 @api_view(['GET'])
 def get_objects(request):
-    try:
-        objects = Object.objects.all().order_by('-id')[0:10]
-        serializer = ObjectSerializer(objects, many=True)
-        return Response(serializer.data)
-    except Exception as e:
-        return Response({
-            'error': str(e)
-        })
+    pass
+    # try:
+    #     objects = Object.objects.all().order_by('-id')[0:10]
+    #     serializer = ObjectSerializer(objects, many=True)
+    #     return Response(serializer.data)
+    # except Exception as e:
+    #     return Response({
+    #         'error': str(e)
+    #     })
     
 
 @api_view(['GET'])
@@ -330,6 +336,7 @@ def get_multiline_chart_records(request):
             "rickshaw_out": [0],
             "van_out": [0],
         }
+        
         car, bike, bus, truck, rickshaw, van = 0, 0, 0, 0, 0, 0
         car_out, bike_out, bus_out, truck_out, rickshaw_out, van_out = 0, 0, 0, 0, 0, 0
         # result = []
@@ -392,6 +399,13 @@ def get_multiline_chart_records(request):
                     result['bus'].append(bus)
                     result['truck'].append(truck)
                     result['rickshaw'].append(rickshaw)
+                result['car_out'].append(car_out)
+                result['bike_out'].append(bike_out)
+                result['bus_out'].append(bus_out)
+                result['truck_out'].append(truck_out)
+                result['rickshaw_out'].append(rickshaw_out)
+                result['van_out'].append(van_out)
+                print("in count call ", len(result['car_out']),car_out,obj.image.timestamp.strftime("%H:%M:%S"))
 
             else:
                 if obj.label == 'car':
@@ -402,7 +416,7 @@ def get_multiline_chart_records(request):
                     result['truck_out'].append(truck_out)
                     result['rickshaw_out'].append(rickshaw_out)
                     result['van_out'].append(van_out)
-                elif obj.label == 'bike_out':
+                elif obj.label == 'bike':
                     bike_out += 1
                     result['bike_out'].append(bike_out)
                     result['car_out'].append(car_out)
@@ -410,7 +424,7 @@ def get_multiline_chart_records(request):
                     result['truck_out'].append(truck_out)
                     result['rickshaw_out'].append(rickshaw_out)
                     result['van_out'].append(van_out)
-                elif obj.label == 'bus_out':
+                elif obj.label == 'bus':
                     bus_out += 1
                     result['bus_out'].append(bus_out)
                     result['car_out'].append(car_out)
@@ -418,7 +432,7 @@ def get_multiline_chart_records(request):
                     result['truck_out'].append(truck_out)
                     result['rickshaw_out'].append(rickshaw_out)
                     result['van_out'].append(van_out)
-                elif obj.label == 'truck_out':
+                elif obj.label == 'truck':
                     truck_out += 1
                     result['truck_out'].append(truck_out)
                     result['car_out'].append(car_out)
@@ -426,7 +440,7 @@ def get_multiline_chart_records(request):
                     result['bus_out'].append(bus_out)
                     result['rickshaw_out'].append(rickshaw_out)
                     result['van_out'].append(van_out)
-                elif obj.label == 'rickshaw_out':
+                elif obj.label == 'rickshaw':
                     rickshaw_out += 1
                     result['rickshaw_out'].append(rickshaw_out)
                     result['car_out'].append(car_out)
@@ -434,7 +448,7 @@ def get_multiline_chart_records(request):
                     result['bus_out'].append(bus_out)
                     result['truck_out'].append(truck_out)
                     result['van_out'].append(van_out)
-                elif obj.label == 'van_out':
+                elif obj.label == 'van':
                     van_out += 1
                     result['van_out'].append(van)
                     result['car_out'].append(car_out)
@@ -442,6 +456,12 @@ def get_multiline_chart_records(request):
                     result['bus_out'].append(bus_out)
                     result['truck_out'].append(truck_out)
                     result['rickshaw_out'].append(rickshaw_out)
+                result['van'].append(van)
+                result['car'].append(car)
+                result['bike'].append(bike)
+                result['bus'].append(bus)
+                result['truck'].append(truck)
+                result['rickshaw'].append(rickshaw)
 
         multi_line_chart_data = [
             {
@@ -658,15 +678,23 @@ def get_bar_chart_records(request):
 
 from .video_prediction import VehicleDetectionVideoAnalysis
 from django.conf import settings
+from django.conf import settings
+from django.http import FileResponse
+import os
 
 @api_view(['POST'])
 def get_first_frame(request):
     try:
+        print("$$$$$$$$$$$$$$$$$$$$$$$$")
+        media_root = settings.MEDIA_ROOT
         video_path=request.POST.get("video_path")
-        print(video_path)
+        # video_path=video_path.split('media/')
+        print(media_root[:-5]+video_path)
+        # absolute_file_path = os.path.join(media_root, video_path.        
         # get first frame from video
-        print(video_path[1:])
-        cap = cv2.VideoCapture(video_path[1:])
+        # print(absolute_file_path)
+        # print("video loacation ",absolute_file_path)
+        cap = cv2.VideoCapture("."+video_path)
         while True:
             ret, frame = cap.read()
             # print(ret)
@@ -685,6 +713,7 @@ def get_first_frame(request):
             'video_id': VideoAnalysisModel.objects.get(video_path=video_path).id
         })
     except Exception as e:
+        print("error",e)
         return Response({
             'error': str(e)
         })
