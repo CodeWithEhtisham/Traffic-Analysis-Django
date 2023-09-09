@@ -204,7 +204,6 @@ class VehicleDetection():
                         if abs(np.cross(p2 - p1, p3 - p1) / np.linalg.norm(p2 - p1)) < self.offset and \
                                 smallerX - self.offset < center[0] < largerX + self.offset and \
                                 smallerY - self.offset < center[1] < largerY + self.offset:
-
                                 for dvi in self.detectedVehicleIDs:
                                     if dvi == vehicleId:
                                         # cv2.line(frame, (dl[0], dl[1]), (dl[2], dl[3]), (90, 224, 63), 6)
@@ -216,7 +215,7 @@ class VehicleDetection():
                                     # cv2.line(frame, (dl[0], dl[1]), (dl[2], dl[3]), (90, 224, 63), 6)
                                     self.lanesCount[i] += 1
                                     try:
-                                        # print('update count')
+                                        print('update count')
                                         self.update_count(i,classes,confidence,row,site_name,time_stamp,frame)
                                         print(self.VCount)
                                     except Exception as e:

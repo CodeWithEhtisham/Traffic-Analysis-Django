@@ -74,7 +74,7 @@ var multiline_options;
 // prettier-ignore
 let timeData = ['2009/10/1 0:00', '2009/10/1 1:00', '2009/10/1 2:00', '2009/10/1 3:00', '2009/10/1 4:00', '2009/10/1 5:00', '2009/10/1 6:00', '2009/10/1 7:00', '2009/10/1 8:00', '2009/10/1 9:00', '2009/10/1 10:00', '2009/10/1 11:00', '2009/10/1 12:00', '2009/10/1 13:00', '2009/10/1 14:00'];
 timeData = timeData.map(function (str) {
-  return str.replace('2009/', '');
+  return str;
 });
 
 multiline_options = {
@@ -89,7 +89,7 @@ multiline_options = {
     }
   },
   legend: {
-    data: ['Car', 'Bike'],
+    data: ['Car', 'Bike','Bus','Truck','Rickshaw','Van'],
     left: 10
   },
   toolbox: {
@@ -157,13 +157,14 @@ multiline_options = {
     {
       name: 'IN',
       type: 'value',
-      max: 200
+      max: 20
     },
     {
       gridIndex: 1,
       name: 'OUT',
       type: 'value',
-      inverse: true
+      inverse: true,
+      max:25
     }
   ],
   series: [
@@ -213,8 +214,11 @@ function multi_line_chart_fun(csrfToken,site_name) {
       success: function (data) {
           // update the chart with the new data series
           multiline_options.series = data["data"];
-          multiline_options.yAxis.max = data["max"];
-          multiline_options.xAxis.data = data["time_stamp"];
+          multiline_options.yAxis[0]['max'] = data["max_in"];
+          multiline_options.yAxis[1]['max'] = data["max_out"];
+          multiline_options.xAxis[0]['data']=data['time_stamp']
+          multiline_options.xAxis[1]['data']=data['time_stamp']
+
 
           multi_line_chart.setOption(multiline_options);
 
