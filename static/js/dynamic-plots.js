@@ -421,16 +421,3 @@ setInterval(function () {
     },
   });
 }, 5000); // 10 seconds in milliseconds
-
-const socket = io.connect("http://127.0.0.1:7000");
-socket.on("connect", function () {
-  console.log("connected");
-});
-
-socket.on("disconnect", function () {
-  console.log("disconnected");
-});
-
-socket.on("prediction_result", function (data) {
-  console.log(data);
-});

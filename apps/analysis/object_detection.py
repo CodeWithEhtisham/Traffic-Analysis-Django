@@ -5,6 +5,10 @@ from ultralytics import YOLO
 import argparse
 
 
+args={
+    "yolo":"best.onnx",
+    "conf":0.2,
+}
 
 # args = vars(ap.parse_args())
 
@@ -173,10 +177,6 @@ class VehicleDetection():
         # cap.release()
         # cv2.destroyAllWindows()
 
-args={
-    "yolo":"best.onnx",
-    "conf":0.2,
-}
 
 import socketio
 import eventlet

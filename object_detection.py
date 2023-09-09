@@ -178,10 +178,10 @@ class VehicleDetection():
             ret, frame = cap.read()
             if not ret:
                 break
-
+            frame = cv2.resize(frame, (300,300))
             frame_count += 1
-            if frame_count % frame_skip != 0:
-                continue  # Skip this frame
+            # if frame_count % frame_skip != 0:
+            #     continue  # Skip this frame
 
             if frame_count == 1:
                 # Draw detection lines on the first frame
@@ -200,6 +200,7 @@ class VehicleDetection():
                 cv2.destroyAllWindows()
 
             centersAndIDs = []
+            print(f"frame size {frame.shape}")
             detection = self.detectVehicle(frame)
 
             for row in detection:

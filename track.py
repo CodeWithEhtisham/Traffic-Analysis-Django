@@ -24,7 +24,7 @@ try:
         # Read a frame from the video
         success, frame = cap.read()
 
-        if success and frame_count % 5 == 0:
+        if success and frame_count %     5 == 0:
             print(frame_count)
             # Run YOLOv8 inference on the frame
             results = model.track(source=frame, conf=0.3, iou=0.5, tracker="bytetrack.yaml",persist=True)

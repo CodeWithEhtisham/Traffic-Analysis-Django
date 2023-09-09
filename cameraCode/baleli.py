@@ -2,7 +2,7 @@ import socketio
 import cv2
 import base64
 import numpy as np
-
+import datetime
 # Initialize the Socket.IO client
 sio = socketio.Client()
 
@@ -16,6 +16,10 @@ def on_connect():
 @sio.on('disconnect')
 def on_disconnect():
     print('Disconnected from the server')
+    exit()
+
+desired_fps = 10
+delay_ms = int(1000 / desired_fps)
 frame_count = 0
 drawing = False
 detectionLines = []
@@ -50,9 +54,14 @@ def send_frames():
                     detectionLines.remove(i)
 
     cap = cv2.VideoCapture('Produce.mp4')
+    # fps = cap.get(cv2.CAP_PROP_FPS)
+    # print("Frames per second (fps):", fps)
+    # return None
+
     while True:
         ret, frame = cap.read()
-        if ret:
+        if ret or frame not in [None, ""]:
+            frame=cv2.resize(frame,(400,400))
             if frame_count == 0:
                 cv2.namedWindow("Draw Lines")
                 cv2.setMouseCallback("Draw Lines", drawLine)
@@ -76,36 +85,45 @@ def send_frames():
 
                 cv2.destroyAllWindows()
                 data = {
-                    "site_name": "baleli",
+                    "site_name": "Baleli Road",
                     "frame_number": frame_count,
                     "lane_sides": laneSides,
                     "detection_lines": detectionLines,
+                    "time_stamp":datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                     "frame": base64.b64encode(cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 60])[1]).decode()
                 }
                 sio.emit('frist_frame', data)
 
             else:
                 data = {
-                    "site_name": "baleli",
+                    "site_name": "Baleli Road",
                     "frame_number": frame_count,
-                    # "lane_sides": laneSides,
-                    # "detection_lines": detectionLines,
+                    "lane_sides": laneSides,
+                    "detection_lines": detectionLines,
+                    "time_stamp":datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                     "frame": base64.b64encode(cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 60])[1]).decode()
                 }
                 sio.emit('received_frame', data)
+            if frame_count % 100 == 0:
+                if not sio.connected:
+                    print('Client disconnected, reconnecting...')
+                    on_connect()
 
             frame_count += 1
+            print(sio.connected)
             print(frame_count)
+            
+            # cv2.imshow('frame', frame)
 
-            # Exit loop if 'q' is pressed
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            # # Exit loop if 'q' is pressed
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     break
 
-    cap.release()
-    cv2.destroyAllWindows()
+    # cap.release()
+    # cv2.destroyAllWindows()
 
 # Connect to the server
-sio.connect('http://localhost:8000')
+sio.connect('http://localhost:7000')
 
 # Run the event loop
 sio.wait()
