@@ -1,24 +1,46 @@
-{% extends 'analysis_base.html'%}
 {% load static %}
-{% block content %}
-<style>
-	.canvas-container {
-		width: 640px;
-		height: 360px;
-		position: relative;
-	}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Smart-Traffic</title>
+    <meta http-equiv="cache-control" content="no-store" />
+	<link rel="stylesheet" href="{% static 'vendors/core/core.css'%}">
+	<link rel="stylesheet" href="{% static 'vendors/bootstrap-datepicker/bootstrap-datepicker.min.css'%}">
+	<link rel="stylesheet" href="{% static 'fonts/feather-font/css/iconfont.css'%}">
+	<link rel="stylesheet" href="{% static 'vendors/flag-icon-css/css/flag-icon.min.css'%}">
+	<link rel="stylesheet" href="{% static 'css/demo_1/style.css'%}">
+	<link rel="shortcut icon" href="{% static 'images/favicon.png'%}" />
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.2/echarts.min.js"
+		integrity="sha512-VdqgeoWrVJcsDXFlQEKqE5MyhaIgB9yXUVaiUa8DR2J4Lr1uWcFm+ZH/YnzV5WqgKf4GPyHQ64vVLgzqGIchyw=="
+		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<!-- <script async src="https://docs.opencv.org/master/opencv.js" type="text/javascript"></script> -->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
 
-	#first_frame {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+	<style>
+		.canvas-container {
+			width: 640px;
+			height: 360px;
+			position: relative;
+		}
+
+		#first_frame {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+
+
+</head>
+
 <body>
 	<div class="main-wrapper">
-
 		<!-- partial:partials/_sidebar.html -->
 		<nav class="sidebar">
 			<div class="sidebar-header">
@@ -47,11 +69,9 @@
 						</a>
 					</li>
 					{% endfor %}
-
 				</ul>
 			</div>
 		</nav>
-
 		<div class="page-wrapper">
 			<!-- partial:partials/_navbar.html -->
 			<nav class="navbar">
@@ -59,6 +79,16 @@
 					<i data-feather="menu"></i>
 				</a>
 				<div class="navbar-content">
+					<form class="search-form">
+						<!-- <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <i data-feather="search"></i>
+                                </div>
+                            </div>
+                            <input type="text" class="form-control" id="navbarForm" placeholder="Search here...">
+                        </div> -->
+					</form>
 					<ul class="navbar-nav">
 
 						<li class="nav-item dropdown nav-profile">
@@ -72,10 +102,11 @@
 										<img src="https://via.placeholder.com/80x80" alt="">
 									</div>
 									<div class="info text-center">
-										<p class="name font-weight-bold mb-0">Ehtisham </p>
+										<p class="name font-weight-bold mb-0">Ehtisham Ahmed</p>
 										<p class="email text-muted mb-3">shamikhan@</p>
 									</div>
 								</div>
+                                <h6 class="card-title">Bar chart</h6>
 								<div class="dropdown-body">
 									<ul class="profile-nav p-0 pt-3">
 										<li class="nav-item">
@@ -111,13 +142,11 @@
 			</nav>
 			<!-- partial -->
 			<div class="page-content">
-
 				<div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
 					<div>
 						<h4 class="mb-3 mb-md-0">Dashboard</h4>
 					</div>
 					<div class="d-flex align-items-center flex-wrap text-nowrap">
-
 						<a type="button" class="btn btn-outline-info btn-icon-text mr-2 d-none d-md-block"
 							href="{% url 'history' %}">
 							<i class="btn-icon-prepend" data-feather="activity"></i>
@@ -135,9 +164,6 @@
 						</a>
 					</div>
 				</div>
-
-
-
 				<div class="row">
 					<!-- area chart -->
 					<div class="col-xl-12 grid-margin stretch-card">
@@ -146,7 +172,6 @@
 								<h6 class="card-title">Streaming Analysis</h6>
 								<button type="button" class="btn btn-primary float-right" data-toggle="modal"
 									data-target="#exampleModal" data-whatever="@getbootstrap">Upload Video</button>
-
 								<!-- create 6 card  -->
 								<div class="card-body">
 									<div class="table-responsive">
@@ -193,7 +218,6 @@
 													</td>
 												</tr>
 												{% endfor %}
-
 											</tbody>
 										</table>
 									</div>
@@ -209,19 +233,15 @@
 								<h6 class="card-title">Streaming {{site_name}}</h6>
 								<div>
 									<img src="" alt="stream2" style="height: 400px; width: 100%;" id="{{site_name}}">
-
 								</div>
 							</div>
 						</div>
 					</div> -->
 					<!-- bar chart End -->
-
 				</div>
 				<!-- first row end -->
-
 				<!-- second row start -->
 				<div class="row">
-
 					<!-- plot chart with dynamic font-size -->
 					<div class="col-xl-12 grid-margin stretch-card">
 						<div class="card">
@@ -231,7 +251,6 @@
 							</div>
 						</div>
 					</div>
-
 				</div>
 				<div class="row">
 					<!-- area chart -->
@@ -254,10 +273,8 @@
 						</div>
 					</div>
 					<!-- bar chart End -->
-
 				</div>
 				<!-- first row end -->
-
 				<!-- <div class="row">
                     <div class="col-12 grid-margin stretch-card">
                         <div class="card">
@@ -267,21 +284,21 @@
                             </div>
                         </div>
                     </div>
-
                 </div> -->
-
-
-
-
-
 			</div>
-
 		</div>
 
 	</div>
+
+
+	<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Open modal for @mdo</button>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@fat">Open modal for @fat</button> -->
+
 	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
 		aria-hidden="true">
 		<div class="modal-dialog" role="document">
+            <h5 class="modal-title" id="vidoemodelLabel">Draw Lines</h5>
+
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="exampleModalLabel">Upload Video</h5>
@@ -315,12 +332,9 @@
 						<button type="submit" class="btn btn-primary">Upload video</button>
 					</div>
 				</form>
-
 			</div>
 		</div>
 	</div>
-
-
 	<!-- video model -->
 	<div class="modal fade" id="vidoemodel" tabindex="-1" role="dialog" aria-labelledby="vidoemodelLabel"
 		aria-hidden="true">
@@ -348,8 +362,20 @@
 	</div>
 
 
-
 	<!-- core:js -->
+	<script src="{% static 'vendors/core/core.js'%}"></script>
+	<script src="{% static 'vendors/chartjs/Chart.min.js'%}"></script>
+	<script src="{% static 'vendors/jquery.flot/jquery.flot.js'%}"></script>
+	<script src="{% static 'vendors/jquery.flot/jquery.flot.resize.js'%}"></script>
+	<script src="{% static 'vendors/bootstrap-datepicker/bootstrap-datepicker.min.js'%}"></script>
+	<script src="{% static 'vendors/apexcharts/apexcharts.min.js'%}"></script>
+	<script src="{% static 'vendors/progressbar.js/progressbar.min.js'%}"></script>
+	<script src="{% static 'vendors/feather-icons/feather.min.js'%}"></script>
+	<script src="{%static 'js/template.js'%}"></script>
+	<script src="{% static 'js/dashboard.js'%}"></script>
+	<script src="{% static 'js/datepicker.js'%}"></script>
+	<!-- <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script> -->
+	<!-- <script src="{% static 'js/dynamic-plots.js'%}"></script> -->
 	<script src="{% static 'js/upload_chart/e_bar_chart.js'%}"></script>
 	<script src="{% static 'js/upload_chart/e_multiline_chart.js'%}"></script>
 	<script src="{% static 'js/upload_chart/e_line_chart.js'%}"></script>
@@ -357,26 +383,22 @@
 	<script>
 		// var socket = io.connect("http://
 		var csrf_token = "{{ csrf_token }}";
-		const socket = io.connect('http://127.0.0.1:7000');
-		socket.on("connect", function () {
-			console.log("connected");
-		});
-
-		socket.on("disconnect", function () {
-			console.log("disconnected");
-		});
-
-		socket.on("{{site_name}}", function (data) {
-			document.getElementById('{{site_name}}').src = "data:image/png;base64," + data;
-		});
-
+		// const socket = io.connect('http://127.0.0.1:7000');
+		// socket.on("connect", function () {
+		// 	console.log("connected");
+		// });
+		// socket.on("disconnect", function () {
+		// 	console.log("disconnected");
+		// });
+		// socket.on("{{site_name}}", function (data) {
+		// 	document.getElementById('{{site_name}}').src = "data:image/png;base64," + data;
+		// });
 		var drawing = false;
 		var detectionLines = [];
 		var canvas = document.getElementById('first_frame');
 		ctx = canvas.getContext('2d');
 		var rect = canvas.getBoundingClientRect();
 		var x1, y1, x2, y2;
-
 		// Event listener for mouse move event
 		canvas.addEventListener('mousemove', function (event) {
 			var rect = canvas.getBoundingClientRect();
@@ -385,7 +407,6 @@
 			// Use the x and y coordinates for your desired functionality
 			// console.log('Mouse position:', x, y);
 		});
-
 		canvas.addEventListener('mousedown', function (event) {
 			var rect = canvas.getBoundingClientRect();
 			var x = event.clientX - rect.left;
@@ -422,14 +443,11 @@
 			ctx.strokeStyle = 'skyblue';
 			ctx.stroke();
 		}
-
 		function model_close() {
 			detectionLines = [];
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			// data-dismiss="modal" close the modal
-
 		}
-
 		function prediction_call(vid_id) {
 			if (detectionLines.length < 2) {
 				alert('Please draw 2 lines');
@@ -438,7 +456,6 @@
 			console.log('prediction call', vid_id);
 			console.log(detectionLines);
 			// socket.emit('detection_lines', detectionLines);
-
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			// close the modal
 			$('#vidoemodel').modal('hide');
@@ -452,7 +469,7 @@
 						"video_id": vid_id,
 						'detection_line0': detectionLines[0],
 						'detection_line1': detectionLines[1],
-						
+
 					},
 					success: function (data) {
 						console.log("success on video prediction");
@@ -477,55 +494,42 @@
 						console.log("error on video prediction");
 					}
 				});
-
 			} catch (error) {
 				console.log("catch", error);
 			}
 		}
-
-
 		document.getElementById('video-upload-form').addEventListener('submit', function (event) {
 			event.preventDefault();
 			var fileInput = document.getElementById('video-file');
 			var videoName = document.getElementById('recipient-name').value;
 			var dateTime = document.getElementById('message-text').value;
 			var file = fileInput.files[0];
-
 			var formData = new FormData();
 			formData.append('video', file);
 			formData.append('video_name', videoName);
 			formData.append('date_time', dateTime);
-
 			var progressBar = document.getElementById('progress-bar'); // Get the progress bar element
-
 			var xhr = new XMLHttpRequest();
-
 			xhr.upload.addEventListener('progress', function (event) {
 				if (event.lengthComputable) {
 					var percentComplete = (event.loaded / event.total) * 100;
 					updateProgressBar(progressBar, percentComplete); // Call the updateProgressBar function
-
 					if (percentComplete === 100) {
 						xhr.removeEventListener('load', uploadComplete); // Remove the load event listener
 						xhr.removeEventListener('error', uploadFailed); // Remove the error event listener
 					}
 				}
 			});
-
 			xhr.addEventListener('load', uploadComplete);
 			xhr.addEventListener('error', uploadFailed);
-
 			xhr.open('POST', 'video_analysis', true);
 			xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');  // Add CSRF token header
-
 			xhr.send(formData);
 		});
-
 		function updateProgressBar(progressBar, percentComplete) {
 			progressBar.style.width = percentComplete + '%';
 			progressBar.innerText = percentComplete.toFixed(2) + '%';
 		}
-
 		function uploadComplete() {
 			// Video upload completed
 			// Handle the response from the server
@@ -534,7 +538,6 @@
 			progressBar.style.width = '0%';
 			progressBar.innerText = '';
 		}
-
 		function uploadFailed() {
 			// Error occurred during video upload
 			// Handle the error message
@@ -543,7 +546,6 @@
 			progressBar.style.width = '0%';
 			progressBar.innerText = '';
 		}
-
 		// function downloadExcel() {
 		// Replace "path/to/api" with the URL of your Django download_excel view
 		function downloadExcel(filePath, name) {
@@ -558,19 +560,15 @@
 				success: function (data) {
 					// Create a Blob from the data
 					const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-
 					// Create a URL for the Blob
 					const url = URL.createObjectURL(blob);
-
 					// Create a hidden anchor element
 					const a = document.createElement('a');
 					a.href = url;
 					a.download = name;
-
 					// Append the anchor to the document and simulate a click to initiate download
 					document.body.appendChild(a);
 					a.click();
-
 					// Clean up the URL and remove the anchor
 					URL.revokeObjectURL(url);
 					document.body.removeChild(a);
@@ -580,68 +578,50 @@
 				}
 			})
 		}
-
-
-
 		function delete_video(id) {
-			// Replace "path/to/api" with the URL of your Django download_excel view
+    // Replace "path/to/api" with the URL of your Django download_excel view
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                method: "DELETE",
+                url: "/apis/delete_video",
+                headers: { "X-CSRFToken": csrf_token },
+                data: {
+                    "vid_id": id,
+                },
+                success: function (data) {
+                    Swal.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                    );
+                    console.log("success on delete");
+                    window.location.reload();
+                },
+                error: function () {
+                    console.log("error on file not found");
+                }
+            });
+        }
+    });
+}
 
-			Swal.fire({
-				title: 'Are you sure?',
-				text: "You won't be able to revert this!",
-				icon: 'warning',
-				showCancelButton: true,
-				confirmButtonColor: '#3085d6',
-				cancelButtonColor: '#d33',
-				confirmButtonText: 'Yes, delete it!'
-			}).then((result) => {
-				$.ajax({
-					method: "DELETE",
-					url: "/apis/delete_video",
-					headers: { "X-CSRFToken": csrf_token },
-					data: {
-						"vid_id": id,
-					},
-					success: function (data) {
-						if (result.isConfirmed) {
-							Swal.fire(
-								'Deleted!',
-								'Your file has been deleted.',
-								'success'
-							)
-						}
-						console.log("success on delete");
-						window.location.reload();
-					},
-					error: function () {
-						console.log("error on file not found");
-					}
-				})
-
-			})
-
-		}
-		
 
 		function get_results(id){
 			multi_line_chart_fun(csrf_token,id);
             line_chart_fun(csrf_token,id);
             bar_chart_fun(csrf_token,id);
-
 		}
-
-
-
-
-
-
-
-
-
-
 		function load_video_function(path) {
 			// var modalBody = document.querySelector('.modal-body');
-
 			// Create the video element
 			$.ajax({
 				method: "POST",
@@ -654,13 +634,11 @@
 					let canvas = document.getElementById("first_frame");
 					let ctx = canvas.getContext("2d");
 					let image = new Image();
-
 					image.onload = function () {
 						canvas.width = 640;
 						canvas.height = 360;
 						ctx.drawImage(image, 0, 0, 640, 360);
 					};
-
 					image.src = "data:image/jpeg;base64," + data.frame;
 					// set video id in to model button function
 					$('#video_prediction').attr('onclick', 'prediction_call(' + data.video_id + ')');
@@ -669,19 +647,15 @@
 					console.log("error on get_first_frame");
 				}
 			});
-
 			// Open the modal
 			$('#vidoemodel').modal('show');
 		}
-
-
 	</script>
 	<!-- <script src="static/js/morris.js'%}"></script> -->
 	<!-- <script>
         
-
-
     </script> -->
 
 </body>
-{% endblock %}
+
+</html>

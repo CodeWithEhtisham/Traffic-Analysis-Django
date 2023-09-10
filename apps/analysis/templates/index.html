@@ -1,4 +1,5 @@
-{% extends 'analysis_base.html'%} {% load static %}
+{% extends 'analysis_base.html'%} 
+{% load static %}
 <style>
   .card {
     transition: transform 0.2s ease;
@@ -122,25 +123,25 @@
   {% include 'analysis_script.html' %}
 
   <script>
-    {% comment %} document.addEventListener("DOMContentLoaded", function () {
-        const dropdownButton = document.getElementById("profileDropdownButton");
-        const dropdownMenu = document.getElementById("profileDropdown");
+    // {% comment %} document.addEventListener("DOMContentLoaded", function () {
+    //     const dropdownButton = document.getElementById("profileDropdownButton");
+    //     const dropdownMenu = document.getElementById("profileDropdown");
 
-        dropdownButton.addEventListener("click", function () {
-            // Use Bootstrap's 'show' class to control visibility
-            dropdownMenu.classList.toggle("show");
-        });
+    //     dropdownButton.addEventListener("click", function () {
+    //         // Use Bootstrap's 'show' class to control visibility
+    //         dropdownMenu.classList.toggle("show");
+    //     });
 
-        // Add event listener when the dropdown is shown
-        dropdownMenu.addEventListener("show.bs.dropdown", function () {
-            dropdownMenu.classList.add("show");
-        });
+    //     // Add event listener when the dropdown is shown
+    //     dropdownMenu.addEventListener("show.bs.dropdown", function () {
+    //         dropdownMenu.classList.add("show");
+    //     });
 
-        // Add event listener when the dropdown is hidden
-        dropdownMenu.addEventListener("hide.bs.dropdown", function () {
-            dropdownMenu.classList.remove("show");
-        });
-    }); {% endcomment %}
+    //     // Add event listener when the dropdown is hidden
+    //     dropdownMenu.addEventListener("hide.bs.dropdown", function () {
+    //         dropdownMenu.classList.remove("show");
+    //     });
+    // }); {% endcomment %}
 
 
     const socket = io.connect('http://127.0.0.1:7000');
