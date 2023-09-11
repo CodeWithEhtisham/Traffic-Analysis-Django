@@ -17,8 +17,9 @@
 
 <body>
     <div class="main-wrapper">
-      {% include 'nav_html.html'%}
+      {% include 'sidebar.html'%}
     <div class="page-wrapper">
+        {% include 'navbar.html'%}
       <div class="page-content">
         
         <div
@@ -38,7 +39,7 @@
 
         <div class="row">
           <!-- Location -->
-          {% for site in site_name%}
+          {% for site in site_names%}
 
           <div class="col-lg-5 col-xl-6 grid-margin stretch-card">
             <div class="card">
@@ -73,7 +74,7 @@
                         style="font-size: large"
                         id="yesterday_count"
                       >
-                        500
+                        IN:<span id="{{site}}_in_yes">0</span> | OUT:<span id="{{site}}_out_yes">0</span>
                       </h5>
                     </div>
                   </div>
@@ -92,7 +93,7 @@
                         style="font-size: large"
                         id="today_count"
                       >
-                        100
+                      IN:<span id="{{site}}_in">0</span> | OUT:<span id="{{site}}_out">0</span>
                       </h5>
                     </div>
                   </div>
@@ -120,8 +121,7 @@
     </div>
   </div>
 
-  {% include 'analysis_script.html' %}
-
+  <script src="{% static 'js/apis.js'%}"></script>
   <script>
     // {% comment %} document.addEventListener("DOMContentLoaded", function () {
     //     const dropdownButton = document.getElementById("profileDropdownButton");

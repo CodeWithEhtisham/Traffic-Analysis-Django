@@ -141,11 +141,11 @@ STATIC_URL = '/static/'
 # print(STATICFILES_DIRS)
 STATIC_ROOT = normpath(os.path.join(BASE_DIR, 'static'))
 
-MEDIA_DIR = normpath(os.path.join(BASE_DIR, 'media'))
 
-MEDIA_ROOT = MEDIA_DIR
+
 MEDIA_URL = '/media/'
-print(os.getcwd())
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# print(os.getcwd())
 
 # print(STATIC_ROOT)
 # Default primary key field type

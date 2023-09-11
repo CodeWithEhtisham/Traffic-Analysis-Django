@@ -1,5 +1,6 @@
 from django.urls import path
-
+from django.conf import settings
+from django.conf.urls.static import static
 from .views import Index, Dashboard, History, video_analysis, LiveStream
 from .views import (get_vehicle_counts, get_objects, get_images, get_image_objects, get_table_records,download_excel,delete_video,
                     get_multiline_chart_records, get_line_chart_records, get_bar_chart_records, get_first_frame, video_prediction)
@@ -41,6 +42,6 @@ urlpatterns = [
          name='get_line_chart_records_uploads'),
     path('apis/get_bar_chart_records_uploads', get_bar_chart_records_uploads,
          name='get_bar_chart_records_uploads'),
-]
+]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # urlpatterns += static('/socket.io/', document_root=os.path.join(settings.BASE_DIR, 'node_modules', 'socket.io-client', 'dist'))
