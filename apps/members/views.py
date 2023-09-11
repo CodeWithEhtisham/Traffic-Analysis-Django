@@ -69,8 +69,8 @@ class UserRegister(CreateView):
         return redirect(self.success_url)        
 
 
-class Logout(View):
-    def get(self,request):
-        return render(request,'login.html')
+def user_logout(request):
+    logout(request)
+    return render(request,'login.html')
     
 

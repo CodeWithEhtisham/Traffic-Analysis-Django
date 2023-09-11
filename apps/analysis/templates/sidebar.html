@@ -1,0 +1,31 @@
+{% load static %}
+<nav class="sidebar">
+    <div class="sidebar-header">
+        <a href="#" class="sidebar-brand">
+            Smart<span>Traffic</span>
+        </a>
+        <div class="sidebar-toggler not-active">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+    <div class="sidebar-body">
+        <ul class="nav">
+            <li class="nav-item">
+                <a href="{% url 'index' %}" class="nav-link">
+                    <i class="link-icon" data-feather="box"></i>
+                    <span class="link-title">All Sites</span>
+                </a>
+            </li>
+            {% for site in site_names %}
+            <li class="nav-item">
+                <a href="{% url 'dashboard' site_name=site %}" class="nav-link">
+                    <i class="link-icon" data-feather="framer"></i>
+                    <span class="link-title">{{site}}</span>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</nav>

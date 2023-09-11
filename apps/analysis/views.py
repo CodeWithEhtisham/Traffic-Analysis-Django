@@ -124,8 +124,9 @@ def run_socketio_server():
     # model = YOLO('best.pt')
     app = socketio.WSGIApp(sio)
     wsgi.server(eventlet.listen(('localhost', 7000)), app)
-
-
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+@method_decorator(login_required(login_url='login'), name='dispatch')
 class Index(TemplateView):  
     def get(self, request):
         user_id = request.user.id
@@ -135,10 +136,10 @@ class Index(TemplateView):
             site_name=Stream.objects.all().values_list('site_name',flat=True)
             print(site_name)
             # print([s for s in site_name])
-            return render(request, 'index.html', {'site_name': site_name})
+            return render(request, 'index.html', {'site_names': site_name})
         elif user.is_active:
              site_name=Stream.objects.filter(users=user).values_list('site_name',flat=True)
-             return render(request, 'index.html', {'site_name': site_name})
+             return render(request, 'index.html', {'site_names': site_name})
         
         # print("Index view is called")
         print(request.GET)
@@ -151,8 +152,8 @@ class Index(TemplateView):
             # Handle the case when 'user_id' is not provided in the URL
             site_name = None
         print("site_name:", site_name)  # Add this line to check the value of 'site_name'
-        return render(request, 'index.html', {'site_name': site_name})
-
+        return render(request, 'index.html', {'site_names': site_name})
+@method_decorator(login_required(login_url='login'), name='dispatch')
 class Dashboard(TemplateView):
     def get(self, request,site_name):
         site_names = Stream.objects.all().values_list('site_name', flat=True)
@@ -217,24 +218,31 @@ class LiveStream(TemplateView):
 @api_view(['GET'])
 def get_vehicle_counts(request):
     pass
-    # try:
-    #     # number of rows inserted yesterday from object table
-    #     yesterday = datetime.now() - timedelta(days=1)
-    #     yesterday_count = Object.objects.filter(image__timestamp__date=yesterday.date()).count()
-
-    #     # number of rows inserted today from object table
-    #     today = datetime.now()
-    #     today_count = Object.objects.filter(image__timestamp__date=today.date()).count()
-
-    #     # return as json object 
-    #     return Response({
-    #         'yesterday': yesterday_count,
-    #         'today': today_count
-    #     })
-    # except Exception as e:
-    #     return Response({
-    #         'error': str(e)
-    #     })
+    try:
+        stream_names= Stream.objects.filter(users=request.user.id).values_list('site_name', flat=True)
+        # number of rows inserted yesterday from object table
+        print(stream_names,request.user.id)
+        yesterday = datetime.now() - timedelta(days=1)
+        data={}
+        for site_name in stream_names:
+            data[site_name]=list()
+            yesterday_count = VehicleObject.objects.filter(
+                image__timestamp__date=yesterday.strftime("%Y-%m-%d"),
+                image__stream__site_name=site_name
+            ).count()
+            today = datetime.now()
+            today_count = VehicleObject.objects.filter(image__timestamp__date=today.date(),image__stream__site_name=site_name).count()
+            data[site_name].append(yesterday_count)
+            data[site_name].append(today_count)
+        print(data,"#################")
+        # return as json object 
+        return Response(
+            {"data":data}
+        )
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        })
 
 
 from .serializer import ObjectSerializer, ImageSerializer, StreamSerializer,ImageWithObjectsSerializer
