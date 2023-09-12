@@ -130,7 +130,7 @@ from django.utils.decorators import method_decorator
 class Index(TemplateView):  
     def get(self, request):
         user_id = request.user.id
-        print("user id is ",user_id)
+        print("user is ",request.user.email)
         user=CustomUser.objects.get(id=user_id)
         if user.is_staff and user.is_active:
             site_name=Stream.objects.all().values_list('site_name',flat=True)
@@ -214,14 +214,12 @@ class LiveStream(TemplateView):
         return render(request, 'live_stream.html')
 
 
-
+@login_required(login_url='login')
 @api_view(['GET'])
 def get_vehicle_counts(request):
-    pass
     try:
-        stream_names= Stream.objects.filter(users=request.user.id).values_list('site_name', flat=True)
+        stream_names= Stream.objects.filter(users=request.GET.get('user')).values_list('site_name', flat=True)
         # number of rows inserted yesterday from object table
-        print(stream_names,request.user.id)
         yesterday = datetime.now() - timedelta(days=1)
         data={}
         for site_name in stream_names:

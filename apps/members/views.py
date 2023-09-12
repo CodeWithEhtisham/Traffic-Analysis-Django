@@ -27,16 +27,14 @@ def user_login(request):
         if user:
             if user is not None and user.is_active and user.is_staff:
                 login(request, user)
+                print("user *********** admin",user)
 
                 return redirect('index')
             
             elif user is not None and user.is_active == True:
-                print(user)
                 try:
-                    # req_user = CustomUser.objects.get(id=user.id)
-                    # user_uid = req_user.id
-                    # user_company = req_user.company
                     login(request, user)
+                    print("user *********** User",user)
                     return redirect('index')
 
                 except:

@@ -55,7 +55,7 @@ def send_frames():
                     detectionLines.remove(i)
         print(detectionLines)
 
-    cap = cv2.VideoCapture('Produce.mp4')
+    cap = cv2.VideoCapture('b.dav')
     # fps = cap.get(cv2.CAP_PROP_FPS)
     # print("Frames per second (fps):", fps)
     # return None

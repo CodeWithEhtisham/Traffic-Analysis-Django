@@ -121,7 +121,7 @@
     </div>
   </div>
 
-  <script src="{% static 'js/apis.js'%}"></script>
+  <!-- <script src="{% static 'js/apis.js'%}"></script> -->
   <script>
     // {% comment %} document.addEventListener("DOMContentLoaded", function () {
     //     const dropdownButton = document.getElementById("profileDropdownButton");
@@ -142,7 +142,26 @@
     //         dropdownMenu.classList.remove("show");
     //     });
     // }); {% endcomment %}
-
+    setInterval(function () {
+    var csrf_token = "{{ csrf_token }}";
+    console.log(csrf_token)
+    $.ajax({
+        method: "GET",
+        url: "/apis/get_vehicle_counts",
+        headers: { "X-CSRFToken": csrf_token },
+        data: {
+						"user": {{request.user.id}},
+					},
+        success: function (data) {
+            console.log(data);
+            // document.getElementById('today_count').innerHTML = data.today;
+            // document.getElementById('yesterday_count').innerHTML = data.yesterday;
+        },
+        error: function () {
+            console.log("error on get_vehicle_counts");
+        }
+    });
+}, 10000); // 30 seconds in milliseconds
 
     const socket = io.connect('http://127.0.0.1:7000');
     socket.on('connect', function () {
