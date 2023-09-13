@@ -23,18 +23,28 @@
       <div class="page-content">
         
         <div
-          class="d-flex justify-content-between align-items-center flex-wrap grid-margin"
-        >
+          class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
           <div>
             <h4 class="mb-3 mb-md-0">Welcome to Traffic Monitoring System</h4>
           </div>
-          <!-- <div class="d-flex align-items-center flex-wrap text-nowrap">
-                        
-                        <button type="button" class="btn btn-primary btn-icon-text mb-2 mb-md-0">
-                            <i class="btn-icon-prepend" data-feather="download-cloud"></i>
-                            Download Report
-                        </button>
-                    </div> -->
+          <div class="d-flex align-items-center flex-wrap text-nowrap">
+
+            <a type="button" class="btn btn-outline-info btn-icon-text mr-2 d-none d-md-block"
+                href="{% url 'history' %}">
+                <i class="btn-icon-prepend" data-feather="activity"></i>
+                History
+            </a>
+            <a type="button" class="btn btn-outline-primary btn-icon-text mr-2 mb-2 mb-md-0"
+                href="{% url 'video_analysis' %}">
+                <i class="btn-icon-prepend" data-feather="video"></i>
+                Video Analysis
+            </a>
+            <a type="button" class="btn btn-primary btn-icon-text mb-2 mb-md-0"
+                href="{% url 'index' %}">
+                <i class="btn-icon-prepend" data-feather="bar-chart"></i>
+                Live Stream Analysis
+            </a>
+        </div>
         </div>
 
         <div class="row">
@@ -150,12 +160,19 @@
         url: "/apis/get_vehicle_counts",
         headers: { "X-CSRFToken": csrf_token },
         data: {
-						"user": {{request.user.id}},
+						"user": "{{request.user.id}}",
 					},
         success: function (data) {
-            console.log(data);
-            // document.getElementById('today_count').innerHTML = data.today;
-            // document.getElementById('yesterday_count').innerHTML = data.yesterday;
+          let objs = data.data
+          for (let key in objs) {
+          if (objs.hasOwnProperty(key)) {
+            let arr = objs[key];
+            document.getElementById(key+'_in_yes').innerHTML = arr[0];
+            document.getElementById(key+'_out_yes').innerHTML = arr[1];
+            document.getElementById(key+'_in').innerHTML = arr[2];
+            document.getElementById(key+'_out').innerHTML = arr[3];
+          }
+        }
         },
         error: function () {
             console.log("error on get_vehicle_counts");

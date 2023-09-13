@@ -60,26 +60,7 @@ bar_option = {
         }
     ],
     series: [
-        {
-                name: 'OUT',
-                type: 'bar',
-                // tooltip: {
-                //     valueFormatter: function (value) {
-                //         return value;
-                //     }
-                // },
-                data: [2.0, 4.9, 7.0, 23.2, 25.6, 76.7]
-        },
-        {
-            name: 'IN',
-            type: 'bar',
-            // tooltip: {
-            //     valueFormatter: function (value) {
-            //         return value;
-            //     }
-            // },
-            data: [2.6, 5.9, 9.0, 26.4, 28.7, 70.7]
-        }
+        
     ]
 };
 

@@ -4,6 +4,7 @@ import numpy as np
 from ultralytics import YOLO
 import datetime
 from .models import VideoAnalysisModel,VideoAnalysisObject
+import os
 # import widht or height of the the django setting
 from django.conf import settings
 args={
@@ -221,7 +222,9 @@ class VehicleDetectionVideoAnalysis():
         df['IN']=ins
         df['OUT']=outs
         name=self.vid_id.video_path.split("/")[-1].split(".")[0]
+        os.makedirs(f"./media/excel",exist_ok=True)
         df.to_csv(f"./media/excel/{name}.csv",index=False)
+
         VideoAnalysisModel.objects.filter(id=int(self.vid_id.id)).update(excel_path=f"./media/excel/{name}.csv",status=True)
         cap.release()
         cv2.destroyAllWindows()

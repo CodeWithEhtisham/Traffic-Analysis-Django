@@ -83,58 +83,131 @@ def get_multiline_chart_records_uploads(request):
             "truck": [0],
             "rickshaw": [0],
             "van": [0],
+            "car_out": [0],
+            "bike_out": [0],
+            "bus_out": [0],
+            "truck_out": [0],
+            "rickshaw_out": [0],
+            "van_out": [0],
         }
         car, bike, bus, truck, rickshaw, van = 0, 0, 0, 0, 0, 0
+        car_out, bike_out, bus_out, truck_out, rickshaw_out, van_out = 0, 0, 0, 0, 0, 0
         # result = []
         time_stamp = []
         vid_id = request.POST.get('id')
         today = datetime.now()
-        records=VideoAnalysisObject.objects.filter(video_analysis__id=vid_id)
+        records=VideoAnalysisObject.objects.filter(video_analysis__id=vid_id).select_related('video_analysis')
         
+         
         for obj in records:
+            print(obj.date_time)
             time_stamp.append(obj.date_time.strftime("%H:%M:%S"))
-            if obj.label == 'car':
-                car += 1
-                result['car'].append(car)
-                result['bike'].append(bike)
-                result['bus'].append(bus)
-                result['truck'].append(truck)
-                result['rickshaw'].append(rickshaw)
-                result['van'].append(van)
-            elif obj.label == 'bike':
-                bike += 1
-                result['bike'].append(bike)
-                result['car'].append(car)
-                result['bus'].append(bus)
-                result['truck'].append(truck)
-                result['rickshaw'].append(rickshaw)
-                result['van'].append(van)
-            elif obj.label == 'bus':
-                bus += 1
-                result['bus'].append(bus)
-                result['car'].append(car)
-                result['bike'].append(bike)
-                result['truck'].append(truck)
-                result['rickshaw'].append(rickshaw)
-                result['van'].append(van)
-            elif obj.label == 'truck':
-                truck += 1
-                result['truck'].append(truck)
-                result['car'].append(car)
-                result['bike'].append(bike)
-                result['bus'].append(bus)
-                result['rickshaw'].append(rickshaw)
-                result['van'].append(van)
-            elif obj.label == 'rickshaw':
-                rickshaw += 1
-                result['rickshaw'].append(rickshaw)
-                result['car'].append(car)
-                result['bike'].append(bike)
-                result['bus'].append(bus)
-                result['truck'].append(truck)
-                result['van'].append(van)
-            elif obj.label == 'van':
-                van += 1
+            if obj.total_count_in:
+                if obj.label == 'car':
+                    car += 1
+                    result['car'].append(car)
+                    result['bike'].append(bike)
+                    result['bus'].append(bus)
+                    result['truck'].append(truck)
+                    result['rickshaw'].append(rickshaw)
+                    result['van'].append(van)
+                elif obj.label == 'bike':
+                    bike += 1
+                    result['bike'].append(bike)
+                    result['car'].append(car)
+                    result['bus'].append(bus)
+                    result['truck'].append(truck)
+                    result['rickshaw'].append(rickshaw)
+                    result['van'].append(van)
+                elif obj.label == 'bus':
+                    bus += 1
+                    result['bus'].append(bus)
+                    result['car'].append(car)
+                    result['bike'].append(bike)
+                    result['truck'].append(truck)
+                    result['rickshaw'].append(rickshaw)
+                    result['van'].append(van)
+                elif obj.label == 'truck':
+                    truck += 1
+                    result['truck'].append(truck)
+                    result['car'].append(car)
+                    result['bike'].append(bike)
+                    result['bus'].append(bus)
+                    result['rickshaw'].append(rickshaw)
+                    result['van'].append(van)
+                elif obj.label == 'rickshaw':
+                    rickshaw += 1
+                    result['rickshaw'].append(rickshaw)
+                    result['car'].append(car)
+                    result['bike'].append(bike)
+                    result['bus'].append(bus)
+                    result['truck'].append(truck)
+                    result['van'].append(van)
+                elif obj.label == 'van':
+                    van += 1
+                    result['van'].append(van)
+                    result['car'].append(car)
+                    result['bike'].append(bike)
+                    result['bus'].append(bus)
+                    result['truck'].append(truck)
+                    result['rickshaw'].append(rickshaw)
+                result['car_out'].append(car_out)
+                result['bike_out'].append(bike_out)
+                result['bus_out'].append(bus_out)
+                result['truck_out'].append(truck_out)
+                result['rickshaw_out'].append(rickshaw_out)
+                result['van_out'].append(van_out)
+                # print("in count call ", len(result['car_out']),car_out,obj.image.timestamp.strftime("%H:%M:%S"))
+
+            else:
+                if obj.label == 'car':
+                    car_out += 1
+                    result['car_out'].append(car_out)
+                    result['bike_out'].append(bike_out)
+                    result['bus_out'].append(bus_out)
+                    result['truck_out'].append(truck_out)
+                    result['rickshaw_out'].append(rickshaw_out)
+                    result['van_out'].append(van_out)
+                elif obj.label == 'bike':
+                    bike_out += 1
+                    result['bike_out'].append(bike_out)
+                    result['car_out'].append(car_out)
+                    result['bus_out'].append(bus_out)
+                    result['truck_out'].append(truck_out)
+                    result['rickshaw_out'].append(rickshaw_out)
+                    result['van_out'].append(van_out)
+                elif obj.label == 'bus':
+                    bus_out += 1
+                    result['bus_out'].append(bus_out)
+                    result['car_out'].append(car_out)
+                    result['bike_out'].append(bike_out)
+                    result['truck_out'].append(truck_out)
+                    result['rickshaw_out'].append(rickshaw_out)
+                    result['van_out'].append(van_out)
+                elif obj.label == 'truck':
+                    truck_out += 1
+                    result['truck_out'].append(truck_out)
+                    result['car_out'].append(car_out)
+                    result['bike_out'].append(bike_out)
+                    result['bus_out'].append(bus_out)
+                    result['rickshaw_out'].append(rickshaw_out)
+                    result['van_out'].append(van_out)
+                elif obj.label == 'rickshaw':
+                    rickshaw_out += 1
+                    result['rickshaw_out'].append(rickshaw_out)
+                    result['car_out'].append(car_out)
+                    result['bike_out'].append(bike_out)
+                    result['bus_out'].append(bus_out)
+                    result['truck_out'].append(truck_out)
+                    result['van_out'].append(van_out)
+                elif obj.label == 'van':
+                    van_out += 1
+                    result['van_out'].append(van)
+                    result['car_out'].append(car_out)
+                    result['bike_out'].append(bike_out)
+                    result['bus_out'].append(bus_out)
+                    result['truck_out'].append(truck_out)
+                    result['rickshaw_out'].append(rickshaw_out)
                 result['van'].append(van)
                 result['car'].append(car)
                 result['bike'].append(bike)
@@ -146,41 +219,100 @@ def get_multiline_chart_records_uploads(request):
             {
                 'name': 'Car',
                 'type': 'line',
+                'symbolSize':8,
                 'data': result['car']
             },
             {
                 'name': 'Bike',
                 'type': 'line',
+                'symbolSize':8,
                 'data': result['bike']
             },
             {
                 'name': 'Bus',
                 'type': 'line',
+                'symbolSize':8,
                 'data': result['bus']
             },
             {
                 'name': 'Truck',
                 'type': 'line',
+                'symbolSize':8,
                 'data': result['truck']
             },
             {
                 'name': 'Rickshaw',
                 'type': 'line',
+                'symbolSize':8,
                 'data': result['rickshaw']
             },
             {
                 'name': 'Van',
                 'type': 'line',
+                'symbolSize':8,
                 'data': result['van']
+            },
+
+            {
+                'name': 'Car',
+                'type': 'line',
+                'xAxisIndex': 1,
+                'yAxisIndex': 1,
+                'symbolSize':8,
+                'data': result['car_out']
+            },
+            {
+                'name': 'Bike',
+                'type': 'line',
+                'xAxisIndex': 1,
+                'yAxisIndex': 1,
+                'symbolSize':8,
+                'data': result['bike_out']
+            },
+            {
+                'name': 'Bus',
+                'type': 'line',
+                'xAxisIndex': 1,
+                'yAxisIndex': 1,
+                'symbolSize':8,
+                'data': result['bus_out']
+            },
+            {
+                'name': 'Truck',
+                'type': 'line',
+                'xAxisIndex': 1,
+                'yAxisIndex': 1,
+                'symbolSize':8,
+                'data': result['truck_out']
+            },
+            {
+                'name': 'Rickshaw',
+                'type': 'line',
+                'xAxisIndex': 1,
+                'yAxisIndex': 1,
+                'symbolSize':8,
+                'data': result['rickshaw_out']
+            },
+            {
+                'name': 'Van',
+                'type': 'line',
+                'xAxisIndex': 1,
+                'yAxisIndex': 1,
+                'symbolSize':8,
+                'data': result['van_out']
             }
         ]        
+        # print(multi_line_chart_data)
+        # print(result)
         # print(time_stamp)
         return Response({
             'data': multi_line_chart_data,
             'time_stamp': time_stamp,
-            'max': max(result['car'] + result['bike'] + result['bus'] + result['truck'] + result['rickshaw'] + result['van'])+5
+            'max_in': max(result['car'] + result['bike'] + result['bus'] + result['truck'] + result['rickshaw'] + result['van'])+8,
+            'max_out': max(result['car_out'] + result['bike_out'] + result['bus_out'] + result['truck_out'] + result['rickshaw_out'] + result['van_out'])+8
         })
     except Exception as e:
+        print(e)
         return Response({
             'error': str(e)
         })

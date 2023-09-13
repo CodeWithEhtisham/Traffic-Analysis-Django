@@ -227,11 +227,17 @@ def get_vehicle_counts(request):
             yesterday_count = VehicleObject.objects.filter(
                 image__timestamp__date=yesterday.strftime("%Y-%m-%d"),
                 image__stream__site_name=site_name
-            ).count()
+            )
+            count_in=yesterday_count.filter(total_count_in=1).count()
+            count_out=yesterday_count.filter(total_count_out=1).count()
+            data[site_name].append(count_in)
+            data[site_name].append(count_out)
             today = datetime.now()
-            today_count = VehicleObject.objects.filter(image__timestamp__date=today.date(),image__stream__site_name=site_name).count()
-            data[site_name].append(yesterday_count)
-            data[site_name].append(today_count)
+            today_count = VehicleObject.objects.filter(image__timestamp__date=today.date(),image__stream__site_name=site_name)
+            count_in=today_count.filter(total_count_in=1).count()
+            count_out=today_count.filter(total_count_out=1).count()
+            data[site_name].append(count_in)
+            data[site_name].append(count_out)
         print(data,"#################")
         # return as json object 
         return Response(
