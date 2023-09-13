@@ -31,19 +31,7 @@
 
 
 // ajax apis for getting data
-setInterval(function () {
-    $.ajax({
-        method: "GET",
-        url: "/apis/get_vehicle_counts",
-        success: function (data) {
-            console.log(data);
-            // document.getElementById('today_count').innerHTML = data.today;
-            // document.getElementById('yesterday_count').innerHTML = data.yesterday;
-        },
-        error: function () {
-            console.log("error on get_vehicle_counts");
-        }
-    });
-}, 10000); // 30 seconds in milliseconds
+
+
 
 

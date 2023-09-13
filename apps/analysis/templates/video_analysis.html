@@ -39,13 +39,8 @@
 							<i class="btn-icon-prepend" data-feather="activity"></i>
 							History
 						</a>
-						<a type="button" class="btn btn-outline-primary btn-icon-text mr-2 mb-2 mb-md-0"
-							href="{% url 'video_analysis' %}">
-							<i class="btn-icon-prepend" data-feather="video"></i>
-							Video Analysis
-						</a>
 						<a type="button" class="btn btn-primary btn-icon-text mb-2 mb-md-0"
-							href="{% url 'live_stream' %}">
+							href="{% url 'index' %}">
 							<i class="btn-icon-prepend" data-feather="bar-chart"></i>
 							Live Stream Analysis
 						</a>
@@ -129,19 +124,21 @@
 				<!-- first row end -->
 				<!-- second row start -->
 				<div class="row">
-					<!-- plot chart with dynamic font-size -->
-					<div class="col-xl-12 grid-margin stretch-card">
-						<div class="card">
-							<div class="card-body">
-								<h6 class="card-title">MultiLine</h6>
-								<div id="e_multiline_chart" style="width: 100%; height: 400px;"></div>
-							</div>
-						</div>
-					</div>
-				</div>
+
+                    <!-- plot chart with dynamic font-size -->
+                    <div class="col-xl-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title">MultiLine <span id="multiline-chart-title"></span></h6>
+                                <div id="e_multiline_chart" style="width: 100%; height: 800px;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
 				<div class="row">
 					<!-- area chart -->
-					<div class="col-xl-6 grid-margin stretch-card">
+					<div class="col-xl-12 grid-margin stretch-card">
 						<div class="card">
 							<div class="card-body">
 								<h6 class="card-title">Area chart</h6>
@@ -149,9 +146,11 @@
 							</div>
 						</div>
 					</div>
+				</div>
+				<div class="row">
 					<!-- end area chart -->
 					<!-- bar chart -->
-					<div class="col-xl-6 grid-margin stretch-card">
+					<div class="col-xl-12 grid-margin stretch-card">
 						<div class="card">
 							<div class="card-body">
 								<h6 class="card-title">Bar chart</h6>
@@ -215,7 +214,7 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="model_close()">Close</button>
 						<button type="submit" class="btn btn-primary">Upload video</button>
 					</div>
 				</form>
@@ -252,9 +251,10 @@
 	
 	<!-- <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script> -->
 	<!-- <script src="{% static 'js/dynamic-plots.js'%}"></script> -->
-	<script src="{% static 'js/upload_chart/e_bar_chart.js'%}"></script>
-	<script src="{% static 'js/upload_chart/e_multiline_chart.js'%}"></script>
-	<script src="{% static 'js/upload_chart/e_line_chart.js'%}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js" ></script>
+	<script src="
+https://cdn.jsdelivr.net/npm/sweetalert2@11.7.27/dist/sweetalert2.all.min.js
+"></script>
 	<!-- <script src="{% static 'js/dynamic-plots.js'%}"></script> -->
 	<script>
 		// var socket = io.connect("http://
@@ -323,6 +323,8 @@
 			detectionLines = [];
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			// data-dismiss="modal" close the modal
+			console.log('reloading the page');
+			window.location.reload();
 		}
 		function prediction_call(vid_id) {
 			if (detectionLines.length < 2) {
@@ -386,6 +388,7 @@
 			formData.append('date_time', dateTime);
 			var progressBar = document.getElementById('progress-bar'); // Get the progress bar element
 			var xhr = new XMLHttpRequest();
+			percentComplete = 0;
 			xhr.upload.addEventListener('progress', function (event) {
 				if (event.lengthComputable) {
 					var percentComplete = (event.loaded / event.total) * 100;
@@ -400,7 +403,9 @@
 			xhr.addEventListener('error', uploadFailed);
 			xhr.open('POST', 'video_analysis', true);
 			xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');  // Add CSRF token header
+			console.log("uploading...",percentComplete)
 			xhr.send(formData);
+			
 		});
 		function updateProgressBar(progressBar, percentComplete) {
 			progressBar.style.width = percentComplete + '%';
@@ -413,6 +418,7 @@
 			var progressBar = document.getElementById('progress-bar');
 			progressBar.style.width = '0%';
 			progressBar.innerText = '';
+			
 		}
 		function uploadFailed() {
 			// Error occurred during video upload
@@ -531,6 +537,9 @@
 	<!-- <script>
         
     </script> -->
+	<script src="{% static 'js/upload_chart/e_bar_uploadchart.js'%}"></script>
+	<script src="{% static 'js/upload_chart/e_multiline_uploadchart.js'%}"></script>
+	<script src="{% static 'js/upload_chart/e_line_uploadchart.js'%}"></script>
 
 </body>
 {% endblock %}
