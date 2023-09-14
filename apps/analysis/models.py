@@ -38,8 +38,9 @@ class VideoAnalysisModel(models.Model):
     video_name = models.CharField(max_length=255)
     date_time = models.DateTimeField()
     video_path = models.CharField(max_length=255)
-    status=models.BooleanField(default=False)
+    status=models.PositiveSmallIntegerField(default=0)
     excel_path = models.CharField(max_length=255,default=None,null=True)
+    short_video_path = models.CharField(max_length=255,default=None,null=True)
 
 
 class VideoAnalysisObject(models.Model):

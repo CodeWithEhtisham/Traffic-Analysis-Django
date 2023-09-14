@@ -376,6 +376,7 @@ def get_bar_chart_records_uploads(request):
         Out=[0, 0, 0, 0, 0, 0,0]
 
         vid_id = request.POST.get('id')
+        short_video_path=VideoAnalysisModel.objects.get(id=vid_id).short_video_path
         records=VideoAnalysisObject.objects.filter(video_analysis__id=vid_id)
         
         for obj in records:
@@ -414,7 +415,8 @@ def get_bar_chart_records_uploads(request):
                 result['IN'],
                 result['OUT']
             ],
-            'max': max(In+Out)+2
+            'max': max(In+Out)+2,
+            'short_video_path':short_video_path
 
         })
     except Exception as e:

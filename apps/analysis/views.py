@@ -741,7 +741,7 @@ def video_prediction(request):
         VideoAnalysisObject.objects.filter(video_analysis=vid_id).delete()
 
         obj=VehicleDetectionVideoAnalysis(model=model,detectionLines=detection_line,vid_id=vid_id)
-        threading.Thread(target=obj.prediction, args=(video_path[1:],)).start()
+        thred =threading.Thread(target=obj.prediction, args=(video_path[1:],)).start()
         return Response({
             "message":True
         })

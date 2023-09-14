@@ -84,7 +84,21 @@ function bar_chart_fun(csrfToken,id) {
             bar_option.series = data["data"];
             bar_option.yAxis[0].max = data["max"];
             bar_chart.setOption(bar_option);
-  
+            video=document.getElementById('short_video');
+            var videoPath = "./media/save_video/abc.mp4";
+            console.log(videoPath);
+            // Check if videoPath is valid
+            if (videoPath) {
+                // Set the video source to the retrieved videoPath
+                video.src = videoPath;
+
+                // Play the video
+                video.play();
+
+
+            } else {
+                console.log("Invalid videoPath:", videoPath);
+            }
            
         },
         error: function () {
