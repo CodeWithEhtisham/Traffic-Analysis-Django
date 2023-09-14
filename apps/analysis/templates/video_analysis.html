@@ -78,17 +78,19 @@
 														{{vid.date_time}}
 													</td>
 													<td>
-														{% if vid.status == 1 %}
-														<span class="badge badge-success">Processed</span>
-														{% else %}
-														<span class="badge badge-danger">Not Processed</span>
-														{% endif %}
+														<!-- add progress bar -->
+														<div class="progress">
+															<div class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+																role="progressbar" style="width: {{vid.status}}%"
+																aria-valuenow="{{vid.status}}" aria-valuemin="0"
+																aria-valuemax="100"></div>
+														</div>
 													</td>
 													<td>
 														<button type="button"
 															onclick="load_video_function('{{vid.video_path}}')"
 															class="btn btn-primary btn-sm">Process</button>
-														{% if vid.status == 1 %}
+														{% if vid.status == 100 %}
 														<button type="button"
 															onclick="downloadExcel('{{vid.excel_path}}','{{vid.video_name}}')"
 															class="btn btn-success btn-sm">Excel</button>
@@ -150,7 +152,7 @@
 				<div class="row">
 					<!-- end area chart -->
 					<!-- bar chart -->
-					<div class="col-xl-12 grid-margin stretch-card">
+					<div class="col-xl-6 grid-margin stretch-card">
 						<div class="card">
 							<div class="card-body">
 								<h6 class="card-title">Bar chart</h6>
@@ -159,6 +161,21 @@
 						</div>
 					</div>
 					<!-- bar chart End -->
+					<div class="col-xl-6 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title">Short Clip</h6>
+                                <div>
+                                    <!-- <img src alt="stream2" style="height: 400px; width: 100%;" id="{{site_name}}"> -->
+									<video width="640" height="360" controls>
+										<source src="/home/carl/Documents/Ehtisham/Traffic-Analysis-Django/media/save_video/short_abc_short.avi" type="video/mp4">
+										Your browser does not support the video tag.
+									  </video>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 				</div>
 				<!-- first row end -->
 				<!-- <div class="row">

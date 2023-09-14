@@ -87,147 +87,167 @@ class VehicleDetectionVideoAnalysis():
 
 
     def prediction(self,path):
-        print('prediction',path)
-        cap = cv2.VideoCapture(path)
-        date_time=self.vid_id.date_time
-        frame_count=0
+        try:
+            print('prediction',path)
+            cap = cv2.VideoCapture(path)
+            date_time=self.vid_id.date_time
+            frame_count=0
+            # frame_width = int(cap.get(3))
+            # frame_height = int(cap.get(4))
+            
+            # size = (frame_width, frame_height)
+            total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+            fourcc = cv2.VideoWriter_fourcc(*"MJPG")
+            short_path=path.split('/')
+            name = short_path[-1]
+            name = "short_" + name
+            short_path=f'{"/".join(short_path[:-1])}/{name}'
+            out = cv2.VideoWriter(short_path, fourcc, 30.0, (settings.IMAGE_WIDTH,settings.IMAGE_HEIGHT))
+            while True:
+                centersAndIDs = []
+                unavailableIDs = []
+                ret, frame = cap.read()
+                print('ret',ret)
+                if not ret:
+                    break
+                if frame_count%30==0:
+                    # add one second to date_time
+                    print('date_time',date_time)
+                    date_time=date_time+datetime.timedelta(seconds=1)
+                if frame_count%500==0:
+                    progress = (frame_count / total_frames) * 100
+                    VideoAnalysisModel.objects.filter(id=int(self.vid_id.id)).update(status=int(progress))
+                
+                
+                frame=cv2.resize(frame,(settings.IMAGE_WIDTH,settings.IMAGE_HEIGHT))
+                detection=self.model.predict(frame)[0].boxes.data
 
-        while True:
-            centersAndIDs = []
-            unavailableIDs = []
-            ret, frame = cap.read()
-            print('ret',ret)
-            if not ret:
-                break
-            if frame_count%30==0:
-                # add one second to date_time
-                print('date_time',date_time)
-                date_time=date_time+datetime.timedelta(seconds=1)
-            frame_count+=1
-            frame=cv2.resize(frame,(settings.IMAGE_WIDTH,settings.IMAGE_HEIGHT))
-            detection=self.model.predict(frame)[0].boxes.data
+                for dl in self.detectionlines:
+                    cv2.line(frame, (dl[0], dl[1]), (dl[2], dl[3]), (255, 203, 48), 6)
 
-            for dl in self.detectionlines:
-                cv2.line(frame, (dl[0], dl[1]), (dl[2], dl[3]), (255, 203, 48), 6)
+                for ind, row in enumerate(detection):
+                    confidence=float(row[4])
+                    obj = int(row[5])
+                    classes = self.class_list[obj]
+                    if confidence > args['conf']:    
+                        (x, y) = (int(row[0]), int(row[1]))
+                        (w, h) = (int(row[2]), int(row[3]))
+                        center = (x + w) / 2, (y + h) / 2
+                        sameVehicleDetected = False
+                        alreadyCounted = False
+                        for indx,c in enumerate(self.cache):
+                            minDistance = self.distancethres * ((indx+2)/2)
+                            for cid in c:
+                                if cid[2] in unavailableIDs:
+                                    continue
+                                distance = math.sqrt((center[0] - cid[0]) ** 2 + (center[1] - cid[1]) ** 2)
+                                if distance < minDistance:
+                                    nearestBox = cid[2]
+                                    minDistance = distance
+                                    sameVehicleDetected = True
+                            if sameVehicleDetected:
+                                break
 
-            for ind, row in enumerate(detection):
-                confidence=float(row[4])
-                obj = int(row[5])
-                classes = self.class_list[obj]
-                if confidence > args['conf']:    
-                    (x, y) = (int(row[0]), int(row[1]))
-                    (w, h) = (int(row[2]), int(row[3]))
-                    center = (x + w) / 2, (y + h) / 2
-                    sameVehicleDetected = False
-                    alreadyCounted = False
-                    for indx,c in enumerate(self.cache):
-                        minDistance = self.distancethres * ((indx+2)/2)
-                        for cid in c:
-                            if cid[2] in unavailableIDs:
-                                continue
-                            distance = math.sqrt((center[0] - cid[0]) ** 2 + (center[1] - cid[1]) ** 2)
-                            if distance < minDistance:
-                                nearestBox = cid[2]
-                                minDistance = distance
-                                sameVehicleDetected = True
-                        if sameVehicleDetected:
-                            break
-
-                    if not sameVehicleDetected:
-                        centersAndIDs.append([center[0], center[1],self.id])
-                        self.id+=1
-                    else:
-                        centersAndIDs.append([center[0], center[1], nearestBox])
-                        unavailableIDs.append(nearestBox)
-
-
-                    if len(centersAndIDs) !=0:
-                        vehicleId = centersAndIDs[len(centersAndIDs) -1][2] 
-                    cv2.circle(frame, (int(center[0]), int(center[1])), 4, (41, 18, 252), 5)   # Plot center point
-
-                    for i, dl in enumerate(self.detectionlines):
-                        p1 = np.array([dl[0], dl[1]])
-                        p2 = np.array([dl[2], dl[3]])
-                        p3 = np.array([center[0], center[1]])
-                        if dl[0] < dl[2]:
-                            largerX = dl[2]
-                            smallerX = dl[0]
+                        if not sameVehicleDetected:
+                            centersAndIDs.append([center[0], center[1],self.id])
+                            self.id+=1
                         else:
-                            largerX = dl[0]
-                            smallerX = dl[2]
-                        if dl[1] < dl[3]:
-                            largerY = dl[3]
-                            smallerY = dl[1]
-                        else:
-                            largerY = dl[1]
-                            smallerY = dl[3]
+                            centersAndIDs.append([center[0], center[1], nearestBox])
+                            unavailableIDs.append(nearestBox)
 
-                        if abs(np.cross(p2 - p1, p3 - p1) / np.linalg.norm(p2 - p1)) < self.offset and \
-                                smallerX - self.offset < center[0] < largerX + self.offset and \
-                                smallerY - self.offset < center[1] < largerY + self.offset:
 
-                                for dvi in self.detectedVehicleIDs:
-                                    if dvi == vehicleId:
+                        if len(centersAndIDs) !=0:
+                            vehicleId = centersAndIDs[len(centersAndIDs) -1][2] 
+                        cv2.circle(frame, (int(center[0]), int(center[1])), 4, (41, 18, 252), 5)   # Plot center point
+
+                        for i, dl in enumerate(self.detectionlines):
+                            p1 = np.array([dl[0], dl[1]])
+                            p2 = np.array([dl[2], dl[3]])
+                            p3 = np.array([center[0], center[1]])
+                            if dl[0] < dl[2]:
+                                largerX = dl[2]
+                                smallerX = dl[0]
+                            else:
+                                largerX = dl[0]
+                                smallerX = dl[2]
+                            if dl[1] < dl[3]:
+                                largerY = dl[3]
+                                smallerY = dl[1]
+                            else:
+                                largerY = dl[1]
+                                smallerY = dl[3]
+
+                            if abs(np.cross(p2 - p1, p3 - p1) / np.linalg.norm(p2 - p1)) < self.offset and \
+                                    smallerX - self.offset < center[0] < largerX + self.offset and \
+                                    smallerY - self.offset < center[1] < largerY + self.offset:
+
+                                    for dvi in self.detectedVehicleIDs:
+                                        if dvi == vehicleId:
+                                            cv2.line(frame, (dl[0], dl[1]), (dl[2], dl[3]), (90, 224, 63), 6)
+                                            alreadyCounted = True
+                                            break
+
+                                    if not alreadyCounted:
+                                        self.detectedVehicleIDs.append(vehicleId)
                                         cv2.line(frame, (dl[0], dl[1]), (dl[2], dl[3]), (90, 224, 63), 6)
-                                        alreadyCounted = True
-                                        break
+                                        self.lanesCount[i] += 1
+                                        try:
+                                            print('update count')
+                                            self.update_count(i,classes,confidence,row,date_time)
+                                            print(self.VCount)
+                                        except Exception as e:
+                                            print(e)
+                                        else:
+                                            continue
+                        cv2.rectangle(frame, (x, y), (w, h), (0, 255, 0), 2)  
+                        text = "{}: {:.4f}".format(classes, confidence)
+                        color = [int(c) for c in self.COLORS[obj]]
+                        cv2.putText(frame, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+                        cv2.putText(frame, "IN:" + str(self.laneSides["IN"]), (20, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (55,18,219), 3)
+                        cv2.putText(frame, "OUT:" + str(self.laneSides["OUT"]), (20, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (55,18,219), 3)
+                if frame_count<=1000:
+                    out.write(frame)
+                frame_count+=1
+                cv2.imshow("Frame", frame)
+                self.framecount +=1
+                cacheSize = 5
+                self.cache.insert(0, centersAndIDs.copy())
+                if len(self.cache) > cacheSize:
+                    del self.cache[cacheSize]
 
-                                if not alreadyCounted:
-                                    self.detectedVehicleIDs.append(vehicleId)
-                                    cv2.line(frame, (dl[0], dl[1]), (dl[2], dl[3]), (90, 224, 63), 6)
-                                    self.lanesCount[i] += 1
-                                    try:
-                                        print('update count')
-                                        self.update_count(i,classes,confidence,row,date_time)
-                                        print(self.VCount)
-                                    except Exception as e:
-                                        print(e)
-                                    else:
-                                        continue
-                    cv2.rectangle(frame, (x, y), (w, h), (0, 255, 0), 2)  
-                    text = "{}: {:.4f}".format(classes, confidence)
-                    color = [int(c) for c in self.COLORS[obj]]
-                    cv2.putText(frame, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-                    cv2.putText(frame, "IN:" + str(self.laneSides["IN"]), (20, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (55,18,219), 3)
-                    cv2.putText(frame, "OUT:" + str(self.laneSides["OUT"]), (20, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (55,18,219), 3)
-
-
-            cv2.imshow("Frame", frame)
-            self.framecount +=1
-            cacheSize = 5
-            self.cache.insert(0, centersAndIDs.copy())
-            if len(self.cache) > cacheSize:
-                del self.cache[cacheSize]
-
-            if cv2.waitKey(1)&0xFF==27:
-                return False
-        import pandas as pd
-        df = pd.DataFrame(columns=['VEHICLE','IN','OUT'])
-        vehicle=[]
-        ins=[]
-        outs=[]
-        for k,v in zip(self.VCount.get("IN"),self.VCount.get("OUT")):
-            if k=="total_count_in":
-                k="TOTAL"
+                if cv2.waitKey(1)&0xFF==27:
+                    return False
+            import pandas as pd
+            df = pd.DataFrame(columns=['VEHICLE','IN','OUT'])
+            vehicle=[]
+            ins=[]
+            outs=[]
+            for k,v in zip(self.VCount.get("IN"),self.VCount.get("OUT")):
+                if k=="total_count_in":
+                    k="TOTAL"
+                    vehicle.append(k)
+                    ins.append(sum(ins))
+                    outs.append(sum(outs))
+                    continue
                 vehicle.append(k)
-                ins.append(sum(ins))
-                outs.append(sum(outs))
-                continue
-            vehicle.append(k)
-            ins.append(int(len(self.VCount.get("IN").get(k))))
-            outs.append(int(len(self.VCount.get("OUT").get(v))))
+                ins.append(int(len(self.VCount.get("IN").get(k))))
+                outs.append(int(len(self.VCount.get("OUT").get(v))))
 
-        print(vehicle,ins,outs)
-        df['VEHICLE']=vehicle
-        df['IN']=ins
-        df['OUT']=outs
-        name=self.vid_id.video_path.split("/")[-1].split(".")[0]
-        os.makedirs(f"./media/excel",exist_ok=True)
-        df.to_csv(f"./media/excel/{name}.csv",index=False)
+            
+            df['VEHICLE']=vehicle
+            df['IN']=ins
+            df['OUT']=outs
+            name=self.vid_id.video_path.split("/")[-1].split(".")[0]
+            os.makedirs(f"./media/excel",exist_ok=True)
+            df.to_csv(f"./media/excel/{name}.csv",index=False)
 
-        VideoAnalysisModel.objects.filter(id=int(self.vid_id.id)).update(excel_path=f"./media/excel/{name}.csv",status=True)
-        cap.release()
-        cv2.destroyAllWindows()
+            VideoAnalysisModel.objects.filter(id=int(self.vid_id.id)).update(excel_path=f"./media/excel/{name}.csv",status=100,short_video_path=short_path)
+            cap.release()
+            out.release()
+            cv2.destroyAllWindows()
+            print("Done")
+        except Exception as e:
+            print("Prediction in video analysis error",e)
 
 
 # import socketio
@@ -283,3 +303,5 @@ class VehicleDetectionVideoAnalysis():
 # if __name__ == '__main__':
 #     # Wrap the Socket.IO server with the eventlet server
 #     wsgi.server(eventlet.listen(('localhost', 8000)), app)
+
+# create api to get the usr responce

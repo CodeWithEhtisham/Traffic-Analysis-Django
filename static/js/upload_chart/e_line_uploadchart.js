@@ -58,7 +58,7 @@ line_option = {
         focus: 'self'
       },
       label: {
-        formatter: '{b}: Vehicle '
+        formatter: '{b} Vehicle '
       },
       // encode: {
       //   itemName: 'Time_stamp',
