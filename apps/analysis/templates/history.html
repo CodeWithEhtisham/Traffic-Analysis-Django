@@ -2,9 +2,10 @@
 {% load static %}
 {% block content %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.2/echarts.min.js"></script>
-	<!-- <script async src="https://docs.opencv.org/master/opencv.js" type="text/javascript"></script> -->
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.2/echarts.min.js"></script>
+<!-- <script async src="https://docs.opencv.org/master/opencv.js" type="text/javascript"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
+
 <body>
     <div class="main-wrapper">
         {% include 'sidebar.html'%}
@@ -24,52 +25,54 @@
                             <i class="btn-icon-prepend" data-feather="video"></i>
                             Video Analysis
                         </a>
-                        <a type="button" class="btn btn-primary btn-icon-text mb-2 mb-md-0"
-                            href="{% url 'index' %}">
+                        <a type="button" class="btn btn-primary btn-icon-text mb-2 mb-md-0" href="{% url 'index' %}">
                             <i class="btn-icon-prepend" data-feather="bar-chart"></i>
                             Live Stream Analysis
                         </a>
                     </div>
                 </div>
                 <div class="row">
-                    
-                    <!-- bar chart -->
                     <div class="col-xl-12 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
                                 <h6 class="card-title">Search Date Range</h6>
-                                <div>
-                                    <label for="user">First Name</label>
-                                    <input type="Date" class="form-control" width="30%" name="first_name" autocomplete="Username" placeholder="Username" required>
-                                    <label for="user">First Name</label>
-                                    <input type="Date" class="form-control" width="30%" name="first_name" autocomplete="Username" placeholder="Username" required><label for="user">First Name</label>
-                                    <input type="Date" class="form-control" width="30%" name="first_name" autocomplete="Username" placeholder="Username" required>
-                                </div>
+                                <form action="{% url 'history'%}" method="post">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <label for="user">Select Site</label>
+                                            <select class="js-example-basic-single w-100 select2-hidden-accessible"
+                                                name="site_name" data-width="100%" data-select2-id="1" tabindex="-1"
+                                                aria-hidden="true">
+                                                {% for i in site_names %}
+                                                <option value="{{i}}" data-select2-id="3">{{i}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-3">
+                                            <label for="user">From</label>
+                                            <input type="Date" class="form-control" name="from_date"
+                                                autocomplete="Username" placeholder="from date" required>
+                                        </div>
+                                        <div class="col-3">
+                                            <label for="user">To</label>
+                                            <input type="Date" class="form-control" name="to_date"
+                                                autocomplete="Username" placeholder="to date" required>
+                                        </div>
+                                        <div class="col-3">
+                                            <button type="submit" style="margin-top: 15%;"
+                                                class="btn btn-primary btn-icon-text">
+                                                Button with Icon
+                                                <i class="btn-icon-append" data-feather="search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
-
                 </div>
-
                 <div class="row">
-                    
-                    <div class="col-xl-12 grid-margin stretch-card">
-                        <div class="card">
-                            <div class="card-body">
-                                <h6 class="card-title">Bar chart <span id="bar-chart-title"></span></h6>
-                                <div id="e_bar_chart" style="width: 100%; height: 400px "></div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- end area chart -->
-
-                </div>
-                <!-- first row end -->
-
-                <!-- second row start -->
-                <div class="row">
-
-                    <!-- plot chart with dynamic font-size -->
                     <div class="col-xl-12 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
@@ -78,38 +81,29 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <div class="row">
-                    <!-- area chart -->
                     <div class="col-xl-12 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
-                                <h6 class="card-title">Area chart <span id="area-chart-title"></span><h5></h5>
+                                <h6 class="card-title">Area chart <span id="area-chart-title"></span>
+                                    <h5></h5>
                                 </h6>
                                 <div id="e_line_chart" style="width: 100%; height: 400px;"></div>
                             </div>
                         </div>
                     </div>
-                    <!-- end area chart -->
-                    <!-- bar chart -->
-
-                    <!-- bar chart End -->
-
                 </div>
-                <!-- first row end -->
-
-                <!-- <div class="row">
-                    <div class="col-12 grid-margin stretch-card">
+                <div class="row">
+                    <div class="col-xl-12 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
-                                <h6 class="card-title">Bar chart</h6>
-                                <div id="echartbar" style="height: 400px;"></div>
+                                <h6 class="card-title">Bar chart <span id="bar-chart-title"></span></h6>
+                                <div id="e_bar_chart" style="width: 100%; height: 400px "></div>
                             </div>
                         </div>
                     </div>
-
-                </div> -->
+                </div>
 
             </div>
 
@@ -120,108 +114,307 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.2/echarts.min.js"></script>
     <!-- <script src="{% static 'js/dynamic-plots.js'%}"></script> -->
-    <script src="{% static 'js/charts/e_bar_chart.js'%}"></script>
+    <!-- <script src="{% static 'js/charts/e_bar_chart.js'%}"></script>
     <script src="{% static 'js/charts/e_multiline_chart.js'%}"></script>
-    <script src="{% static 'js/charts/e_line_chart.js'%}"></script>
+    <script src="{% static 'js/charts/e_line_chart.js'%}"></script> -->
     <!-- <script src="{% static 'js/dynamic-plots.js'%}"></script> -->
     <script>
-        
-
-
-        var csrfToken = "{{ csrf_token }}";
-        var site_name = "{{site_name}}";
-        // // ajax apis for getting data
-
-        setInterval(function () {
-            // Get the current date and time
-            const currentDate = new Date();
-
-            // Set the time to midnight (00:00:00 AM)
-            const startDate = new Date(currentDate);
-            startDate.setHours(0, 0, 0, 0);
-
-            // Format the start date and time
-            const formattedDateFrom = startDate.toLocaleString('en-US', {
-                year: 'numeric',
-                month: 'numeric',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: true,
-            });
-
-            // Print the formatted start date and time
-            // console.log(`date: ${formattedDateFrom}`);
-
-            // Format the current date and time
-            const formattedDateTo = currentDate.toLocaleString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: true,
-            });
-            let date=`      (${formattedDateFrom} To ${formattedDateTo})`
-            // Print the formatted current date and time
-            // console.log(`date: ${formattedDateTo}`);
-
-            // $.ajax({
-            //     method: "POST",
-            //     url: "/apis/get_table_records",
-            //     dataType: "json",
-            //     headers: { "X-CSRFToken": csrfToken },
-            //     data: {
-            //         "site_name": site_name,
-            //     },
-            //     success: function (data) {
-            //         // console.log(data);
-            //         let percentage = data['percentage'];
-            //         let today_data = data['data'];
-
-            //         // Update the table rows
-            //         let tableData = '';
-            //         Object.entries(today_data).forEach(([vehicle, count], index) => {
-            //             tableData += `
-            //     <tr>
-            //         <td>${vehicle}</td>
-            //         <td>${count}</td>
-            //         <td>
-            //             <div class="progress">
-            //                 <div class="progress-bar progress-bar-striped progress-bar-animated ${percentage[index] > 50 ? 'bg-success' : 'bg-danger'}" role="progressbar" style="width: ${percentage[index]}%" aria-valuenow="${percentage[index]}" aria-valuemin="0" aria-valuemax="100"></div>
-            //             </div>
-            //         </td>
-            //     </tr>
-            // `;
-            //         });
-
-            //         // Update the table with the new data
-            //         $('#today_table').html(tableData);
-            //     },
-            //     error: function () {
-            //         console.log("Error on get_vehicle_counts");
-            //     }
-            // });
-
-            multi_line_chart_fun(csrfToken, site_name);
-            line_chart_fun(csrfToken, site_name);
-            bar_chart_fun(csrfToken, site_name);
-            document.getElementById('bar-chart-title').innerHTML=date
-            document.getElementById('multiline-chart-title').innerHTML=date
-            document.getElementById('area-chart-title').innerHTML=date
-            
-        }, 10000); // 30 seconds in milliseconds
+        // let date = `      (${formattedDateFrom} To ${formattedDateTo})`
+        //     multi_line_chart_fun(csrfToken, site_name);
+        //     line_chart_fun(csrfToken, site_name);
+        //     bar_chart_fun(csrfToken, site_name);
+        //     document.getElementById('bar-chart-title').innerHTML = date
+        //     document.getElementById('multiline-chart-title').innerHTML = date
+        //     document.getElementById('area-chart-title').innerHTML = date
+        var chartDom = document.getElementById('e_multiline_chart');
+        var multi_line_chart = echarts.init(chartDom);
+        var multiline_options;
 
 
 
+        // prettier-ignore
+        let timeData = ['2009/10/1 0:00', '2009/10/1 1:00', '2009/10/1 2:00', '2009/10/1 3:00', '2009/10/1 4:00', '2009/10/1 5:00', '2009/10/1 6:00', '2009/10/1 7:00', '2009/10/1 8:00', '2009/10/1 9:00', '2009/10/1 10:00', '2009/10/1 11:00', '2009/10/1 12:00', '2009/10/1 13:00', '2009/10/1 14:00'];
+        timeData = timeData.map(function (str) {
+            return str;
+        });
+        multiline_options = {
+            title: {
+                text: 'IN vs OUT',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    animation: false
+                }
+            },
+            legend: {
+                data: ['Car', 'Bike', 'Bus', 'Truck', 'Rickshaw', 'Van'],
+                left: 10
+            },
+            toolbox: {
+                feature: {
+                    dataZoom: {
+                        yAxisIndex: 'none'
+                    },
+                    restore: {},
+                    saveAsImage: {}
+                }
+            },
+            axisPointer: {
+                link: [
+                    {
+                        xAxisIndex: 'all'
+                    }
+                ]
+            },
+            dataZoom: [
+                {
+                    show: true,
+                    realtime: true,
+                    start: 0,
+                    end: 100,
+                    xAxisIndex: [0, 1]
+                },
+                {
+                    type: 'inside',
+                    realtime: true,
+                    start: 30,
+                    end: 70,
+                    xAxisIndex: [0, 1]
+                }
+            ],
+            grid: [
+                {
+                    left: 60,
+                    right: 50,
+                    height: '35%'
+                },
+                {
+                    left: 60,
+                    right: 50,
+                    top: '55%',
+                    height: '35%'
+                }
+            ],
+            xAxis: [
+                {
+                    type: 'category',
+                    boundaryGap: false,
+                    axisLine: { onZero: true },
+                    data: timeData
+                },
+                {
+                    gridIndex: 1,
+                    type: 'category',
+                    boundaryGap: false,
+                    axisLine: { onZero: true },
+                    data: timeData,
+                    position: 'top'
+                }
+            ],
+            yAxis: [
+                {
+                    name: 'IN',
+                    type: 'value',
+                    max: 20
+                },
+                {
+                    gridIndex: 1,
+                    name: 'OUT',
+                    type: 'value',
+                    inverse: true,
+                    max: 25
+                }
+            ],
+            series: [
+
+            ]
+        };
+
+        multiline_options && multi_line_chart.setOption(multiline_options);
+        // let data="{{data_multi}}"
+        let data_multi = JSON.parse('{{data_multi|safe}}')
+        // let data_multi='{{data_multi}}'
+        console.log(data_multi);
+        // update the chart with the new data series
+        multiline_options.series = data_multi["data_multi"];
+        multiline_options.yAxis[0]['max'] = data_multi["max_in_multi"];
+        multiline_options.yAxis[1]['max'] = data_multi["max_out_multi"];
+        multiline_options.xAxis[0]['data'] = data_multi['time_stamp_multi']
+        multiline_options.xAxis[1]['data'] = data_multi['time_stamp_multi']
+        multi_line_chart.setOption(multiline_options);
+
+
+
+        var chartDom = document.getElementById('e_line_chart');
+        var line_chart = echarts.init(chartDom);
+        var line_option;
+
+
+        line_option = {
+            legend: {},
+            tooltip: {
+                trigger: 'axis',
+                showContent: true
+            },
+            dataZoom: [
+                {
+                    show: true,
+                    realtime: true,
+                    start: 0,
+                    end: 100,
+                    xAxisIndex: [0, 1]
+                },
+                {
+                    type: 'inside',
+                    realtime: true,
+                    start: 30,
+                    end: 70,
+                    xAxisIndex: [0, 1]
+                }
+            ],
+            dataset: {
+                source: [
+                ]
+            },
+
+            xAxis: { type: 'category' },
+            yAxis: { gridIndex: 0 },
+            grid: { top: '55%' },
+            series: [
+                {
+                    type: 'line',
+                    smooth: true,
+                    seriesLayoutBy: 'row',
+                    emphasis: { focus: 'series' }
+                },
+                {
+                    type: 'line',
+                    smooth: true,
+                    seriesLayoutBy: 'row',
+                    emphasis: { focus: 'series' }
+                },
+                {
+                    type: 'pie',
+                    id: 'pie',
+                    radius: '30%',
+                    center: ['50%', '25%'],
+                    emphasis: {
+                        focus: 'self'
+                    },
+                    label: {
+                        formatter: '{b}: Vehicle '
+                    },
+
+                }
+            ]
+        };
+        line_chart.on('updateAxisPointer', function (event) {
+            const xAxisInfo = event.axesInfo[0];
+            if (xAxisInfo) {
+                const dimension = xAxisInfo.value + 1;
+                line_chart.setOption({
+                    series: {
+                        id: 'pie',
+                        label: {
+                            formatter: '{b}: Vehicle'
+                        },
+                        encode: {
+                            value: dimension,
+                            tooltip: dimension
+                        }
+                    }
+                });
+            }
+        });
+        line_chart.setOption(line_option);
+
+        line_option && line_chart.setOption(line_option);
+
+        let data_line = JSON.parse('{{data_line|safe}}')
+        console.log(data_line);
+        line_option.dataset.source = data_line['data_line'];
+        line_chart.setOption(line_option);
+
+// bar chart started
+        var chartDom = document.getElementById('e_bar_chart');
+        var bar_chart = echarts.init(chartDom);
+        var bar_option;
+
+        bar_option = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    crossStyle: {
+                        color: '#999'
+                    }
+                }
+            },
+            toolbox: {
+                feature: {
+                    dataView: { show: true, readOnly: false },
+                    magicType: { show: true, type: ['bar'] },
+                    restore: { show: true },
+                    saveAsImage: { show: true }
+                }
+            },
+            legend: {
+                data: ['IN', 'OUT']
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    data: ['Car', 'Bike', 'Bus', 'Truck', 'Rickshaw', 'Van'],
+                    axisPointer: {
+                        type: 'shadow'
+                    },
+                    axisLine: {
+                        show: false // Hide the x-axis line
+                    },
+                    axisTick: {
+                        show: false // Hide the x-axis tick marks
+                    },
+                    splitLine: {
+                        show: false // Hide the grid lines
+                    }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    name: 'Count',
+                    min: 0,
+                    max: 100,
+                    interval: 5,
+                    axisLine: {
+                        show: false // Hide the y-axis line
+                    },
+                    axisTick: {
+                        show: false // Hide the y-axis tick marks
+                    },
+                    splitLine: {
+                        show: false // Hide the grid lines
+                    }
+                }
+            ],
+            series: [
+
+            ]
+        };
+
+        bar_option && bar_chart.setOption(bar_option);
+
+        let data_bar=JSON.parse('{{data_bar|safe}}')
+
+                    console.log(data_bar)
+                    bar_option.series = data_bar["data_bar"];
+                    bar_option.yAxis[0].max = data_bar["max_bar"];
+                    bar_chart.setOption(bar_option);
 
 
     </script>
-    <!-- <script src="static/js/morris.js'%}"></script> -->
-    <!-- <script>
-        
-
-
-    </script> -->
 
 </body>
 {% endblock %}
