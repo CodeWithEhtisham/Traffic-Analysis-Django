@@ -161,10 +161,32 @@ class Dashboard(TemplateView):
             'site_name':site_name,
             'site_names':site_names
         })
-
+from .history_fun import *
 class History(TemplateView):
     def get(self, request):
-        return render(request, 'history.html')
+        site_names=Stream.objects.filter(users=request.user).values_list('site_name',flat=True)
+        return render(request, 'history.html',{"site_names":site_names})
+    def post(self,request):
+        try:
+            site_name=request.POST.get('site_name')
+            from_date=request.POST.get('from_date')
+            to_date=request.POST.get('to_date')
+            data_multi=get_multiline_chart_records_history(site_name,from_date,to_date)
+            data_line=get_line_chart_records_history(site_name,from_date,to_date)
+            data_bar=get_bar_chart_records_history(site_name,from_date,to_date)
+            
+            site_names=Stream.objects.filter(users=request.user).values_list('site_name',flat=True)
+            # print(data_multi)
+            return render(request, 'history.html',{
+                'site_names':site_names,
+                'data_multi':json.dumps(data_multi) ,
+                'data_line':json.dumps(data_line),
+                'data_bar':json.dumps(data_bar)
+                })
+        except Exception as e:
+            print(e)
+            return JsonResponse({'error': str(e)})
+
 from django.core.files.storage import FileSystemStorage
 import os
 def video_analysis(request):
@@ -198,7 +220,7 @@ def video_analysis(request):
                 # print(video_analysis)
                 # return HttpResponseRedirect(reverse("video_analysis"))
                 # return redirect('video_analysis')
-            site_names = Stream.objects.all().values_list('site_name', flat=True)
+            site_names = Stream.objects.filter(users=request.user).values_list('site_name', flat=True)
             video_analysis = VideoAnalysisModel.objects.all()
             print(video_analysis)
             return render(request, 'video_analysis.html',{
