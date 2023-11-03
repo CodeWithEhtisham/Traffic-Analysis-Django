@@ -57,8 +57,8 @@ async def process_frame(site_name):
             continue
         data=pickle.loads(frame_data)
         # print("processing frame",site_name,data['frame_number'])
-        print(data['time_stamp'])
-        print(site_name)
+        # print(data['time_stamp'])
+        # print(site_name)
         image=base64.b64decode(data['frame'])
         jpg_as_np = np.frombuffer(image, dtype=np.uint8)
         jpg_as_np = cv2.imdecode(jpg_as_np, flags=1)
@@ -87,7 +87,7 @@ async def add_frame_to_redis(site_name,data):
         if threading_dict[site_name] is None or not threading_dict[site_name].is_alive():
             threading_dict[site_name] = threading.Thread(target=asyncio.run,args=(process_frame(site_name),))
             threading_dict[site_name].start()
-    print(f"dict for vehicle counting {vehicle_counting_dict}")
+    # print(f"dict for vehicle counting {vehicle_counting_dict}")
 
 
 # Define an event handler for the 'connect' event
@@ -99,7 +99,7 @@ def on_connect(sid, environ):
 # Define an event handler for the 'frist_frame' event
 @sio.on('frist_frame')
 def on_received_first_frame(sid, data):
-    print(f"received first frame from {data['site_name']} with frame number {data['frame_number']}")
+    # print(f"received first frame from {data['site_name']} with frame number {data['frame_number']}")
     site_key = data['site_name']
     frame_data = pickle.dumps(data)
     # # Append the frame data to the site's list
@@ -108,7 +108,7 @@ def on_received_first_frame(sid, data):
 # Define an event handler for the 'received_frame' event
 @sio.on("received_frame")
 def on_received_frame(sid, data):
-    # print(f"received frame from {data['site_name']} with frame number {data['frame_number']}")
+    print(f"received frame from {data['site_name']} with frame number {data['frame_number']}")
     threading.Thread(target=asyncio.run,args=(add_frame_to_redis(data['site_name'],data),)).start()
     sio.emit(data['site_name'],data['frame'])
 
@@ -130,11 +130,11 @@ from django.utils.decorators import method_decorator
 class Index(TemplateView):  
     def get(self, request):
         user_id = request.user.id
-        print("user is ",request.user.email)
+        # print("user is ",request.user.email)
         user=CustomUser.objects.get(id=user_id)
         if user.is_staff and user.is_active:
             site_name=Stream.objects.all().values_list('site_name',flat=True)
-            print(site_name)
+            # print(site_name)
             # print([s for s in site_name])
             return render(request, 'index.html', {'site_names': site_name})
         elif user.is_active:
@@ -142,9 +142,9 @@ class Index(TemplateView):
              return render(request, 'index.html', {'site_names': site_name})
         
         # print("Index view is called")
-        print(request.GET)
+        # print(request.GET)
         user_id = request.GET.get('user_id')
-        print("user_id:", user_id)  # Add this line to check the value of 'user_id'
+        # print("user_id:", user_id)  # Add this line to check the value of 'user_id'
         if user_id:
             c = CustomUser.objects.get(id=user_id)
             site_name = Stream.objects.filter(users=c).values_list('site_name', flat=True)
@@ -198,7 +198,7 @@ def video_analysis(request):
                 video_name = request.POST.get('video_name')
                 date_time = request.POST.get('date_time')
                 video_file = request.FILES['video']
-                print(video_name, date_time)
+                # print(video_name, date_time)
                 # save video file into directory
                 fs = FileSystemStorage()
                 # Define the directory and file name
@@ -209,7 +209,7 @@ def video_analysis(request):
                 filename = fs.save(video_path, video_file)
                 uploaded_file_url = fs.url(filename)
                 date_time=datetime.strptime(date_time, '%Y-%m-%dT%H:%M').strftime("%Y-%m-%d %H:%M:%S")
-                print(date_time)
+                # print(date_time)
                 VideoAnalysisModel.objects.create(
                     video_name=video_name,
                     date_time=date_time,
@@ -222,7 +222,7 @@ def video_analysis(request):
                 # return redirect('video_analysis')
             site_names = Stream.objects.filter(users=request.user).values_list('site_name', flat=True)
             video_analysis = VideoAnalysisModel.objects.all()
-            print(video_analysis)
+            # print(video_analysis)
             return render(request, 'video_analysis.html',{
                 'site_names':site_names,
                 'video_analysis':video_analysis
@@ -260,7 +260,7 @@ def get_vehicle_counts(request):
             count_out=today_count.filter(total_count_out=1).count()
             data[site_name].append(count_in)
             data[site_name].append(count_out)
-        print(data,"#################")
+        # print(data,"#################")
         # return as json object 
         return Response(
             {"data":data}
@@ -439,7 +439,7 @@ def get_multiline_chart_records(request):
                 result['truck_out'].append(truck_out)
                 result['rickshaw_out'].append(rickshaw_out)
                 result['van_out'].append(van_out)
-                print("in count call ", len(result['car_out']),car_out,obj.image.timestamp.strftime("%H:%M:%S"))
+                # print("in count call ", len(result['car_out']),car_out,obj.image.timestamp.strftime("%H:%M:%S"))
 
             else:
                 if obj.label == 'car':
@@ -719,11 +719,11 @@ import os
 @api_view(['POST'])
 def get_first_frame(request):
     try:
-        print("$$$$$$$$$$$$$$$$$$$$$$$$")
+        # print("$$$$$$$$$$$$$$$$$$$$$$$$")
         media_root = settings.MEDIA_ROOT
         video_path=request.POST.get("video_path")
         # video_path=video_path.split('media/')
-        print(media_root[:-5]+video_path)
+        # print(media_root[:-5]+video_path)
         # absolute_file_path = os.path.join(media_root, video_path.        
         # get first frame from video
         # print(absolute_file_path)
@@ -758,7 +758,7 @@ def video_prediction(request):
         video_path=VideoAnalysisModel.objects.get(id=vid_id).video_path
         detection_line=[request.POST.getlist("detection_line0[]"),request.POST.getlist("detection_line1[]")]
 
-        print(vid_id)
+        # print(vid_id)
         detection_line = [[int(x) for x in line] for line in detection_line]
         VideoAnalysisObject.objects.filter(video_analysis=vid_id).delete()
 
@@ -780,7 +780,7 @@ import mimetypes
 def download_excel(request):
     # Retrieve the file path from the query parameter
     file_path = request.POST.get('excel_path', None)
-    print(file_path,'sadfsad')
+    # print(file_path,'sadfsad')
     if file_path:
         # Check if the file exists
         if os.path.exists(file_path):
@@ -803,11 +803,11 @@ def download_excel(request):
 def delete_video(request):
     try:
         vid_id=request.POST.get("vid_id")
-        print(vid_id,"id")
+        # print(vid_id,"id")
         video=VideoAnalysisModel.objects.get(id=vid_id)
         video_path=video.video_path
         excel_path=video.excel_path
-        print(video_path,excel_path)
+        # print(video_path,excel_path)
         if excel_path:
             if os.path.exists(excel_path[1:]):
                 os.remove(excel_path[1:])
@@ -816,7 +816,7 @@ def delete_video(request):
                 os.remove(video_path[1:])
         VideoAnalysisObject.objects.filter(video_analysis=video).delete()
         video.delete()
-        print("video deleted")
+        # print("video deleted")
         return Response({
             "message":True
         })
