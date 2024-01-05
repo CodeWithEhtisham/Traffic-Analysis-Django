@@ -44,30 +44,45 @@ except FileNotFoundError as e:
     print()
 from apps.analysis.models import *
 
+# async def process_frame(site_name):
+#     global redis_client,vehicle_counting_dict
+#     while redis_client.llen(site_name) > 0:
+#         frame_data = redis_client.rpop(site_name)
+#         if frame_data is None:
+#             continue
+#         data=pickle.loads(frame_data)
+#         image=base64.b64decode(data['frame'])
+#         jpg_as_np = np.frombuffer(image, dtype=np.uint8)
+#         jpg_as_np = cv2.imdecode(jpg_as_np, flags=1)
+#         result=model.predict(jpg_as_np)[0].boxes.data
+#         if result is not None and len(result)>0:
+#             vehicle_counting_dict[site_name].prediction(result,site_name,data['time_stamp'],jpg_as_np)
+   
 async def process_frame(site_name):
-    # run while loop till redis list is empty
-    # print("processing fr  `1              vvv vame",site_name)
-    global redis_client,vehicle_counting_dict
-    while redis_client.llen(site_name) > 0:
-        # print("processing frame len",redis_client.llen(site_name))
-        # pop the frame from redis list from the right side
-        frame_data = redis_client.rpop(site_name)
+    global redis_client, vehicle_counting_dict
 
-        if frame_data is None:
-            continue
-        data=pickle.loads(frame_data)
-        # print("processing frame",site_name,data['frame_number'])
-        # print(data['time_stamp'])
-        # print(site_name)
-        image=base64.b64decode(data['frame'])
-        jpg_as_np = np.frombuffer(image, dtype=np.uint8)
-        jpg_as_np = cv2.imdecode(jpg_as_np, flags=1)
-        result=model.predict(jpg_as_np)[0].boxes.data
-        if result is not None and len(result)>0:
-            vehicle_counting_dict[site_name].prediction(result,site_name,data['time_stamp'],jpg_as_np)
-    # print(site_name,"done")
-    # print(vehicle_counting_dict[site_name].VCount['IN']['total_count_in'])
-    # print(vehicle_counting_dict[site_name].VCount['OUT']['total_count_out'])
+    # Define batch size
+    batch_size = 128
+
+    while True:
+        # Retrieve frames in a batch
+        frame_batch = redis_client.lrange(site_name, 0, batch_size - 1)
+
+        if not frame_batch:
+            break  # No more frames in Redis
+
+        # Remove the fetched frames from Redis
+        redis_client.ltrim(site_name, len(frame_batch), -1)
+
+        for frame_data in frame_batch:
+            data = pickle.loads(frame_data)
+            image = base64.b64decode(data['frame'])
+            jpg_as_np = np.frombuffer(image, dtype=np.uint8)
+            jpg_as_np = cv2.imdecode(jpg_as_np, flags=1)
+            result = model.predict(jpg_as_np)[0].boxes.data
+
+            if result is not None and len(result) > 0:
+                vehicle_counting_dict[site_name].prediction(result, site_name, data['time_stamp'], jpg_as_np)
 
 
 
